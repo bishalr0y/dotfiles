@@ -1,0 +1,33 @@
+# Theme
+theme = tokyonight_night
+
+# Background settings
+background-opacity = 1
+background-blur = false
+
+# Font settings
+font-family = JetBrainsMono Nerd Font
+font-size = 15
+font-feature = ss20
+
+# Cursor settings
+cursor-style = block
+cursor-style-blink = false
+# cursor-invert-fg-bg = true
+
+# MacOS options
+macos-titlebar-proxy-icon = hidden
+shell-integration-features = no-cursor,title
+
+# Setting the title as empty string
+title = " "
+
+# Hide the cursor while typing 
+mouse-hide-while-typing = true
+
+# Clipboard settings
+clipboard-read = allow
+clipboard-write = allow
+
+# Terminal color option
+window-colorspace = "display-p3"
