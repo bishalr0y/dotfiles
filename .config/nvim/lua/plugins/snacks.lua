@@ -8,6 +8,5 @@ return {
       example = "compact_files",
     },
     explorer = { enabled = true },
-    notifier = { enabled = true },
   },
 }
