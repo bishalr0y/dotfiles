@@ -45,6 +45,6 @@ return {
         { section = "startup" },
       },
     },
-    explorer = { enabled = true },
+    explorer = { enabled = false },
   },
 }
