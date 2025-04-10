@@ -6,7 +6,8 @@ background-opacity = 1
 background-blur = false
 
 # Font settings
-font-family = JetBrainsMono Nerd Font
+# font-family = JetBrainsMono Nerd Font
+font-family = "FiraCode Nerd Font"
 font-family-italic = "Maple Mono NF CN"
 font-family-bold-italic = "Maple Mono NF CN"
 font-size = 15
