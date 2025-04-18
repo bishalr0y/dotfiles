@@ -6,7 +6,8 @@ background-opacity = 1
 background-blur = false
 
 # Font settings
-font-family = JetBrainsMono Nerd Font
+# font-family = JetBrainsMono Nerd Font
+font-family = CaskaydiaCove Nerd Font
 font-size = 14
 font-feature = ss20
 
