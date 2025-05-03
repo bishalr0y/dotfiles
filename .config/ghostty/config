@@ -6,8 +6,7 @@ background-opacity = 1
 background-blur = false
 
 # Font settings
-# font-family = MonoLisa
-font-family = JetBrainsMono Nerd Font
+font-family = MonoLisa
 font-size = 14
 font-feature = ss20
 
