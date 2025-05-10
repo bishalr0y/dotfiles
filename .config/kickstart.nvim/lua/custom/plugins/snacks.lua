@@ -45,6 +45,6 @@ return {
         { section = 'startup' },
       },
     },
-    explorer = { enabled = false },
+    indent = { enabled = true },
   },
 }
