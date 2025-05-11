@@ -1,18 +1,18 @@
 return {
-  'stevearc/oil.nvim',
+  "stevearc/oil.nvim",
   ---@module 'oil'
   ---@type oil.SetupOpts
   opts = {},
-  dependencies = { 'nvim-tree/nvim-web-devicons' }, -- use if you prefer nvim-web-devicons
+  dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
   lazy = false,
   config = function()
-    require('oil').setup {
+    require("oil").setup({
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
-          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-          ['vim.lsp.util.stylize_markdown'] = true,
-          ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
         },
       },
       -- you can enable a preset for easier configuration
@@ -27,7 +27,7 @@ return {
         show_hidden = true,
       },
       -- Keymap to open oil as a floating window
-      vim.keymap.set('n', '-', '<CMD>Oil --float<CR>', { desc = 'Open parent directory in floating window' }),
-    }
+      vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory in floating window" }),
+    })
   end,
 }

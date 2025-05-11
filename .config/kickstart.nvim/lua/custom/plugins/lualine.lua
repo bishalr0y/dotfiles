@@ -1,30 +1,30 @@
 return {
   {
-    'nvim-lualine/lualine.nvim',
-    event = 'VeryLazy',
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
     config = function()
-      local harpoon = require 'harpoon'
+      local harpoon = require("harpoon")
 
       local function harpoon_component()
         local list = harpoon:list()
         local total_marks = #list.items
 
         if total_marks == 0 then
-          return ''
+          return ""
         end
 
-        local current_mark = '—'
+        local current_mark = "—"
         local mark_idx = nil
 
         -- Get the current buffer's file path
         local current_file = vim.api.nvim_buf_get_name(0)
-        if current_file == '' then
-          return string.format('󰛢 %s/%d', current_mark, total_marks)
+        if current_file == "" then
+          return string.format("󰛢 %s/%d", current_mark, total_marks)
         end
 
         -- Normalize paths to handle absolute vs. relative paths
         local function normalize_path(path)
-          return vim.fn.fnamemodify(path, ':p') -- Convert to full absolute path
+          return vim.fn.fnamemodify(path, ":p") -- Convert to full absolute path
         end
 
         current_file = normalize_path(current_file)
@@ -42,31 +42,31 @@ return {
           current_mark = tostring(mark_idx)
         end
 
-        return string.format('󰛢 %s/%d', current_mark, total_marks)
+        return string.format("󰛢 %s/%d", current_mark, total_marks)
       end
 
-      require('lualine').setup {
+      require("lualine").setup({
         options = {
-          theme = 'auto',
+          theme = "auto",
           globalstatus = true,
-          component_separators = { left = '', right = '' },
-          section_separators = { left = '█', right = '█' },
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "█", right = "█" },
         },
         sections = {
           lualine_b = {
-            { 'branch', icon = '' },
+            { "branch", icon = "" },
             harpoon_component,
-            'diff',
-            'diagnostics',
+            "diff",
+            "diagnostics",
           },
           lualine_c = {
-            { 'filename', path = 1 },
+            { "filename", path = 1 },
           },
           lualine_x = {
-            'filetype',
+            "filetype",
           },
         },
-      }
+      })
     end,
   },
 }
