@@ -10,3 +10,6 @@ vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Move to Right Window" })
 
 -- Delete (close) a split
 vim.keymap.set("n", "<leader>wd", "<C-w>c", { desc = "Close Window" })
+
+-- Close Neovim
+vim.keymap.set("n", "<leader>qq", ":quit<CR>", { desc = "Exit" })
