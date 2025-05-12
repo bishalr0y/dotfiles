@@ -9,7 +9,23 @@ return {
           comments = { italic = true },
         },
       })
-      vim.cmd.colorscheme("tokyonight-night")
+      -- vim.cmd.colorscheme("tokyonight-night")
+    end,
+  },
+  {
+    "catppuccin/nvim",
+    lazy = false,
+    priority = 1000,
+    name = "catppuccin",
+    config = function()
+      require("catppuccin").setup({
+        flavour = "mocha",
+        transparent_background = false,
+        no_bold = true,
+        no_italic = true,
+        no_underline = false,
+      })
+      vim.cmd.colorscheme("catppuccin")
     end,
   },
 }
