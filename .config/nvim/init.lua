@@ -11,7 +11,7 @@ vim.cmd("set linebreak")
 -- vim.cmd("set nocursorline")
 
 -- make the cursor line bg transparent
-vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" })
 
 vim.opt.scrolloff = 8
 
