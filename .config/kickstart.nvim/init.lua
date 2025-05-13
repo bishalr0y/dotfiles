@@ -306,17 +306,17 @@ require("lazy").setup({
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set("n", "<leader>s/", function()
+      vim.keymap.set("n", "<leader>f/", function()
         builtin.live_grep({
           grep_open_files = true,
           prompt_title = "Live Grep in Open Files",
         })
-      end, { desc = "[S]earch [/] in Open Files" })
+      end, { desc = "[F]ind [/] in Open Files" })
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set("n", "<leader>sn", function()
+      vim.keymap.set("n", "<leader>fn", function()
         builtin.find_files({ cwd = vim.fn.stdpath("config") })
-      end, { desc = "[S]earch [N]eovim files" })
+      end, { desc = "[F]ind [N]eovim files" })
     end,
   },
 
@@ -597,7 +597,6 @@ require("lazy").setup({
     end,
   },
 
-
   {
     "saghen/blink.cmp",
     -- optional: provides snippets for the snippet source
@@ -634,7 +633,7 @@ require("lazy").setup({
       },
 
       -- (Default) Only show the documentation popup when manually triggered
-      completion = { documentation = { auto_show = false } },
+      completion = { documentation = { auto_show = false }, ghost_text = { enabled = true } },
 
       -- Default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
