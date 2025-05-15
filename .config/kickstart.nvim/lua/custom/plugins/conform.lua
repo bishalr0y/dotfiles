@@ -32,11 +32,23 @@ return { -- Autoformat
       lua = { "stylua" },
       javascript = { "prettierd", "prettier", stop_after_first = true },
       typescript = { "prettierd", "prettier", stop_after_first = true },
-      go = { "gofmt", "goimports", "golines" },
+      go = { "golines", "gofmt", "goimports" },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
+    },
+    formatters = {
+      golines = {
+        command = "golines",
+        args = { "--max-len=120", "--base-formatter=gofmt" }, -- Wrap at 80 characters
+        stdin = true,
+      },
+      gofmt = {
+        command = "gofmt",
+        args = { "-s" }, -- Simplify code (optional)
+        stdin = true,
+      },
     },
   },
 }
