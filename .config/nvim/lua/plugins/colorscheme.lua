@@ -22,7 +22,7 @@ return {
         flavour = "mocha",
         transparent_background = false,
         no_bold = true,
-        no_italic = true,
+        no_italic = false,
         no_underline = false,
       })
       vim.cmd.colorscheme("catppuccin")

@@ -8,7 +8,7 @@ vim.cmd("set wrap")
 vim.cmd("set linebreak")
 
 -- disable cursor line
--- vim.cmd("set nocursorline")
+vim.cmd("set nocursorline")
 
 -- make the cursor line bg transparent
 -- vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" })

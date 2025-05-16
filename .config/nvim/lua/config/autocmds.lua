@@ -23,6 +23,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
 
     -- make the cursor line bg transparent
-    vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" })
+    -- vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" })
   end,
 })
