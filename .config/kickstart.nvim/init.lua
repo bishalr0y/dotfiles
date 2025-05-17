@@ -1,5 +1,4 @@
 require("custom.init")
-require("custom.options")
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
