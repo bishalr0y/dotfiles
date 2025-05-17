@@ -1,3 +1,4 @@
+-- TODO: to add the keymaps
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
