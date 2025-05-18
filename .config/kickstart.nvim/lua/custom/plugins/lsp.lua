@@ -161,8 +161,21 @@ return {
       })
 
       -- Setup Mason and LSPs
-      require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-      require("mason-lspconfig").setup({ ensure_installed = {}, automatic_installation = false })
+      require("mason-tool-installer").setup({
+        auto_update = true,
+        run_on_start = true,
+        start_delay = 3000,
+        debounce_hours = 12,
+        ensure_installed = ensure_installed,
+      })
+
+      -- Setup Mason for managing external LSP servers
+      require("mason").setup({ ui = { border = "rounded" } })
+      require("mason-lspconfig").setup()
+
+      -- Configure borders for LspInfo UI and diagnostics
+      require("lspconfig.ui.windows").default_options.border = "rounded"
+
       for server_name, server in pairs(servers) do
         server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
         require("lspconfig")[server_name].setup(server)
