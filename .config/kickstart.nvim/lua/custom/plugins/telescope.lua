@@ -23,6 +23,12 @@ return {
           require("telescope.themes").get_dropdown(),
         },
       },
+      pickers = {
+        find_files = {
+          hidden = true,
+          no_ignore = true,
+        },
+      },
     })
 
     pcall(require("telescope").load_extension, "fzf")
