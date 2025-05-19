@@ -23,6 +23,13 @@ return {
           require("telescope.themes").get_dropdown(),
         },
       },
+      defaults = {
+        layout_strategy = "horizontal",
+        layout_config = { prompt_position = "bottom" },
+        sorting_strategy = "ascending",
+        winblend = 0,
+        find_command = { "rg", "--files", "--hidden", "--no-ignore" },
+      },
       pickers = {
         find_files = {
           hidden = true,
