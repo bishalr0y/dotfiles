@@ -4,9 +4,7 @@ return {
     "folke/lazydev.nvim",
     ft = "lua",
     opts = {
-      library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      },
+      library = { "${3rd}/luv/library" },
     },
   },
 
@@ -14,76 +12,43 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      -- Mason for LSP and tool management
       { "williamboman/mason.nvim", opts = {} },
       { "williamboman/mason-lspconfig.nvim" },
       { "WhoIsSethDaniel/mason-tool-installer.nvim" },
-
-      -- LSP status updates
       { "j-hui/fidget.nvim", opts = {} },
-
-      -- Completion capabilities
       { "saghen/blink.cmp" },
     },
     config = function()
-      -- LSP Attach: Keymaps and buffer-specific settings
+      -- LSP Attach: Keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true }),
         callback = function(event)
-          -- Helper function for key mappings
-          local map = function(keys, func, desc, mode)
-            vim.keymap.set(mode or "n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+          local map = function(keys, func, desc)
+            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
           end
 
-          -- Keymaps for LSP actions
           map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
-          map("gra", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
+          map("gra", vim.lsp.buf.code_action, "[C]ode [A]ction")
           map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-          map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
           map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
           map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-          map("gO", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
-          map("gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-          map("grt", require("telescope.builtin").lsp_type_definitions, "[T]ype [D]efinition")
-
-          -- Toggle inlay hints if supported
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method("textDocument/inlayHint", { bufnr = event.buf }) then
-            map("<leader>th", function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-            end, "[T]oggle Inlay [H]ints")
-          end
-
-          -- Highlight references under cursor
-          if client and client.supports_method("textDocument/documentHighlight", { bufnr = event.buf }) then
-            local highlight_augroup = vim.api.nvim_create_augroup("user-lsp-highlight", { clear = false })
-            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.document_highlight,
-            })
-            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.clear_references,
-            })
-            vim.api.nvim_create_autocmd("LspDetach", {
-              group = vim.api.nvim_create_augroup("user-lsp-detach", { clear = true }),
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds({ group = "user-lsp-highlight", buffer = event2.buf })
-              end,
-            })
-          end
+          -- Keymap to show diagnostic float (optional, for details)
+          map("gl", vim.diagnostic.open_float, "Show [L]ine Diagnostics")
         end,
       })
 
-      -- Diagnostic configuration
+      -- Diagnostic configuration with virtual text
       vim.diagnostic.config({
         severity_sort = true,
-        update_in_insert = false,
-        float = { border = "rounded", source = true },
-        underline = { severity = vim.diagnostic.severity.ERROR },
+        virtual_text = {
+          source = true, -- Show the source (e.g., "pyright", "gopls")
+          spacing = 2, -- Space between code and diagnostic
+          prefix = "■", -- Symbol before diagnostic message
+        },
+        float = {
+          border = "rounded",
+          source = true,
+        },
         signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = "󰅚 ",
@@ -92,90 +57,29 @@ return {
             [vim.diagnostic.severity.HINT] = "󰌶 ",
           },
         },
-        virtual_text = { source = true, spacing = 2 },
       })
 
       -- LSP capabilities with blink.cmp
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      -- Language servers for Go, Python, JavaScript/TypeScript, Bash, and Prisma
+      -- Language servers
       local servers = {
-        gopls = {
-          settings = {
-            gopls = {
-              gofumpt = true, -- Stricter formatting
-              staticcheck = true, -- Static analysis
-              hints = { -- Inlay hints for Go
-                parameterNames = true,
-                assignVariableTypes = true,
-              },
-            },
-          },
-        },
-        pyright = {
-          settings = {
-            python = {
-              analysis = {
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
-                diagnosticMode = "workspace",
-              },
-            },
-          },
-        },
-        ts_ls = {
-          filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "prisma" },
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "none",
-                includeInlayFunctionLikeReturnTypeHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "none",
-                includeInlayFunctionLikeReturnTypeHints = true,
-              },
-            },
-          },
-        },
+        gopls = { settings = { gopls = { gofumpt = true, staticcheck = true } } },
+        pyright = {},
+        ts_ls = { filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "prisma" } },
         bashls = {},
-        prismals = {}, -- Prisma language server
-        lua_ls = {
-          settings = {
-            Lua = {
-              completion = { callSnippet = "Replace" },
-              diagnostics = { globals = { "vim" } }, -- Recognize Neovim globals
-            },
-          },
-        },
+        prismals = {},
+        lua_ls = { settings = { Lua = { diagnostics = { globals = { "vim" } } } } },
       }
 
       -- Tools to install via Mason
       local ensure_installed = vim.tbl_keys(servers)
-      vim.list_extend(ensure_installed, {
-        "stylua", -- Lua formatter
-        "ruff", -- Python linter/formatter
-        "prettier", -- JS/TS/Prisma formatter
-        "shfmt", -- Bash formatter
-      })
+      vim.list_extend(ensure_installed, { "stylua", "ruff", "prettier", "shfmt" })
 
       -- Setup Mason and LSPs
-      require("mason-tool-installer").setup({
-        auto_update = true,
-        run_on_start = true,
-        start_delay = 3000,
-        debounce_hours = 12,
-        ensure_installed = ensure_installed,
-      })
-
-      -- Setup Mason for managing external LSP servers
-      require("mason").setup({ ui = { border = "rounded" } })
+      require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+      require("mason").setup()
       require("mason-lspconfig").setup()
-
-      -- Configure borders for LspInfo UI and diagnostics
-      require("lspconfig.ui.windows").default_options.border = "rounded"
 
       for server_name, server in pairs(servers) do
         server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
