@@ -81,6 +81,7 @@ return {
       -- Diagnostic configuration
       vim.diagnostic.config({
         severity_sort = true,
+        update_in_insert = false,
         float = { border = "rounded", source = true },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = {
@@ -127,13 +128,13 @@ return {
           settings = {
             typescript = {
               inlayHints = {
-                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHints = "none",
                 includeInlayFunctionLikeReturnTypeHints = true,
               },
             },
             javascript = {
               inlayHints = {
-                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHints = "none",
                 includeInlayFunctionLikeReturnTypeHints = true,
               },
             },
