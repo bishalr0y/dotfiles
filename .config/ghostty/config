@@ -6,10 +6,9 @@ background-opacity = 1
 background-blur = false
 
 # Font settings
-# font-family = MonoLisa
 font-family = IBM Plex Mono
 font-size = 14
-font-feature = ss20
+# font-feature = ss20
 
 # Cursor settings
 cursor-style = block
