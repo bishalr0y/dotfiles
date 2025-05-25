@@ -11,6 +11,7 @@ return {
   -- Main LSP Configuration
   {
     "neovim/nvim-lspconfig",
+    lazy = false,
     dependencies = {
       { "williamboman/mason.nvim", opts = {} },
       { "williamboman/mason-lspconfig.nvim" },
@@ -57,6 +58,7 @@ return {
             [vim.diagnostic.severity.HINT] = "󰌶 ",
           },
         },
+        update_in_insert = false,
       })
 
       -- LSP capabilities with blink.cmp

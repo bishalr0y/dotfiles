@@ -1,14 +1,15 @@
 # Theme
-theme = catppuccin-mocha
+# theme = catppuccin-mocha
+theme = tokyonight_night
 
 # Background settings
 background-opacity = 1
 background-blur = false
 
 # Font settings
-font-family = IBM Plex Mono
+font-family = JetBrains Mono Nerd Font
 font-size = 14
-# font-feature = ss20
+font-feature = ss20
 
 # Cursor settings
 cursor-style = block
