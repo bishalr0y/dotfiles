@@ -10,6 +10,8 @@ return {
         },
       })
       vim.cmd.colorscheme("tokyonight-night")
+      -- Make the Cursor line transparent
+      vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" })
     end,
   },
   {

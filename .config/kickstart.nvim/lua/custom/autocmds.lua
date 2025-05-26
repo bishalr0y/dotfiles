@@ -6,11 +6,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank()
   end,
 })
-
--- Hide the diagnostic in Insert mode
-vim.api.nvim_create_autocmd("InsertEnter", {
-  group = vim.api.nvim_create_augroup("user-diagnostic-toggle", { clear = true }),
-  callback = function()
-    vim.diagnostic.hide(nil, 0)
-  end,
-})
