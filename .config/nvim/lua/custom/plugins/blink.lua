@@ -14,9 +14,7 @@ return {
       enabled = true,
       window = {
         show_documentation = true,
-        auto_show = true, -- Explicitly enable auto-show for signature help
       },
-      show_on_insert = true, -- Show signature help when entering insert mode
     },
     sources = { default = { "lsp", "path", "snippets", "buffer" } },
   },
