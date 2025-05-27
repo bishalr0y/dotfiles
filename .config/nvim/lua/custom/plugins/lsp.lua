@@ -58,7 +58,7 @@ return {
             [vim.diagnostic.severity.HINT] = "󰌶 ",
           },
         },
-        update_in_insert = true,
+        update_in_insert = false,
       })
 
       -- LSP capabilities with blink.cmp
@@ -84,7 +84,8 @@ return {
       require("mason-lspconfig").setup()
 
       for server_name, server in pairs(servers) do
-        server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+        -- server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+        server.capabilities = capabilities
         require("lspconfig")[server_name].setup(server)
       end
     end,
