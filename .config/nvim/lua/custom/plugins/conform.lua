@@ -41,7 +41,7 @@ return { -- Autoformat
     formatters = {
       golines = {
         command = "golines",
-        args = { "--max-len=120", "--base-formatter=gofmt" }, -- Wrap at 80 characters
+        args = { "--max-len=120", "--base-formatter=gofmt" }, -- Wrap at 120 characters
         stdin = true,
       },
       gofmt = {
