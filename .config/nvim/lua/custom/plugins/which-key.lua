@@ -1,11 +1,7 @@
--- TODO: to add the keymaps
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
     preset = "helix",
   },
   keys = {
@@ -15,6 +11,48 @@ return {
         require("which-key").show({ global = false })
       end,
       desc = "Buffer Local Keymaps (which-key)",
+    },
+    {
+      "<leader>c",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "code",
+    },
+    {
+      "<leader>x",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "trouble",
+    },
+    {
+      "<leader>l",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "lazygit",
+    },
+    {
+      "<leader>f",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "find/files",
+    },
+    {
+      "<leader>w",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "window",
+    },
+    {
+      "<leader>q",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "quit",
     },
   },
 }
