@@ -58,7 +58,7 @@ return {
             [vim.diagnostic.severity.HINT] = "󰌶 ",
           },
         },
-        update_in_insert = false,
+        -- update_in_insert = false,
       })
 
       -- LSP capabilities with blink.cmp
