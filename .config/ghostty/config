@@ -7,6 +7,9 @@ background-blur = false
 
 # Font settings
 font-family = JetBrains Mono Nerd Font
+# font-family = Monolisa
+font-family-italic = Maple Mono NF
+font-family-bold-italic = Maple Mono NF
 font-size = 13
 
 # Cursor settings

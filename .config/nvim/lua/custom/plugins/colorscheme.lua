@@ -6,8 +6,10 @@ return {
       ---@diagnostic disable-next-line: missing-fields
       require("tokyonight").setup({
         styles = {
-          comments = { italic = false },
-          keywords = { italic = false },
+          comments = { italic = true },
+          keywords = { italic = true },
+          functions = { italic = true },
+          variables = {},
         },
       })
       vim.cmd.colorscheme("tokyonight-night")
