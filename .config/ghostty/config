@@ -1,5 +1,6 @@
 # Theme
-theme = tokyonight_night
+# theme = tokyonight_night
+theme = GruvboxDarkHard
 
 # Background settings
 background-opacity = 1
@@ -12,7 +13,7 @@ font-size = 13
 # Cursor settings
 cursor-style = block
 cursor-style-blink = false
-cursor-invert-fg-bg = true
+# cursor-invert-fg-bg = true
 
 # MacOS options
 macos-titlebar-proxy-icon = hidden
