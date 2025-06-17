@@ -1,5 +1,4 @@
 # Theme
-# theme = tokyonight_night
 theme = GruvboxDarkHard
 
 # Background settings
@@ -7,7 +6,8 @@ background-opacity = 1
 background-blur = false
 
 # Font settings
-font-family = JetBrains Mono Nerd Font
+# font-family = JetBrains Mono Nerd Font
+font-family = Monolisa
 font-size = 13
 
 # Cursor settings
