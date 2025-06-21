@@ -1,19 +1,18 @@
 # Theme
-theme = GruvboxDarkHard
+theme = catppuccin-macchiato
 
 # Background settings
 background-opacity = 1
 background-blur = false
 
 # Font settings
-# font-family = JetBrains Mono Nerd Font
-font-family = Monolisa
+font-family = JetBrains Mono Nerd Font
 font-size = 13
 
 # Cursor settings
 cursor-style = block
 cursor-style-blink = false
-# cursor-invert-fg-bg = true
+cursor-invert-fg-bg = true
 
 # MacOS options
 macos-titlebar-proxy-icon = hidden
