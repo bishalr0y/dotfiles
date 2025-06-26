@@ -6,10 +6,10 @@ return {
     name = "catppuccin",
     config = function()
       require("catppuccin").setup({
-        flavour = "mocha",
+        flavour = "macchiato",
         transparent_background = false,
         no_bold = false,
-        no_italic = true,
+        no_italic = false,
         no_underline = false,
       })
       vim.cmd.colorscheme("catppuccin")

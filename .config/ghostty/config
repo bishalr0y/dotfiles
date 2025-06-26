@@ -1,13 +1,15 @@
 # Theme
-theme = catppuccin-mocha
+theme = catppuccin-macchiato
 
 # Background settings
 background-opacity = 1
 background-blur = false
 
 # Font settings
-font-family = JetBrains Nerd Font
-font-size = 13
+# font-family = JetBrains Nerd Font
+font-family = Maple Mono NF
+font-size = 15
+font-feature = cv01, zero
 
 # Cursor settings
 cursor-style = block
