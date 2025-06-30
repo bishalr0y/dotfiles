@@ -6,10 +6,8 @@ background-opacity = 1
 background-blur = false
 
 # Font settings
-# font-family = JetBrains Nerd Font
-font-family = Maple Mono NF
-font-size = 15
-font-feature = cv01, zero
+font-family = Monolisa Font
+font-size = 14
 
 # Cursor settings
 cursor-style = block
