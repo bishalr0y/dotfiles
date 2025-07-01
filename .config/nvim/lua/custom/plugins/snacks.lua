@@ -47,5 +47,6 @@ return {
       },
     },
     indent = { enabled = true },
+    words = { enabled = true },
   },
 }
