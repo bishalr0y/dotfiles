@@ -35,6 +35,13 @@ return {
           map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
           -- Keymap to show diagnostic float (optional, for details)
           map("gl", vim.diagnostic.open_float, "Show [L]ine Diagnostics")
+
+          -- Remap K for rounded borders
+          vim.keymap.set("n", "K", function()
+            vim.lsp.buf.hover({
+              border = "rounded",
+            })
+          end, { buffer = event.buf })
         end,
       })
 
