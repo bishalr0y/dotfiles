@@ -50,15 +50,6 @@ return {
           border = "rounded",
           source = true,
         },
-        signs = {
-          text = {
-            [vim.diagnostic.severity.ERROR] = "󰅚 ",
-            [vim.diagnostic.severity.WARN] = "󰀪 ",
-            [vim.diagnostic.severity.INFO] = "󰋽 ",
-            [vim.diagnostic.severity.HINT] = "󰌶 ",
-          },
-        },
-        -- update_in_insert = false,
       })
 
       -- LSP capabilities with blink.cmp
@@ -66,7 +57,8 @@ return {
 
       -- Language servers
       local servers = {
-        gopls = { settings = { gopls = { gofumpt = true, staticcheck = false } } },
+        -- gopls = { settings = { gopls = { gofumpt = true, staticcheck = false } } },
+        gopls = {},
         pyright = {},
         ts_ls = { filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "prisma" } },
         bashls = {},
@@ -84,7 +76,6 @@ return {
       require("mason-lspconfig").setup()
 
       for server_name, server in pairs(servers) do
-        -- server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
         server.capabilities = capabilities
         require("lspconfig")[server_name].setup(server)
       end

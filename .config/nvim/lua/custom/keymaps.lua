@@ -36,3 +36,10 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 -- Reselect visual selection after indenting
 vim.keymap.set("v", ">", ">gv")
 vim.keymap.set("v", "<", "<gv")
+
+-- Press "H" and "L" to jump to start and end of the line
+vim.keymap.set("n", "L", "$")
+vim.keymap.set("n", "H", "^")
+
+-- Press U for redo
+vim.keymap.set("n", "U", "<C-r>")
