@@ -73,6 +73,7 @@ return {
       -- Setup Mason and LSPs
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
       require("mason").setup()
+      require("mason").setup({ ui = { border = "rounded" } })
       require("mason-lspconfig").setup()
 
       for server_name, server in pairs(servers) do

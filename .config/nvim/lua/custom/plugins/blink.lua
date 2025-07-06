@@ -9,6 +9,9 @@ return {
     completion = {
       documentation = { auto_show = true },
       ghost_text = { enabled = true },
+      menu = {
+        border = "rounded",
+      },
     },
     signature = {
       enabled = true,
