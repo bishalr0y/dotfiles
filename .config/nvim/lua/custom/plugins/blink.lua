@@ -20,8 +20,7 @@ return {
       },
     },
     sources = { default = { "lsp", "path", "snippets", "buffer" } },
-
-    -- set the ghost_text to be italic
-    vim.api.nvim_set_hl(0, "BlinkCmpGhostText", { link = "comment", italic = true }),
   },
+  -- set the ghost_text to be italic
+  vim.api.nvim_set_hl(0, "BlinkCmpGhostText", { link = "comment", italic = true }),
 }
