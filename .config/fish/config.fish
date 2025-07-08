@@ -10,3 +10,6 @@ set -gx EDITOR 'nvim'
 
 # Set neovim as the program to open manpages
 set -gx MANPAGER 'nvim +Man!'
+
+# Clean duplicate paths
+set -gx PATH (string split " " (string join " " -- (string match -v -r '(.+)(?= \1)' $PATH)))
