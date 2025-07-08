@@ -43,4 +43,4 @@ SETUVAR fish_pager_color_selected_background:\x1d
 SETUVAR fish_pager_color_selected_completion:\x1d
 SETUVAR fish_pager_color_selected_description:\x1d
 SETUVAR fish_pager_color_selected_prefix:\x1d
-SETUVAR fish_user_paths:/Users/bishal/go/bin\x1e/opt/homebrew/bin
+SETUVAR fish_user_paths:/Users/bishal/\x2envm/versions/node/v23\x2e3\x2e0/bin\x1e/Users/bishal/go/bin\x1e/opt/homebrew/bin
