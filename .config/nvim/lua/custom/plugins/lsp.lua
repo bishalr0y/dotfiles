@@ -64,8 +64,7 @@ return {
 
       -- Language servers
       local servers = {
-        gopls = { settings = { gopls = { gofumpt = true, staticcheck = false } } },
-        -- gopls = {},
+        gopls = { settings = { gopls = { gofumpt = true, staticcheck = true } } },
         pyright = {},
         ts_ls = { filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "prisma" } },
         bashls = {},
