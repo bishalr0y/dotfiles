@@ -78,11 +78,8 @@ vim.opt.confirm = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 
--- Set text wrap
-vim.cmd("set textwidth=0")
-vim.cmd("set wrapmargin=0")
-vim.cmd("set wrap")
-vim.cmd("set linebreak")
+-- Disable text wrap
+vim.opt.wrap = false
 
 -- Place a column line
 vim.opt.colorcolumn = "80"
