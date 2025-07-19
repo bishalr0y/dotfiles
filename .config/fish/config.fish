@@ -14,4 +14,3 @@ set -gx MANPAGER 'nvim +Man!'
 # Clean duplicate paths
 set -gx PATH (string split " " (string join " " -- (string match -v -r '(.+)(?= \1)' $PATH)))
 
-set -gx GOPATH $HOME/go; set -gx GOROOT $HOME/.go; set -gx PATH $GOPATH/bin $PATH; # g-install: do NOT edit, see https://github.com/stefanmaric/g
