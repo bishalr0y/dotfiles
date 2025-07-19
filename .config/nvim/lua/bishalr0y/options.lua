@@ -83,3 +83,6 @@ vim.cmd("set textwidth=0")
 vim.cmd("set wrapmargin=0")
 vim.cmd("set wrap")
 vim.cmd("set linebreak")
+
+-- Place a column line
+vim.opt.colorcolumn = "80"
