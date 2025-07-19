@@ -24,6 +24,10 @@ vim.schedule(function()
   vim.opt.clipboard = "unnamedplus"
 end)
 
+-- Enable auto indenting and set it to spaces
+vim.opt.smartindent = true
+vim.opt.shiftwidth = 2
+
 -- Enable break indent
 vim.opt.breakindent = true
 
