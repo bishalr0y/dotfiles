@@ -20,7 +20,7 @@ cursor-invert-fg-bg = true
 # MacOS options
 macos-titlebar-proxy-icon = hidden
 shell-integration-features = no-cursor,title
-macos-icon = xray
+macos-icon = holographic
 
 # Setting the title as empty string
 title = " "
