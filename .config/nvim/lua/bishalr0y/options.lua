@@ -87,3 +87,5 @@ vim.opt.wrap = false
 
 -- Place a column line
 vim.opt.colorcolumn = "80"
+
+vim.api.nvim_set_hl(0, "SnippetTabStop", { fg = "NONE", bg = "NONE" })
