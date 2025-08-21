@@ -50,7 +50,10 @@ return {
     vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind current [W]ord" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]rep" })
     vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
-    vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "[F]ind [R]ecent" })
+    vim.keymap.set("n", "<leader>fR", builtin.oldfiles, { desc = "[F]ind [R]ecent" })
+    vim.keymap.set("n", "<leader>fr", function()
+      require("telescope.builtin").oldfiles({ cwd_only = true })
+    end, { desc = "[F]ind [r]ecent (current dir)" })
     vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 
     -- Slightly advanced example of overriding default behavior and theme
