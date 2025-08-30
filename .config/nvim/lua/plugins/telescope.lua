@@ -28,7 +28,7 @@ return {
         layout_config = { prompt_position = "bottom" },
         sorting_strategy = "ascending",
         winblend = 0,
-        find_command = { "rg", "--files", "--hidden", "--no-ignore" },
+        find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
       },
       pickers = {
         find_files = {

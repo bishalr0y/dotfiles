@@ -66,7 +66,7 @@ return {
       local servers = {
         gopls = { settings = { gopls = { gofumpt = true, staticcheck = true } } },
         pyright = {},
-        ts_ls = { filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" } },
+        ts_ls = {},
         bashls = {},
         prismals = {},
         lua_ls = { settings = { Lua = { diagnostics = { globals = { "vim" } } } } },

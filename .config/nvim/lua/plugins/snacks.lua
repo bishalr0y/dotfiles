@@ -8,7 +8,11 @@ return {
     dashboard = { enabled = true },
     indent = { enabled = true },
     words = { enabled = true },
-    notifier = { enabled = true },
+    notifier = {
+      enabled = true,
+      timeout = 3000,
+      style = "fancy",
+    },
   },
   keys = {
     {
