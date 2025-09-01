@@ -24,17 +24,15 @@ return {
         },
       },
       defaults = {
+        find_command = { "fd", "--type", "f", "--hidden", "--strip-cwd-prefix" },
         layout_strategy = "horizontal",
         layout_config = { prompt_position = "bottom" },
         sorting_strategy = "ascending",
         winblend = 0,
-        find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
       },
       pickers = {
         find_files = {
           hidden = true,
-          no_ignore = true,
-          file_ignore_patterns = { "^.git/", "^node_modules/" },
         },
       },
     })
