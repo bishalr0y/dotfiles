@@ -29,6 +29,7 @@ return {
         layout_config = { prompt_position = "bottom" },
         sorting_strategy = "ascending",
         winblend = 0,
+        file_ignore_patterns = { ".git" },
       },
       pickers = {
         find_files = {
