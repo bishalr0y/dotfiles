@@ -14,3 +14,5 @@ set -gx MANPAGER 'nvim +Man!'
 # Clean duplicate paths
 set -gx PATH (string split " " (string join " " -- (string match -v -r '(.+)(?= \1)' $PATH)))
 
+# To pick and run older command
+alias fh='commandline (history | fzf --height=40% --reverse --tac)'
