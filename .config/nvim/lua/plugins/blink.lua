@@ -17,6 +17,7 @@ return {
       enabled = true,
       window = {
         show_documentation = true,
+        border = "rounded",
       },
     },
     sources = { default = { "lsp", "path", "snippets", "buffer" } },
