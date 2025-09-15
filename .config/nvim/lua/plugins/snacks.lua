@@ -7,7 +7,7 @@ return {
     bigfile = { enabled = true },
     dashboard = { enabled = true },
     indent = { enabled = true },
-    words = { enabled = true },
+    -- words = { enabled = true },
     notifier = {
       enabled = true,
       timeout = 3000,
