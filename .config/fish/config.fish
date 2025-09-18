@@ -16,3 +16,6 @@ set -gx PATH (string split " " (string join " " -- (string match -v -r '(.+)(?= 
 
 # To pick and run older command
 alias fh='commandline (history | fzf --height=40% --reverse --tac)'
+
+# use eza as better ls
+alias ls='eza --icons=always'

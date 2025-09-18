@@ -78,14 +78,29 @@ return {
 
       -- Setup Mason and LSPs
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-      require("mason").setup()
       require("mason").setup({ ui = { border = "rounded" } })
-      require("mason-lspconfig").setup()
-
-      for server_name, server in pairs(servers) do
-        server.capabilities = capabilities
-        require("lspconfig")[server_name].setup(server)
-      end
+      require("mason-lspconfig").setup({
+        handlers = {
+          -- The first entry (without a key) will be the default handler.
+          function(server_name)
+            require("lspconfig")[server_name].setup({
+              capabilities = capabilities,
+            })
+          end,
+          ["gopls"] = function()
+            require("lspconfig").gopls.setup({
+              settings = servers.gopls.settings,
+              capabilities = capabilities,
+            })
+          end,
+          ["lua_ls"] = function()
+            require("lspconfig").lua_ls.setup({
+              settings = servers.lua_ls.settings,
+              capabilities = capabilities,
+            })
+          end,
+        },
+      })
     end,
   },
 }
