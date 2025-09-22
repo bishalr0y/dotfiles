@@ -120,3 +120,9 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # setting the default text editor
 export EDITOR=nvim
+
+# zsh-autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# zsh-syntax-highlighting
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
