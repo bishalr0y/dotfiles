@@ -11,7 +11,7 @@ $python\
 $character"""
 
 [directory]
-style = "blue"
+style = "blue bold"
 
 [character]
 success_symbol = "[❯](purple)"
@@ -20,7 +20,7 @@ vimcmd_symbol = "[❮](green)"
 
 [git_branch]
 format = "[$branch]($style)"
-style = "bright-black"
+style = "bright-black italic"
 
 [git_status]
 format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
