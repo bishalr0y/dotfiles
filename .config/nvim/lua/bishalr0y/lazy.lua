@@ -29,3 +29,5 @@ lazy.setup({
   },
   checker = { enabled = true },
 })
+
+vim.keymap.set("n", "<leader>L", ":Lazy<CR>", { desc = "Lazy" })
