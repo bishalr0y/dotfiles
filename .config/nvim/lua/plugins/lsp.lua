@@ -79,6 +79,7 @@ return {
       -- Setup Mason and LSPs
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
       require("mason").setup({ ui = { border = "rounded" } })
+      require("lspconfig.ui.windows").default_options.border = "rounded"
       require("mason-lspconfig").setup({
         handlers = {
           -- The first entry (without a key) will be the default handler.

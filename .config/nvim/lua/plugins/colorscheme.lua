@@ -11,6 +11,9 @@ return {
         -- no_bold = false,
         -- no_italic = false,
         -- no_underline = false,
+        styles = {
+          comments = { "italic" },
+        },
       })
       local palette = require("catppuccin.palettes").get_palette("macchiato")
       vim.cmd.colorscheme("catppuccin-macchiato")
