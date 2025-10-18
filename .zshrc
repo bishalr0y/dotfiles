@@ -104,7 +104,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim="nvim"
-alias ls="eza --icons"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
@@ -113,11 +112,10 @@ export NVM_DIR="$HOME/.nvm"
 eval "$(starship init zsh)"
 export PATH="/Users/bishal/.cargo/bin:$PATH"
 
-# thefuck
-eval $(thefuck --alias) 
 
 # zoxide config and setting to alias cd
-eval "$(zoxide init --cmd cd zsh)"
+# eval "$(zoxide init --cmd cd zsh)"
+eval "$(zoxide init zsh)"
 
 # setting the default text editor
 export EDITOR=nvim
