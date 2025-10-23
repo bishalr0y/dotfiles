@@ -7,7 +7,7 @@ return {
     config = function()
       require("catppuccin").setup({
         flavour = "macchiato",
-        -- transparent_background = false,
+        -- transparent_background = true,
         -- no_bold = false,
         -- no_italic = false,
         -- no_underline = false,
