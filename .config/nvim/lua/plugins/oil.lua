@@ -5,6 +5,12 @@ return {
     view_options = {
       show_hidden = true,
     },
+    confirmation = {
+      border = "rounded",
+    },
+    float = {
+      border = "rounded",
+    },
   },
   dependencies = { "nvim-tree/nvim-web-devicons" },
   keys = {
@@ -22,6 +28,7 @@ return {
       pattern = "oil",
       callback = function()
         vim.keymap.set("n", "q", "<CMD>close<CR>", { buffer = true, desc = "Close Oil floating window" })
+        vim.opt_local.colorcolumn = ""
       end,
     })
   end,
