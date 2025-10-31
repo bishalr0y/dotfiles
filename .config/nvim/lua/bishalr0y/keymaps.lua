@@ -44,3 +44,9 @@ vim.keymap.set("n", "H", "^")
 
 -- Press U for redo
 vim.keymap.set("n", "U", "<C-r>")
+
+-- Quickfix list keymaps
+vim.keymap.set("n", "[q", ":cprev<CR>", { desc = "Previous in quickfix list" })
+vim.keymap.set("n", "]q", ":cnext<CR>", { desc = "Next in quickfix list" })
+vim.keymap.set("n", "<leader>qo", ":copen<CR>", { desc = "Open quickfix list" })
+vim.keymap.set("n", "<leader>qc", ":cclose<CR>", { desc = "Close quickfix list" })
