@@ -93,7 +93,7 @@ ${t.split(`
 
 `)}`:`# Loading lyrics for "${r?.title||"current song"}"
 
-Please wait while we fetch the lyrics...`,navigationTitle:r?`${r.title} - ${r.artist}`:"Find Lyrics",actions:r?(0,Kr.jsxs)(gA.ActionPanel,{children:[t&&(0,Kr.jsxs)(Kr.Fragment,{children:[(0,Kr.jsx)(gA.Action.CopyToClipboard,{title:"Copy Lyrics",content:t,shortcut:{modifiers:["cmd"],key:"c"}}),(0,Kr.jsx)(gA.Action.CopyToClipboard,{title:"Copy Song Info",content:`${r.title} by ${r.artist}`,shortcut:{modifiers:["cmd","shift"],key:"c"}})]}),(0,Kr.jsx)(gA.Action.OpenInBrowser,{title:"Search Web for Lyrics",url:`https://www.google.com/search?q=${encodeURIComponent(`${r.title} ${r.artist} lyrics`)}`,shortcut:{modifiers:["cmd"],key:"s"}})]}):void 0})}
+Please wait while we fetch the lyrics...`,navigationTitle:r?`${r.title} - ${r.artist}`:"Find Lyrics",actions:r?(0,Kr.jsxs)(gA.ActionPanel,{children:[t&&(0,Kr.jsxs)(Kr.Fragment,{children:[(0,Kr.jsx)(gA.Action.CopyToClipboard,{title:"Copy Lyrics",content:t,shortcut:{macOS:{modifiers:["cmd"],key:"c"},Windows:{modifiers:["ctrl"],key:"c"}}}),(0,Kr.jsx)(gA.Action.CopyToClipboard,{title:"Copy Song Info",content:`${r.title} by ${r.artist}`,shortcut:{macOS:{modifiers:["cmd","shift"],key:"c"},Windows:{modifiers:["ctrl","shift"],key:"c"}}})]}),(0,Kr.jsx)(gA.Action.OpenInBrowser,{title:"Search Web for Lyrics",url:`https://www.google.com/search?q=${encodeURIComponent(`${r.title} ${r.artist} lyrics`)}`,shortcut:{macOS:{modifiers:["cmd"],key:"s"},Windows:{modifiers:["ctrl"],key:"s"}}})]}):void 0})}
 /*! Bundled license information:
 
 fetch-blob/index.js:
