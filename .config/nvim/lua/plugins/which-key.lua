@@ -54,5 +54,12 @@ return {
       end,
       desc = "quit",
     },
+    {
+      "<leader>t",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "Two Slash",
+    },
   },
 }
