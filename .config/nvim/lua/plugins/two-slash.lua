@@ -4,8 +4,8 @@ return {
     event = "VeryLazy",
     opts = {
       multi_line = true,
-      is_enabled = false,
-      highlight = "Comment",
+      is_enabled = true,
+      highlight = "Type",
     },
   },
 }

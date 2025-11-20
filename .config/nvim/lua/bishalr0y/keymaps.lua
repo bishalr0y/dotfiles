@@ -51,6 +51,5 @@ vim.keymap.set("n", "]q", ":cnext<CR>", { desc = "Next in quickfix list" })
 vim.keymap.set("n", "<leader>qo", ":copen<CR>", { desc = "Open quickfix list" })
 vim.keymap.set("n", "<leader>qc", ":cclose<CR>", { desc = "Close quickfix list" })
 
--- Two slash keymaps
-vim.keymap.set("n", "<leader>te", ":TwoslashQueriesEnable<CR>", { desc = "Enable Two Slash" })
-vim.keymap.set("n", "<leader>td", ":TwoslashQueriesDisable<CR>", { desc = "Disable Two Slash" })
+-- Two slash Query keymap
+vim.keymap.set("n", "<leader>ti", ":TwoslashQueriesInspect<CR>", { desc = "[T]woslash Query [I]nspect" })
