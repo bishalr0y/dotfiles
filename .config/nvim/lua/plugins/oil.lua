@@ -15,9 +15,9 @@ return {
   dependencies = { "nvim-tree/nvim-web-devicons" },
   keys = {
     {
-      "-",
+      "<leader>e",
       function()
-        require("oil").open_float()
+        require("oil").toggle_float()
       end,
       desc = "Open parent directory in floating window",
     },

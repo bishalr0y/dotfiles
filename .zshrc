@@ -33,6 +33,7 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim="nvim"
 alias l="ls -la"
+alias lg="lazygit"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
