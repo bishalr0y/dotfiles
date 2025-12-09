@@ -5,7 +5,7 @@ return {
     opts = {
       multi_line = true,
       is_enabled = true,
-      highlight = "Type",
+      highlight = "Comment",
     },
   },
 }
