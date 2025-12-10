@@ -1,1 +1,3 @@
 configstore/
+*/**/tmux/plugins/*
+*/**/node_modules
