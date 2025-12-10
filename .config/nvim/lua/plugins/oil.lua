@@ -21,6 +21,12 @@ return {
       end,
       desc = "Open parent directory in floating window",
     },
+    {
+      "-",
+      function()
+        require("oil").toggle_float()
+      end,
+    },
   },
   config = function(_, opts)
     require("oil").setup(opts)
