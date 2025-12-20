@@ -28,6 +28,9 @@ lazy.setup({
     notify = true,
   },
   checker = { enabled = true },
+  ui = {
+    border = "rounded",
+  },
 })
 
 vim.keymap.set("n", "<leader>L", ":Lazy<CR>", { desc = "Lazy" })
