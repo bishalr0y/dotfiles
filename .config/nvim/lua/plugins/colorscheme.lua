@@ -31,6 +31,11 @@ return {
       vim.api.nvim_set_hl(0, "TelescopePromptTitle", { fg = palette.mauve, bg = palette.base })
       vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { fg = palette.mauve, bg = palette.base })
       vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = palette.mauve, bg = palette.base })
+
+      -- underline only, no background
+      -- vim.api.nvim_set_hl(0, "LspReferenceText", { underline = true, bg = "NONE" })
+      -- vim.api.nvim_set_hl(0, "LspReferenceRead", { underline = true, bg = "NONE" })
+      -- vim.api.nvim_set_hl(0, "LspReferenceWrite", { underline = true, bg = "NONE" })
     end,
   },
 }
