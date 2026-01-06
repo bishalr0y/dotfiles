@@ -76,6 +76,12 @@ return {
         bashls = {},
         prismals = {},
         lua_ls = { settings = { Lua = { diagnostics = { globals = { "vim" } } } } },
+        oxlint = {
+          root_markers = { ".oxlintrc.json" },
+        },
+        biome = {},
+        prettierd = {},
+        prettier = {},
       }
 
       -- Tools to install via Mason

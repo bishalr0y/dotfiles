@@ -30,15 +30,29 @@ return { -- Autoformat
     end,
     formatters_by_ft = {
       lua = { "stylua" },
-      javascript = { "prettierd", "prettier", stop_after_first = true },
-      typescript = { "prettierd", "prettier", stop_after_first = true },
+      javascript = { "biome", "prettierd", "prettier", stop_after_first = true },
+      typescript = { "biome", "prettierd", "prettier", stop_after_first = true },
       go = { "golines", "gofmt", "goimports" },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
     },
     formatters = {
+      oxfmt = {
+        condition = function(_, ctx)
+          return vim.fs.find({ ".oxfmtrc.json", ".oxfmtrc.jsonc" }, {
+            path = ctx.filename,
+            upward = true,
+            stop = vim.uv.os_homedir(),
+          })[1] ~= nil
+        end,
+      },
+      biome = {
+        condition = function(_, ctx)
+          return vim.fs.find({ "biome.json", "biome.jsonc" }, {
+            path = ctx.filename,
+            upward = true,
+            stop = vim.uv.os_homedir(),
+          })[1] ~= nil
+        end,
+      },
       golines = {
         command = "golines",
         args = { "--max-len=120", "--base-formatter=gofmt" }, -- Wrap at 120 characters
