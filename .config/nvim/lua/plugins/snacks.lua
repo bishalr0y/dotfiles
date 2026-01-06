@@ -12,7 +12,7 @@ return {
       },
       chunk = {
         enabled = true,
-        only_current = false,
+        only_current = true,
         char = {
           arrow = "─",
           corner_top = "╭",
