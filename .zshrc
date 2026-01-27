@@ -70,10 +70,19 @@ eval "$(direnv hook zsh)"
 plugins=(... direnv)
 
 # pomo
-alias work="timer 50m && terminal-notifier -message 'Pomodoro'\
+unalias work 2>/dev/null
+unalias rest 2>/dev/null
+
+work() {
+    local duration=${1:-50m}
+    timer "$duration" && terminal-notifier -message 'Pomodoro'\
         -title 'Work Timer is up! Take a Break 😊'\
-        -sound Crystal"
+        -sound Crystal
+}
         
-alias rest="timer 10m && terminal-notifier -message 'Pomodoro'\
+rest() {
+    local duration=${1:-10m}
+    timer "$duration" && terminal-notifier -message 'Pomodoro'\
         -title 'Break is over! Get back to work 😬'\
-        -sound Crystal"
+        -sound Crystal
+}
