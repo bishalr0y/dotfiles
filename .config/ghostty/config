@@ -1,9 +1,11 @@
 # Theme
 theme = Catppuccin Macchiato
 
-# Background settings
-background-opacity = 1
-background-blur = false
+# Opacity of split windows
+unfocused-split-opacity = 0.97  
+
+# Set the background-opacity to be fully opaque
+background-opacity = 1.0
 
 # Font settings
 font-family = Monolisa Font
