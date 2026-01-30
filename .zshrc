@@ -5,6 +5,7 @@
 export PATH=/usr/local/bin:$PATH
 export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+export PATH="$HOME/.local/bin:$PATH"
 
 # User configuration
 
