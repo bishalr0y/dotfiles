@@ -32,9 +32,17 @@ return { -- Autoformat
       lua = { "stylua" },
       javascript = { "biome", "prettierd", "prettier", stop_after_first = true },
       typescript = { "biome", "prettierd", "prettier", stop_after_first = true },
-      go = { "golines", "gofmt", "goimports" },
+      go = { "goimports", "gofumpt" },
     },
     formatters = {
+      goimports = {
+        command = vim.fn.stdpath("data") .. "/mason/bin/goimports",
+        stdin = true,
+      },
+      gofumpt = {
+        command = vim.fn.stdpath("data") .. "/mason/bin/gofumpt",
+        stdin = true,
+      },
       oxfmt = {
         condition = function(_, ctx)
           return vim.fs.find({ ".oxfmtrc.json", ".oxfmtrc.jsonc" }, {
@@ -52,11 +60,6 @@ return { -- Autoformat
             stop = vim.uv.os_homedir(),
           })[1] ~= nil
         end,
-      },
-      golines = {
-        command = "golines",
-        args = { "--max-len=120", "--base-formatter=gofmt" }, -- Wrap at 120 characters
-        stdin = true,
       },
       gofmt = {
         command = "gofmt",

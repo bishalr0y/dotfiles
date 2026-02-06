@@ -86,7 +86,7 @@ return {
 
       -- Tools to install via Mason
       local ensure_installed = vim.tbl_keys(servers)
-      vim.list_extend(ensure_installed, { "stylua", "ruff", "prettier", "shfmt" })
+      vim.list_extend(ensure_installed, { "stylua", "ruff", "prettier", "shfmt", "gopls", "gofumpt" })
 
       -- Setup Mason and LSPs
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
