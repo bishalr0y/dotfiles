@@ -32,11 +32,16 @@ return { -- Autoformat
       lua = { "stylua" },
       javascript = { "biome", "prettierd", "prettier", stop_after_first = true },
       typescript = { "biome", "prettierd", "prettier", stop_after_first = true },
-      go = { "goimports", "gofumpt" },
+      go = { "golines", "goimports", "gofumpt" },
     },
     formatters = {
       goimports = {
         command = vim.fn.stdpath("data") .. "/mason/bin/goimports",
+        stdin = true,
+      },
+      golines = {
+        command = vim.fn.stdpath("data") .. "/mason/bin/golines",
+        args = { "-m", "120" },
         stdin = true,
       },
       gofumpt = {
