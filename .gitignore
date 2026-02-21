@@ -2,3 +2,4 @@ configstore/
 */**/tmux/plugins/*
 */**/node_modules
 .config/raycast
+.config/cagent
