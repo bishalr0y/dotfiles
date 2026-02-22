@@ -3,6 +3,11 @@ return {
   event = "VeryLazy",
   opts = {
     preset = "helix",
+    spec = {
+      { "sa", desc = "[S]urround [A]dd" },
+      { "sd", desc = "[S]urround [D]elete" },
+      { "sr", desc = "[S]urround [R]eplace" },
+    },
   },
   keys = {
     {
