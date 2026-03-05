@@ -1,5 +1,5 @@
 configstore/
 */**/tmux/plugins/*
 */**/node_modules
-.config/raycast
+.config/raycast/*
 .config/cagent

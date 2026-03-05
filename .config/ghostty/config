@@ -17,7 +17,7 @@ shell-integration = fish
 # Cursor settings
 cursor-style = block
 cursor-style-blink = false
-cursor-invert-fg-bg = true
+cursor-invert-fg-bg = false
 
 # MacOS options
 macos-titlebar-proxy-icon = hidden
