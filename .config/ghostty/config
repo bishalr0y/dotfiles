@@ -11,9 +11,6 @@ background-opacity = 1.0
 font-family = Monolisa Font
 font-size = 14
 
-# Shell integration
-shell-integration = fish
-
 # Cursor settings
 cursor-style = block
 cursor-style-blink = false
