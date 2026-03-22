@@ -23,7 +23,7 @@ return { -- Autoformat
         return nil
       else
         return {
-          timeout_ms = 500,
+          timeout_ms = 1000,
           lsp_format = "fallback",
         }
       end
@@ -32,7 +32,7 @@ return { -- Autoformat
       lua = { "stylua" },
       javascript = { "biome", "prettierd", "prettier", stop_after_first = true },
       typescript = { "biome", "prettierd", "prettier", stop_after_first = true },
-      go = { "golines", "goimports", "gofumpt" },
+      go = { "goimports", "golines" },
     },
     formatters = {
       goimports = {
