@@ -1,0 +1,125 @@
+# Reload tmux config with prefix + r
+unbind r
+bind r source-file ~/.tmux.conf
+
+# Bind <C-;> as the prefix key 
+set -g prefix C-\;
+
+# Enable mouse support (click to select pane, scroll, etc.)
+set -g mouse on
+
+# Allows Shift+Enter, Ctrl+Shift+<key>, etc. to work correctly in apps
+set -s extended-keys on
+set -as terminal-features 'xterm*:extkeys'
+
+# Resize panes using vim-style keys (Ctrl + h/j/k/l)
+bind -r C-h resize-pane -L 5
+bind -r C-j resize-pane -D 5
+bind -r C-k resize-pane -U 5
+bind -r C-l resize-pane -R 5
+
+# Split panes with | and -
+unbind %
+bind | split-window -h   # Horizontal split with |
+unbind '"'
+bind - split-window -v   # Vertical split with -
+
+# Start window and pane numbers at 1 instead of 0
+set -g base-index 1
+set -g pane-base-index 1
+set-window-option -g pane-base-index 1
+
+# Renumber windows automatically when one is closed
+set-option -g renumber-windows 1
+
+# Bind 'x' to kill the current pane
+bind x kill-pane
+
+# Maximize/minimize the current pane with 'm'
+unbind z
+unbind m
+bind m resize-pane -Z
+
+# Use vi keybindings in copy mode
+set-window-option -g mode-keys vi
+
+# Start text selection in copy mode with 'v'
+bind-key -T copy-mode-vi 'v' send -X begin-selection
+
+# Copy selected text with 'y'
+bind-key -T copy-mode-vi 'y' send -X copy-selection
+
+# Move between panes using vim-style keys
+bind-key h select-pane -L
+bind-key j select-pane -D
+bind-key k select-pane -U
+bind-key l select-pane -R
+
+# Open new windows and splits in the same directory
+bind c new-window -c "#{pane_current_path}"
+bind | split-window -h -c "#{pane_current_path}"
+bind '-' split-window -v -c "#{pane_current_path}"
+
+# Plugin list
+set -g @plugin 'tmux-plugins/tpm'               # Tmux Plugin Manager
+set -g @plugin 'tmux-plugins/tmux-sensible'     # Sensible default settings
+
+# Catppuccin theme
+set -g @plugin 'dmmulroy/catppuccin-tmux'
+set -g @catppuccin_flavour 'macchiato'
+
+# Window status customization
+set -g @catppuccin_window_status_enable "yes"
+set -g @catppuccin_window_status_icon_enable "yes"
+
+# Window icons
+set -g @catppuccin_icon_window_zoom " "
+set -g @catppuccin_icon_window_last "null"
+set -g @catppuccin_icon_window_current " "
+set -g @catppuccin_icon_window_mark "null"
+set -g @catppuccin_icon_window_silent "null"
+set -g @catppuccin_icon_window_activity "null"
+set -g @catppuccin_icon_window_bell "null"
+
+# Window style
+set -g @catppuccin_window_middle_separator "null"
+
+set -g @catppuccin_window_default_background "#cad3f5"
+set -g @catppuccin_window_default_color "#24273a"
+set -g @catppuccin_window_default_fill "all"
+set -g @catppuccin_window_default_text "#W"
+
+set -g @catppuccin_window_current_background "#363a4f"
+set -g @catppuccin_window_current_color "#c6a0f6"
+set -g @catppuccin_window_current_fill "number"
+set -g @catppuccin_window_current_text "#W"
+
+# Status bar modules and colors
+set -g @catppuccin_status_modules_right "directory session"
+set -g @catppuccin_maximized_text "null"
+set -g @catppuccin_status_left_separator "█"
+set -g @catppuccin_status_right_separator "█"
+set -g @catppuccin_directory_color "#8aadf4"
+set -g @catppuccin_directory_icon ""
+
+# Session persistence - save and restore tmux sessions
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @resurrect-strategy-vim 'session'      # Restore vim sessions
+set -g @resurrect-strategy-nvim 'session'     # Restore neovim sessions
+set -g @resurrect-capture-pane-contents 'on'  # Save pane contents
+
+# Automatic session save/restore
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on'         # Auto-restore last saved session
+set -g @continuum-boot 'on'            # Auto-start tmux on boot
+set -g @continuum-save-interval '10'   # Save every 10 minutes
+
+# Move status bar to top
+set -g status-position top
+
+# Auto-install TPM if not present
+if "test ! -d ~/.config/tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm && ~/.config/tmux/plugins/tpm/bin/install_plugins'"
+
+# Initialize TPM
+run '~/.tmux/plugins/tpm/tpm'
