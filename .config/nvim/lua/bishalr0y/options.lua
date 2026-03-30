@@ -89,3 +89,9 @@ vim.opt.wrap = false
 vim.opt.colorcolumn = "80"
 
 vim.api.nvim_set_hl(0, "SnippetTabStop", { fg = "NONE", bg = "NONE" })
+
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function(args)
+		pcall(vim.treesitter.start, args.buf)
+	end,
+})
