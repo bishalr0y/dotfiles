@@ -70,21 +70,3 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # direnv 
 eval "$(direnv hook zsh)"
 plugins=(... direnv)
-
-# pomo
-unalias work 2>/dev/null
-unalias rest 2>/dev/null
-
-work() {
-    local duration=${1:-50m}
-    timer "$duration" && terminal-notifier -message 'Pomodoro'\
-        -title 'Work Timer is up! Take a Break 😊'\
-        -sound Crystal
-}
-        
-rest() {
-    local duration=${1:-10m}
-    timer "$duration" && terminal-notifier -message 'Pomodoro'\
-        -title 'Break is over! Get back to work 😬'\
-        -sound Crystal
-}
