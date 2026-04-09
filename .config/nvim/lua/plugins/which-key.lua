@@ -11,6 +11,7 @@ return {
       { "<leader>i", desc = "[I]nlay Hints" },
       { "<leader>l", desc = "[L]ine Numbers" },
       { "<leader>z", desc = "[Z]im/Dim" },
+      { "d", desc = "[D]elete [M]arks" },
     },
   },
   keys = {
@@ -69,6 +70,13 @@ return {
         require("which-key").show({ global = true })
       end,
       desc = "Two Slash",
+    },
+    {
+      "<leader>d",
+      function()
+        require("which-key").show({ global = true })
+      end,
+      desc = "delete/marks",
     },
   },
 }

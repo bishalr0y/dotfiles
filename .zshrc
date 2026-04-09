@@ -38,6 +38,7 @@ alias c="clear"
 alias lg="lazygit"
 alias oc="opencode"
 alias update="brew update && brew upgrade && brew cleanup --prune=all"
+alias wr="wrangler"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"

@@ -53,3 +53,6 @@ vim.keymap.set("n", "<leader>qc", ":cclose<CR>", { desc = "Close quickfix list" 
 
 -- Two slash Query keymap
 vim.keymap.set("n", "<leader>ti", ":TwoslashQueriesInspect<CR>", { desc = "[T]woslash Query [I]nspect" })
+
+-- Delete all marks
+vim.keymap.set("n", "<leader>dm", ":delmarks!<CR>", { desc = "[D]elete all [M]arks" })
