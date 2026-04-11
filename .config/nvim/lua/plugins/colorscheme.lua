@@ -38,21 +38,4 @@ return {
       -- vim.api.nvim_set_hl(0, "LspReferenceWrite", { underline = true, bg = "NONE" })
     end,
   },
-  -- {
-  --   "sainnhe/gruvbox-material",
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     vim.g.gruvbox_material_enable_italic = true
-  --     vim.g.gruvbox_material_background = "medium"
-  --     vim.g.gruvbox_material_visual = "red background"
-  --     vim.g.gruvbox_material_better_performance = 1
-  --     vim.g.gruvbox_material_foreground = "material"
-  --     vim.g.gruvbox_material_enable_bold = 0
-  --     vim.g.gruvbox_material_transparent_background = 0 --values (0,1,2)
-  --     vim.g.gruvbox_material_float_style = "blend"
-  --
-  --     -- vim.cmd.colorscheme("gruvbox-material")
-  --   end,
-  -- },
 }

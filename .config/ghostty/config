@@ -1,6 +1,5 @@
 # Theme
 theme = Catppuccin Macchiato
-# theme = Gruvbox Material Dark
 
 # Opacity of split windows
 unfocused-split-opacity = 0.97  
