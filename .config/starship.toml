@@ -1,4 +1,4 @@
-"$schema" = 'https://starship.rs/config-schema.json'
+command_timeout = 2000
 
 [buf]
 disabled = true
@@ -9,3 +9,13 @@ truncate_to_repo = false
 [character]
 error_symbol = "[󰍟](bold red)"
 success_symbol = "[󰍟](bold green)"
+
+[nodejs]
+# Only show Node for actual Node projects. This avoids unnecessary `node
+# --version` calls in repos that just happen to contain JS/TS files.
+detect_extensions = []
+detect_files = ["package.json", ".node-version", ".nvmrc", ".tool-versions"]
+detect_folders = ["node_modules"]
+
+[package]
+disabled = true
