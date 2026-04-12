@@ -5,6 +5,7 @@ return {
   event = "VeryLazy",
   --@type Snacks.config
   opts = {
+    dashboard = { enabled = true },
     bigfile = { enabled = true },
     indent = {
       enabled = true,
