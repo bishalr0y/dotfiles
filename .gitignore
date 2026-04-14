@@ -3,3 +3,4 @@ configstore/
 */**/node_modules
 .config/raycast/*
 .config/cagent
+.DS_Store
