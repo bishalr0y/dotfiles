@@ -91,13 +91,6 @@ return {
       desc = "Toggle [C]ursor [L]ine",
     },
     {
-      "<leader>td",
-      function()
-        Snacks.toggle.diagnostics():toggle()
-      end,
-      desc = "[T]oggle [D]iagnostics",
-    },
-    {
       "<leader>tw",
       function()
         Snacks.toggle.option("wrap"):toggle()
