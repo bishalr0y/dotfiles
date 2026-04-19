@@ -7,12 +7,7 @@ return {
   opts = {
     dashboard = { enabled = true },
     bigfile = { enabled = true },
-    indent = {
-      enabled = true,
-      indent = {
-        enabled = false,
-      },
-    },
+    indent = { enabled = true },
     words = { enabled = true },
     notifier = {
       enabled = true,
