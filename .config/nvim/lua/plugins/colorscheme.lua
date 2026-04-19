@@ -6,7 +6,7 @@ return {
     name = "catppuccin",
     config = function()
       require("catppuccin").setup({
-        flavour = "mocha",
+        flavour = "macchiato",
         -- transparent_background = true,
         -- no_bold = false,
         -- no_italic = false,
@@ -15,8 +15,8 @@ return {
           comments = { "italic" },
         },
       })
-      local palette = require("catppuccin.palettes").get_palette("mocha")
-      vim.cmd.colorscheme("catppuccin-mocha")
+      local palette = require("catppuccin.palettes").get_palette("macchiato")
+      vim.cmd.colorscheme("catppuccin-macchiato")
 
       -- Telescope highlights to match editor background
       vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = palette.base })
