@@ -7,8 +7,9 @@ disabled = true
 truncate_to_repo = false
 
 [character]
-error_symbol = "[󰨃](bold red)"
-success_symbol = "[󰨃](bold green)"
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
 
 [nodejs]
 # Only show Node for actual Node projects. This avoids unnecessary `node
