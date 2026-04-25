@@ -1,6 +1,37 @@
-configstore/
+# Editor/Dotfiles
+.undodir/
+.DS_Store
+.envrc
+lazy-lock.json
+
+# pi agent - runtime/state only, keep config tracked
+home/.pi/agent/*
+home/.pi/todos/*
+.pi/todos/*
+home/.pi/agent/extensions/**/node_modules/
+
+# opencode
+home/.config/opencode/node_modules/
+home/.config/opencode/amp_stuff/
+.opencode/plans/
+
+# Shell - user-specific runtime files
+home/.config/fish/fish_variables
+home/.config/fish/conf.d/secrets.fish
+home/.config/fish/conf.d/vault-funcs.fish
+
+# Plugin managers
 */**/tmux/plugins/*
 */**/node_modules
 .config/raycast/*
 .config/cagent
-.DS_Store
+
+# Misc
+backups/
+tmp/
+packages/failed_packages_*.txt
+configstore/
+
+# Python
+__pycache__/
+*.pyc
