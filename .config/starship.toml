@@ -5,11 +5,11 @@ disabled = true
 
 [directory]
 truncate_to_repo = false
+truncation_length = 10
 
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
-vimcmd_symbol = "[❮](bold green)"
+success_symbol = "[;](bold green)"
+error_symbol = "[;](bold red)"
 
 [nodejs]
 # Only show Node for actual Node projects. This avoids unnecessary `node
@@ -20,3 +20,6 @@ detect_folders = ["node_modules"]
 
 [package]
 disabled = true
+
+[git_branch]
+symbol = " "

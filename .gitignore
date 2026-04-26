@@ -5,10 +5,12 @@
 lazy-lock.json
 
 # pi agent - runtime/state only, keep config tracked
+.pi/node_modules/
 .pi/agent/auth.json
 home/.pi/todos/*
 .pi/todos/*
 home/.pi/agent/extensions/**/node_modules/
+.pi/agent/extensions/**/node_modules/
 
 # opencode
 home/.config/opencode/node_modules/

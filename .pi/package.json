@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "html-to-text": "^9.0.5",
+    "linkedom": "^0.18.12"
+  }
+}
