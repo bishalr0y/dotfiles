@@ -2,7 +2,6 @@
 .undodir/
 .DS_Store
 .envrc
-lazy-lock.json
 
 # opencode
 home/.config/opencode/node_modules/
