@@ -1,37 +1,47 @@
+vim.api.nvim_create_user_command("ConformDisable", function(args)
+  if args.bang then
+    vim.b.disable_autoformat = true
+  else
+    vim.g.disable_autoformat = true
+  end
+end, {
+  desc = "Disable conform-autoformat-on-save",
+  bang = true,
+})
+
+vim.api.nvim_create_user_command("ConformEnable", function()
+  vim.b.disable_autoformat = false
+  vim.g.disable_autoformat = false
+end, {
+  desc = "Re-enable conform-autoformat-on-save",
+})
+
 return { -- Autoformat
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
-  -- keys = {
-  --   {
-  --     "<leader>f",
-  --     function()
-  --       require("conform").format({ async = true, lsp_format = "fallback" })
-  --     end,
-  --     mode = "",
-  --     desc = "[F]ormat buffer",
-  --   },
-  -- },
   opts = {
     notify_on_error = false,
-    format_on_save = function(bufnr)
-      -- Disable "format_on_save lsp_fallback" for languages that don't
-      -- have a well standardized coding style. You can add additional
-      -- languages here or re-enable it for the disabled ones.
-      local disable_filetypes = { c = true, cpp = true }
-      if disable_filetypes[vim.bo[bufnr].filetype] then
-        return nil
-      else
-        return {
-          timeout_ms = 5000,
-          lsp_format = "fallback",
-        }
+    default_format_opts = {
+      async = true,
+      timeout_ms = 500,
+      lsp_format = "fallback",
+    },
+    format_after_save = function(buffer_number)
+      if vim.g.disable_autoformat or vim.b[buffer_number].disable_autoformat then
+        return
       end
+      return {
+        async = true,
+        timeout_ms = 500,
+        lsp_format = "fallback",
+      }
     end,
     formatters_by_ft = {
       lua = { "stylua" },
-      javascript = { "oxlint", "biome", "prettierd", stop_after_first = true },
-      typescript = { "oxlint", "biome", "prettierd", stop_after_first = true },
+      javascript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+      typescript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+      typescriptreact = { "oxfmt", "biome", "prettierd", stop_after_first = true },
       go = { "goimports", "gofumpt" },
     },
     formatters = {
@@ -66,9 +76,27 @@ return { -- Autoformat
           })[1] ~= nil
         end,
       },
+      prettierd = {
+        condition = function(_, ctx)
+          return vim.fs.find({
+            ".prettierrc",
+            ".prettierrc.json",
+            ".prettierrc.js",
+            ".prettierrc.cjs",
+            ".prettierrc.mjs",
+            "prettier.config.js",
+            "prettier.config.cjs",
+            "prettier.config.mjs",
+          }, {
+            path = ctx.filename,
+            upward = true,
+            stop = vim.uv.os_homedir(),
+          })[1] ~= nil
+        end,
+      },
       gofmt = {
         command = "gofmt",
-        args = { "-s" }, -- Simplify code (optional)
+        args = { "-s" },
         stdin = true,
       },
     },
