@@ -58,42 +58,9 @@ return { -- Autoformat
         command = vim.fn.stdpath("data") .. "/mason/bin/gofumpt",
         stdin = true,
       },
-      oxfmt = {
-        condition = function(_, ctx)
-          return vim.fs.find({ ".oxfmtrc.json", ".oxfmtrc.jsonc" }, {
-            path = ctx.filename,
-            upward = true,
-            stop = vim.uv.os_homedir(),
-          })[1] ~= nil
-        end,
-      },
-      biome = {
-        condition = function(_, ctx)
-          return vim.fs.find({ "biome.json", "biome.jsonc" }, {
-            path = ctx.filename,
-            upward = true,
-            stop = vim.uv.os_homedir(),
-          })[1] ~= nil
-        end,
-      },
-      prettierd = {
-        condition = function(_, ctx)
-          return vim.fs.find({
-            ".prettierrc",
-            ".prettierrc.json",
-            ".prettierrc.js",
-            ".prettierrc.cjs",
-            ".prettierrc.mjs",
-            "prettier.config.js",
-            "prettier.config.cjs",
-            "prettier.config.mjs",
-          }, {
-            path = ctx.filename,
-            upward = true,
-            stop = vim.uv.os_homedir(),
-          })[1] ~= nil
-        end,
-      },
+      oxfmt = {},
+      biome = {},
+      prettierd = {},
       gofmt = {
         command = "gofmt",
         args = { "-s" },
