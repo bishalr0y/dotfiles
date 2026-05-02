@@ -7,10 +7,6 @@ disabled = true
 truncate_to_repo = false
 truncation_length = 10
 
-[character]
-success_symbol = "[󰨃](bold green)"
-error_symbol = "[󰨃](bold red)"
-
 [nodejs]
 # Only show Node for actual Node projects. This avoids unnecessary `node
 # --version` calls in repos that just happen to contain JS/TS files.
