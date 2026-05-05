@@ -14,6 +14,7 @@ local parser_languages = {
   "vim",
   "vimdoc",
   "javascript",
+  "prisma",
 }
 
 local function install_missing_parsers()
