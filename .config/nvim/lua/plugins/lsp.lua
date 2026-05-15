@@ -25,7 +25,7 @@ return {
         group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true }),
         callback = function(event)
           -- Twoslash queries
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          local client = vim.lsp.get_clients({ id = event.data.client_id })[1]
           if client and client.name == "ts_ls" then
             require("twoslash-queries").attach(client, event.buf)
           end

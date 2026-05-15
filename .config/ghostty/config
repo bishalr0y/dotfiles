@@ -36,7 +36,7 @@ clipboard-read = allow
 clipboard-write = allow
 
 # Window options
-window-colorspace = "display-p3"
+# window-colorspace = "display-p3"
 window-padding-color = background
 window-padding-balance = true
 window-padding-x = 0
