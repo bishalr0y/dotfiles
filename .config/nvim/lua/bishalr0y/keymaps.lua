@@ -56,3 +56,6 @@ vim.keymap.set("n", "<leader>ti", ":TwoslashQueriesInspect<CR>", { desc = "[T]wo
 
 -- Delete all marks
 vim.keymap.set("n", "<leader>dm", ":delmarks!<CR>", { desc = "[D]elete all [M]arks" })
+
+-- Rust runnables (run tests/binaries)
+vim.keymap.set("n", "<leader>rr", ":RustLsp runnables<CR>", { desc = "Rust runnables" })
