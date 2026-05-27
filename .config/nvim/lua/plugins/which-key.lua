@@ -10,6 +10,7 @@ return {
       { "<leader>b", desc = "[B]uffer" },
       { "<leader>i", desc = "[I]nlay Hints" },
       { "<leader>l", desc = "[L]ine Numbers" },
+      { "<leader>r", desc = "[R]ust" },
       { "<leader>z", desc = "[Z]im/Dim" },
       { "d", desc = "[D]elete [M]arks" },
     },
