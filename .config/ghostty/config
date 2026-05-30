@@ -13,7 +13,7 @@ background-opacity = 1.0
 
 # Font settings
 font-family = Monolisa Font
-font-size = 14
+font-size = 14.5
 
 # Cursor settings
 cursor-style = block
@@ -23,6 +23,7 @@ cursor-invert-fg-bg = false
 # MacOS options
 macos-titlebar-proxy-icon = hidden
 shell-integration-features = no-cursor,title
+macos-option-as-alt = true
 # macos-icon = holographic
 
 # Setting the title as empty string
