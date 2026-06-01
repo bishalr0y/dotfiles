@@ -14,6 +14,14 @@ return {
         styles = {
           comments = { "italic" },
         },
+        lsp_styles = {
+          underlines = {
+            errors = { "undercurl" },
+            hints = { "undercurl" },
+            warnings = { "undercurl" },
+            information = { "undercurl" },
+          },
+        },
       })
       local palette = require("catppuccin.palettes").get_palette("macchiato")
       vim.cmd.colorscheme("catppuccin-macchiato")
