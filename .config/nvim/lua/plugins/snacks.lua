@@ -7,7 +7,7 @@ return {
   opts = {
     bigfile = { enabled = true },
     indent = { enabled = true },
-    -- words = { enabled = true },
+    words = { enabled = true },
     notifier = {
       enabled = true,
       timeout = 3000,
