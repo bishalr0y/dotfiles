@@ -11,7 +11,7 @@ return {
         auto_show = true,
         window = { border = "rounded" },
       },
-      ghost_text = { enabled = false },
+      ghost_text = { enabled = true },
       menu = {
         border = "rounded",
       },

@@ -1,6 +1,3 @@
-# name: 'Catppuccin macchiato'
-# url: 'https://github.com/catppuccin/fish'
-
 set fish_color_normal cad3f5
 set fish_color_command c6a0f6
 set fish_color_param f0c6c6
