@@ -1,0 +1,129 @@
+# herdr configuration — mirrors .tmux.conf bindings & preferences
+onboarding = false
+
+[terminal]
+default_shell = "fish"
+shell_mode = "auto"
+new_cwd = "follow"
+
+[theme]
+name = "catppuccin"
+
+[theme.custom]
+# Catppuccin Macchiato — matches tmux @catppuccin_flavor 'macchiato'
+panel_bg = "#24273a"
+accent = "#c6a0f6"
+blue = "#8aadf4"
+green = "#a6da95"
+red = "#ed8796"
+yellow = "#eed49f"
+
+[update]
+channel = "stable"
+
+[keys]
+# Prefix: C-\; (same as tmux)
+prefix = "ctrl+semicolon"
+
+# tmux-style essentials
+help = "prefix+?"
+settings = "prefix+shift+s"
+detach = ["prefix+d", "prefix+q"]
+reload_config = "prefix+r"       # matches tmux 'bind r source-file ~/.tmux.conf'
+goto = "prefix+g"
+
+# Workspaces ≈ tmux sessions
+workspace_picker = ["prefix+s", "prefix+w"]
+new_workspace = "prefix+shift+n"
+rename_workspace = "prefix+shift+w"
+close_workspace = "prefix+shift+d"
+previous_workspace = "prefix+("
+next_workspace = "prefix+)"
+
+# Agents
+focus_agent = "prefix+alt+1..9"
+
+# Tabs ≈ tmux windows
+new_tab = "prefix+c"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+switch_tab = "prefix+1..9"
+rename_tab = "prefix+comma"
+close_tab = "prefix+shift+x"
+
+# Splits match tmux config:
+#   prefix |  → split-window -h (side-by-side)
+#   prefix -  → split-window -v (stacked)
+split_vertical = "prefix+backslash"
+split_horizontal = "prefix+minus"
+close_pane = "prefix+x"          # matches tmux 'bind x kill-pane'
+zoom = "prefix+m"                # matches tmux 'bind m resize-pane -Z'
+copy_mode = "prefix+v"           # matches tmux 'bind v copy-mode'
+
+# Resize (tmux uses repeatable h/j/k/l; herdr has resize mode)
+resize_mode = "prefix+shift+r"
+
+# Pane navigation — ctrl+h/j/k/l for vim-tmux-navigator compatibility
+focus_pane_left = "ctrl+h"
+focus_pane_down = "ctrl+j"
+focus_pane_up = "ctrl+k"
+focus_pane_right = "ctrl+l"
+
+cycle_pane_next = "prefix+tab"
+cycle_pane_previous = "prefix+shift+tab"
+
+# Sidebar
+toggle_sidebar = "prefix+b"
+
+# Navigate-mode movement
+navigate_workspace_up = "up"
+navigate_workspace_down = "down"
+navigate_pane_left = "h"
+navigate_pane_down = "j"
+navigate_pane_up = "k"
+navigate_pane_right = "l"
+
+[ui]
+sidebar_width = 32
+sidebar_min_width = 18
+sidebar_max_width = 36
+mouse_capture = true
+right_click_passthrough_modifier = "ctrl"
+mouse_scroll_lines = 3
+confirm_close = false
+prompt_new_tab_name = true
+pane_borders = true
+pane_gaps = true
+show_agent_labels_on_pane_borders = false
+agent_panel_scope = "all"
+agent_panel_sort = "spaces"
+accent = "#c6a0f6"
+
+[ui.toast]
+delivery = "herdr"
+delay_seconds = 1
+
+[ui.toast.herdr]
+position = "top-right"
+
+[ui.toast.clipboard]
+enabled = true
+position = "bottom-center"
+
+[ui.sound]
+enabled = false
+
+[session]
+resume_agents_on_restore = true
+
+[remote]
+manage_ssh_config = true
+
+[experimental]
+pane_history = true
+allow_nested = false
+kitty_graphics = true
+
+[advanced]
+# tmux history-limit 50000 lines → ~25 MB assuming ~500 bytes/line
+scrollback_limit_bytes = 52428800

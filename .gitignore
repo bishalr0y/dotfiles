@@ -28,3 +28,9 @@ configstore/
 # Python
 __pycache__/
 *.pyc
+
+# Herdr runtime/state
+.config/herdr/*.log
+.config/herdr/session-history.json
+.config/herdr/session.json
+.config/herdr/release-notes.json
