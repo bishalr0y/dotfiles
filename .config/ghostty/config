@@ -12,7 +12,7 @@ quit-after-last-window-closed = true
 background-opacity = 1.0
 
 # Font settings
-font-family = MonoLisa Font
+font-family = MonoLisa
 font-size = 14.8
 
 # Cursor settings
