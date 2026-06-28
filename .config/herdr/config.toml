@@ -12,7 +12,7 @@ name = "catppuccin"
 [theme.custom]
 # Catppuccin Macchiato — matches tmux @catppuccin_flavor 'macchiato'
 panel_bg = "#24273a"
-accent = "#c6a0f6"
+accent = "#7dc4e4"
 blue = "#8aadf4"
 green = "#a6da95"
 red = "#ed8796"
@@ -96,7 +96,6 @@ pane_gaps = true
 show_agent_labels_on_pane_borders = false
 agent_panel_scope = "all"
 agent_panel_sort = "spaces"
-accent = "#c6a0f6"
 
 [ui.toast]
 delivery = "herdr"
