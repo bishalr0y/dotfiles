@@ -1,4 +1,3 @@
-# herdr configuration — mirrors .tmux.conf bindings & preferences
 onboarding = false
 
 [terminal]
@@ -10,9 +9,9 @@ new_cwd = "follow"
 name = "catppuccin"
 
 [theme.custom]
-# Catppuccin Macchiato — matches tmux @catppuccin_flavor 'macchiato'
+# Catppuccin Macchiato-inspired 
 panel_bg = "#24273a"
-accent = "#7dc4e4"
+accent = "#c6a0f6"
 blue = "#8aadf4"
 green = "#a6da95"
 red = "#ed8796"
@@ -22,14 +21,11 @@ yellow = "#eed49f"
 channel = "stable"
 
 [keys]
-# Prefix: C-\; (same as tmux)
 prefix = "ctrl+semicolon"
-
-# tmux-style essentials
 help = "prefix+?"
 settings = "prefix+shift+s"
 detach = ["prefix+d", "prefix+q"]
-reload_config = "prefix+r"       # matches tmux 'bind r source-file ~/.tmux.conf'
+reload_config = "prefix+r"
 goto = "prefix+g"
 
 # Workspaces ≈ tmux sessions
@@ -60,7 +56,7 @@ close_pane = "prefix+x"          # matches tmux 'bind x kill-pane'
 zoom = "prefix+m"                # matches tmux 'bind m resize-pane -Z'
 copy_mode = "prefix+v"           # matches tmux 'bind v copy-mode'
 
-# Resize (tmux uses repeatable h/j/k/l; herdr has resize mode)
+# Resize 
 resize_mode = "prefix+shift+r"
 
 focus_pane_left = "prefix+h"
@@ -123,5 +119,4 @@ allow_nested = false
 kitty_graphics = true
 
 [advanced]
-# tmux history-limit 50000 lines → ~25 MB assuming ~500 bytes/line
 scrollback_limit_bytes = 52428800
