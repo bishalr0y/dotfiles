@@ -99,6 +99,11 @@ return {
             },
           },
         },
+        tailwindcss = {
+          filetypes = { "typescriptreact", "javascriptreact", "html", "svelte", "astro" },
+        },
+        html = {},
+        cssls = {},
         pyright = {},
         bashls = {},
         prismals = {},

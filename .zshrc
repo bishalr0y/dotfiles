@@ -55,12 +55,6 @@ eval "$(zoxide init zsh)"
 # setting the default text editor
 export EDITOR=nvim
 
-# zsh-autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# zsh-syntax-highlighting
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
 # bun completions
 [ -s "/Users/bishal/.bun/_bun" ] && source "/Users/bishal/.bun/_bun"
 

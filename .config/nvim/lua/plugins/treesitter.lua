@@ -11,6 +11,7 @@ local parser_languages = {
   "python",
   "query",
   "typescript",
+  "tsx",
   "vim",
   "vimdoc",
   "javascript",

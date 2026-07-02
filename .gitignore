@@ -18,6 +18,7 @@ home/.config/fish/conf.d/vault-funcs.fish
 */**/node_modules
 .config/raycast/*
 .config/cagent
+.config/tanstack/*
 
 # Misc
 backups/
