@@ -57,5 +57,11 @@ vim.keymap.set("n", "<leader>ti", ":TwoslashQueriesInspect<CR>", { desc = "[T]wo
 -- Delete all marks
 vim.keymap.set("n", "<leader>dm", ":delmarks!<CR>", { desc = "[D]elete all [M]arks" })
 
+-- Toggle inlay hints (inline type annotations)
+vim.keymap.set("n", "<leader>ih", function()
+  local filter = { bufnr = 0 }
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
+end, { desc = "Toggle [I]nlay [H]ints" })
+
 -- Rust runnables (run tests/binaries)
 vim.keymap.set("n", "<leader>rr", ":RustLsp runnables<CR>", { desc = "Rust runnables" })

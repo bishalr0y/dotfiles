@@ -1,5 +1,4 @@
 return {
-  -- Lazydev for Lua development
   {
     "folke/lazydev.nvim",
     ft = "lua",
@@ -8,10 +7,10 @@ return {
     },
   },
 
-  -- Main LSP Configuration
   {
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
+    cmd = { "LspInfo", "LspInstall", "LspUninstall", "Mason" },
     dependencies = {
       { "williamboman/mason.nvim", opts = {} },
       { "williamboman/mason-lspconfig.nvim" },
@@ -20,13 +19,11 @@ return {
       { "saghen/blink.cmp" },
     },
     config = function()
-      -- LSP Attach: Keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true }),
         callback = function(event)
-          -- Twoslash queries
           local client = vim.lsp.get_clients({ id = event.data.client_id })[1]
-          if client and client.name == "ts_ls" then
+          if client and client.name == "vtsls" then
             require("twoslash-queries").attach(client, event.buf)
           end
 
@@ -39,81 +36,101 @@ return {
           map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
           map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
           map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-          -- Keymap to show diagnostic float (optional, for details)
           map("gl", vim.diagnostic.open_float, "Show [L]ine Diagnostics")
 
-          -- Remap K for rounded borders
           vim.keymap.set("n", "K", function()
-            vim.lsp.buf.hover({
-              border = "rounded",
-            })
+            vim.lsp.buf.hover({ border = "rounded" })
           end, { buffer = event.buf })
         end,
       })
 
-      -- Diagnostic configuration with virtual text
       vim.diagnostic.config({
         severity_sort = true,
-        virtual_text = {
-          source = true, -- Show the source (e.g., "pyright", "gopls")
-          spacing = 2, -- Space between code and diagnostic
-          prefix = "■", -- Symbol before diagnostic message
-        },
-        float = {
-          border = "rounded",
-          source = true,
-        },
+        virtual_text = { source = true, spacing = 2, prefix = "■" },
+        float = { border = "rounded", source = true },
       })
 
-      -- LSP capabilities with blink.cmp
-      local capabilities = require("blink.cmp").get_lsp_capabilities()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities())
 
-      -- Language servers
       local servers = {
-        gopls = { settings = { gopls = { gofumpt = true, staticcheck = true } } },
+        gopls = {
+          settings = {
+            gopls = {
+              gofumpt = true,
+              staticcheck = true,
+              hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+              },
+            },
+          },
+        },
+        vtsls = {
+          filetypes = {
+            "javascript", "javascriptreact", "javascript.jsx",
+            "typescript", "typescriptreact", "typescript.tsx",
+          },
+          settings = {
+            typescript = {
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = true },
+              },
+            },
+            javascript = {
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = true },
+              },
+            },
+          },
+        },
         pyright = {},
-        ts_ls = {},
         bashls = {},
         prismals = {},
         lua_ls = { settings = { Lua = { diagnostics = { globals = { "vim" } } } } },
-        oxlint = {
-          root_markers = { ".oxlintrc.json" },
-        },
+        oxlint = { root_markers = { ".oxlintrc.json" } },
         biome = {},
         prettierd = {},
         prettier = {},
       }
 
-      -- Tools to install via Mason
       local ensure_installed = vim.tbl_keys(servers)
-      vim.list_extend(ensure_installed, { "stylua", "ruff", "prettier", "shfmt", "gopls", "gofumpt", "goimports", "oxfmt", "biome", "prisma-language-server" })
+      vim.list_extend(ensure_installed, {
+        "stylua", "ruff", "prettier", "shfmt", "gopls", "gofumpt",
+        "goimports", "oxfmt", "biome", "prisma-language-server",
+      })
 
-      -- Setup Mason and LSPs
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
       require("mason").setup({ ui = { border = "rounded" } })
       require("lspconfig.ui.windows").default_options.border = "rounded"
-      require("mason-lspconfig").setup({
-        handlers = {
-          -- The first entry (without a key) will be the default handler.
-          function(server_name)
-            require("lspconfig")[server_name].setup({
-              capabilities = capabilities,
-            })
-          end,
-          ["gopls"] = function()
-            require("lspconfig").gopls.setup({
-              settings = servers.gopls.settings,
-              capabilities = capabilities,
-            })
-          end,
-          ["lua_ls"] = function()
-            require("lspconfig").lua_ls.setup({
-              settings = servers.lua_ls.settings,
-              capabilities = capabilities,
-            })
-          end,
-        },
-      })
+      require("mason-lspconfig").setup()
+      require("fidget").setup({})
+
+      for name, config in pairs(servers) do
+        vim.lsp.config(name, {
+          cmd = config.cmd,
+          capabilities = capabilities,
+          filetypes = config.filetypes,
+          settings = config.settings,
+          root_markers = config.root_markers,
+        })
+        vim.lsp.enable(name)
+      end
     end,
   },
 }
