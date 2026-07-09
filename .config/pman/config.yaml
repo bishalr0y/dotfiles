@@ -1,0 +1,10 @@
+colors:
+  banner: "#8bd5ca"
+  version: "#7287fd"
+  help_key: "#a6e3a1"
+  help_desc: "#babbf1"
+  help_separator: "#8bd5ca"
+  header_fg: "#7287fd"
+  selected_bg: "#7287fd"
+  selected_fg: "#f9e2af"
+  border_fg: "#6c7086"

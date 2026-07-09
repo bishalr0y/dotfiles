@@ -9,13 +9,7 @@ new_cwd = "follow"
 name = "catppuccin"
 
 [theme.custom]
-# Catppuccin Macchiato-inspired 
 panel_bg = "#24273a"
-accent = "#c6a0f6"
-blue = "#8aadf4"
-green = "#a6da95"
-red = "#ed8796"
-yellow = "#eed49f"
 
 [update]
 channel = "stable"
