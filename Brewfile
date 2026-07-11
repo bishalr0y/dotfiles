@@ -18,10 +18,6 @@ brew "direnv"
 brew "fd"
 # Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
-# User-friendly command-line shell for UNIX-like operating systems
-brew "fish"
-# Plugin manager for the Fish shell
-brew "fisher"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # GNU awk utility
@@ -76,6 +72,10 @@ brew "tree"
 brew "zola"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
+# Fish-like fast/unobtrusive autosuggestions for zsh
+brew "zsh-autosuggestions"
+# Fish shell like syntax highlighting for zsh
+brew "zsh-syntax-highlighting"
 # Terminal process manager
 brew "bishalr0y/bishalr0y/pman"
 # Kubernetes CLI To Manage Your Clusters In Style!

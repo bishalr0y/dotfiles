@@ -5,7 +5,7 @@ return {
     opts = {
       ---Render style
       ---@usage 'background'|'foreground'|'virtual'
-      render = "background",
+      render = "virtual",
 
       ---Highlight hex colors, e.g. '#FFFFFF'
       enable_hex = true,

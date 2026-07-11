@@ -4,8 +4,6 @@ theme = Catppuccin Macchiato
 # Opacity of split windows
 unfocused-split-opacity = 0.97  
 
-# Shell integrations
-shell-integration = fish
 quit-after-last-window-closed = true
 
 # Set the background-opacity to be fully opaque
@@ -13,7 +11,7 @@ background-opacity = 1.0
 
 # Font settings
 font-family = MonoLisa
-font-size = 14.7
+font-size = 14.8
 
 # Cursor settings
 cursor-style = block

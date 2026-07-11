@@ -1,15 +1,19 @@
 onboarding = false
 
 [terminal]
-default_shell = "fish"
-shell_mode = "auto"
 new_cwd = "follow"
 
 [theme]
 name = "catppuccin"
 
 [theme.custom]
+# catppuccin macchiato palette
 panel_bg = "#24273a"
+accent = "#c6a0f6"
+blue = "#8aadf4"
+green = "#a6da95"
+red = "#ed8796"
+yellow = "#eed49f"
 
 [update]
 channel = "stable"
@@ -86,7 +90,7 @@ pane_gaps = true
 show_agent_labels_on_pane_borders = false
 agent_panel_scope = "all"
 agent_panel_sort = "spaces"
-sidebar_collapsed_mode = "hidden" # default -> compact
+sidebar_collapsed_mode = "compact" # hidden -> to completely hide the sidebar
 
 [ui.toast]
 delivery = "herdr"

@@ -8,11 +8,6 @@ home/.config/opencode/node_modules/
 home/.config/opencode/amp_stuff/
 .opencode/plans/
 
-# Shell - user-specific runtime files
-home/.config/fish/fish_variables
-home/.config/fish/conf.d/secrets.fish
-home/.config/fish/conf.d/vault-funcs.fish
-
 # Plugin managers
 */**/tmux/plugins/*
 */**/node_modules
