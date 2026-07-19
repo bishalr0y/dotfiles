@@ -4,9 +4,7 @@ return {
   opts = {
     preset = "helix",
     spec = {
-      { "sa", desc = "[S]urround [A]dd" },
-      { "sd", desc = "[S]urround [D]elete" },
-      { "sr", desc = "[S]urround [R]eplace" },
+      { "<leader>s", desc = "[S]urround" },
       { "<leader>b", desc = "[B]uffer" },
       { "<leader>i", desc = "[I]nlay Hints" },
       { "<leader>l", desc = "[L]ine Numbers" },
