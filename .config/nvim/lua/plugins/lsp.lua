@@ -46,7 +46,7 @@ return {
 
       vim.diagnostic.config({
         severity_sort = true,
-        virtual_text = { source = true, spacing = 2, prefix = "■" },
+        virtual_text = false,
         float = { border = "rounded", source = true },
       })
 

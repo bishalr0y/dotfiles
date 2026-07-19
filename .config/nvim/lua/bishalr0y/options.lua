@@ -26,15 +26,13 @@ end)
 
 -- Enable auto indenting and set it to spaces
 vim.opt.smartindent = true
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 
 -- Enable break indent
 vim.opt.breakindent = true
-
--- Set the tab size to 2 spaces
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-vim.o.expandtab = true
 
 -- Save undo history
 vim.opt.undofile = true

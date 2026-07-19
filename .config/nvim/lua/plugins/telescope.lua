@@ -53,7 +53,6 @@ return {
     vim.keymap.set("n", "<leader>fr", function()
       require("telescope.builtin").oldfiles({ cwd_only = true })
     end, { desc = "[F]ind [r]ecent (current dir)" })
-    vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
     vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
 
     -- Slightly advanced example of overriding default behavior and theme

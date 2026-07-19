@@ -49,11 +49,6 @@ return { -- Autoformat
         command = vim.fn.stdpath("data") .. "/mason/bin/goimports",
         stdin = true,
       },
-      golines = {
-        command = vim.fn.stdpath("data") .. "/mason/bin/golines",
-        args = { "-m", "120" },
-        stdin = true,
-      },
       gofumpt = {
         command = vim.fn.stdpath("data") .. "/mason/bin/gofumpt",
         stdin = true,

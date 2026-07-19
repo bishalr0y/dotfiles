@@ -23,7 +23,7 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "<leader>cl", vim.diagnostic.setloclist, { desc = "Open diagnostic list" })
+vim.keymap.set("n", "<leader>ld", vim.diagnostic.setloclist, { desc = "Open diagnostic list" })
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Show line diagnostic" })
 vim.keymap.set("n", "<leader>cm", ":Mason<CR>", { desc = "Mason" })
 
