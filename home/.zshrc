@@ -23,8 +23,11 @@ alias update="brew update && brew upgrade && brew cleanup --prune=all"
 alias wr="wrangler"
 
 # dotfiles management
+# Re-stows the home package from anywhere (no cd needed) — uses -d for stow dir and -t for target
 alias stowdot="stow -d ~/dotfiles -t ~ home"
+# Installs/updates packages from the Brewfile
 alias brewdot="brew bundle --file ~/dotfiles/Brewfile"
+# Captures your current Homebrew state back into the Brewfile
 alias brewdump="brew bundle dump --force --file ~/dotfiles/Brewfile"
 
 # fzf shell integration (Ctrl+R, Ctrl+T, Alt+C)
