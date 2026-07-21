@@ -22,6 +22,11 @@ alias oc="opencode"
 alias update="brew update && brew upgrade && brew cleanup --prune=all"
 alias wr="wrangler"
 
+# dotfiles management
+alias stowdot="stow -d ~/dotfiles -t ~ home"
+alias brewdot="brew bundle --file ~/dotfiles/Brewfile"
+alias brewdump="brew bundle dump --force --file ~/dotfiles/Brewfile"
+
 # fzf shell integration (Ctrl+R, Ctrl+T, Alt+C)
 eval "$(fzf --zsh)"
 
