@@ -1,0 +1,7 @@
+{
+  "lastChangelogVersion": "0.80.10",
+  "theme": "catppuccin-macchiato",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "kimi-k2.6",
+  "defaultThinkingLevel": "high"
+}

@@ -30,3 +30,10 @@ __pycache__/
 .config/herdr/session-history.json
 .config/herdr/session.json
 .config/herdr/release-notes.json
+
+# Pi runtime/data (not config)
+.pi/agent/auth.json
+.pi/agent/sessions/
+.pi/agent/models-store.json
+.pi/agent/npm/
+.pi/agent/extensions/
