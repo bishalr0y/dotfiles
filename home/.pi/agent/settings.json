@@ -1,7 +1,0 @@
-{
-  "lastChangelogVersion": "0.80.10",
-  "theme": "catppuccin-macchiato",
-  "defaultProvider": "opencode-go",
-  "defaultModel": "deepseek-v4-flash",
-  "defaultThinkingLevel": "high"
-}
