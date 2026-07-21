@@ -35,5 +35,6 @@ home/.config/herdr/release-notes.json
 home/.pi/agent/auth.json
 home/.pi/agent/sessions/
 home/.pi/agent/models-store.json
+home/.pi/agent/settings.json
 home/.pi/agent/npm/
 home/.pi/agent/extensions/
