@@ -11,9 +11,9 @@ home/.config/opencode/amp_stuff/
 # Plugin managers
 */**/tmux/plugins/*
 */**/node_modules
-.config/raycast/*
-.config/cagent
-.config/tanstack/*
+home/.config/raycast/*
+home/.config/cagent
+home/.config/tanstack/*
 
 # Misc
 backups/
@@ -26,14 +26,14 @@ __pycache__/
 *.pyc
 
 # Herdr runtime/state
-.config/herdr/*.log
-.config/herdr/session-history.json
-.config/herdr/session.json
-.config/herdr/release-notes.json
+home/.config/herdr/*.log
+home/.config/herdr/session-history.json
+home/.config/herdr/session.json
+home/.config/herdr/release-notes.json
 
 # Pi runtime/data (not config)
-.pi/agent/auth.json
-.pi/agent/sessions/
-.pi/agent/models-store.json
-.pi/agent/npm/
-.pi/agent/extensions/
+home/.pi/agent/auth.json
+home/.pi/agent/sessions/
+home/.pi/agent/models-store.json
+home/.pi/agent/npm/
+home/.pi/agent/extensions/
