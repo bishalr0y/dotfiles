@@ -1,0 +1,9 @@
+{
+  "name": ".pi",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.11.0",
+  "workspaces": [
+    "agent/extensions/*"
+  ]
+}
