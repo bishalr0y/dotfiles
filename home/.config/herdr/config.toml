@@ -88,9 +88,9 @@ prompt_new_tab_name = true
 pane_borders = true
 pane_gaps = true
 show_agent_labels_on_pane_borders = false
-agent_panel_scope = "all"
 agent_panel_sort = "spaces"
 sidebar_collapsed_mode = "compact" # hidden -> to completely hide the sidebar
+prompt_new_workspace_name = true
 
 [ui.toast]
 delivery = "herdr"
