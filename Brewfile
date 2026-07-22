@@ -88,6 +88,8 @@ cask "brave-browser"
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Voice-to-text transcription and paste tool
+cask "kitlangton-hex"
 # Open-source cross-platform alternative to AirDrop
 cask "localsend"
 # App to write, plan, collaborate, and get organised
