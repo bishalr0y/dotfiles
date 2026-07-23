@@ -17,8 +17,9 @@ plannotator annotate <path-or-url>
 Behavior:
 
 1. Launch the command with Bash.
-2. Wait for the browser review to finish.
-3. If annotations are returned, address them directly.
-4. If the session closes without feedback, say so briefly and continue.
+2. **Do not set a timeout** — the command opens a browser UI and blocks until you finish. Omit the `timeout` parameter entirely so it waits indefinitely.
+3. Wait for the browser review to finish.
+4. If annotations are returned, address them directly.
+5. If the session closes without feedback, say so briefly and continue.
 
 Do not ask the user to paste a shell command into the chat. Run the command yourself.
