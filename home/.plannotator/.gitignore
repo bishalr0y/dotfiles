@@ -1,0 +1,4 @@
+# Plannotator runtime/state (keep config tracked)
+*
+!config.json
+!.gitignore

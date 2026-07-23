@@ -21,8 +21,9 @@ plannotator last
 Behavior:
 
 1. Launch the command with Bash.
-2. Wait for the annotation session to finish.
-3. If feedback is returned, incorporate it into the follow-up response.
-4. If the session closes without feedback, mention that briefly and continue.
+2. **Do not set a timeout** — the command opens a browser UI and blocks until you finish. Omit the `timeout` parameter entirely so it waits indefinitely.
+3. Wait for the annotation session to finish.
+4. If feedback is returned, incorporate it into the follow-up response.
+5. If the session closes without feedback, mention that briefly and continue.
 
 Run the command yourself rather than telling the user to invoke shell syntax manually.
