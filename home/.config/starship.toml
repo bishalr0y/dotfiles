@@ -21,6 +21,7 @@ disabled = true
 symbol = " "
 
 [character]
-success_symbol = "[󰨃](#8aadf4)"
-error_symbol = "[󰨃](#ed8796)"
-vimcmd_symbol = "[󰨂](#8aadf4)"
+success_symbol = "[❯](purple)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](purple)"
+
