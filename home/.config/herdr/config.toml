@@ -7,13 +7,11 @@ new_cwd = "follow"
 name = "catppuccin"
 
 [theme.custom]
-# catppuccin macchiato palette
+# panel_bg = "#1e1e2e"
+# accent = "#cba6f7"
+
 panel_bg = "#24273a"
 accent = "#c6a0f6"
-blue = "#8aadf4"
-green = "#a6da95"
-red = "#ed8796"
-yellow = "#eed49f"
 
 [update]
 channel = "stable"
@@ -50,9 +48,9 @@ close_tab = "prefix+shift+x"
 #   prefix -  → split-window -v (stacked)
 split_vertical = "prefix+backslash"
 split_horizontal = "prefix+minus"
-close_pane = "prefix+x"          # matches tmux 'bind x kill-pane'
-zoom = "prefix+m"                # matches tmux 'bind m resize-pane -Z'
-copy_mode = "prefix+v"           # matches tmux 'bind v copy-mode'
+close_pane = "prefix+x" # matches tmux 'bind x kill-pane'
+zoom = "prefix+m" # matches tmux 'bind m resize-pane -Z'
+copy_mode = "prefix+v" # matches tmux 'bind v copy-mode'
 
 # Resize 
 resize_mode = "prefix+shift+r"

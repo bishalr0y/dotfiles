@@ -27,9 +27,6 @@ macos-option-as-alt = true
 # Setting the title as empty string
 title = " "
 
-# Hide the cursor while typing 
-mouse-hide-while-typing = true
-
 # Clipboard settings
 clipboard-read = allow
 clipboard-write = allow

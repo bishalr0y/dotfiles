@@ -44,6 +44,8 @@ brew "jq"
 brew "just"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Deep clean and optimize your Mac
+brew "mole"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Retrieves currently playing media, and simulates media actions
@@ -68,8 +70,6 @@ brew "tilt"
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
-# Fast static site generator in a single binary with everything built-in
-brew "zola"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # Fish-like fast/unobtrusive autosuggestions for zsh
@@ -82,12 +82,12 @@ brew "bishalr0y/bishalr0y/pman"
 brew "derailed/k9s/k9s"
 # Application uninstaller
 cask "appcleaner"
-# Web browser focusing on privacy
-cask "brave-browser"
 # Voice and text chat software
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Chromium-based web browser
+cask "helium-browser"
 # Voice-to-text transcription and paste tool
 cask "kitlangton-hex"
 # Open-source cross-platform alternative to AirDrop
