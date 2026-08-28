@@ -44,9 +44,9 @@ close_tab = "prefix+shift+x"
 #   prefix -  → split-window -v (stacked)
 split_vertical = "prefix+backslash"
 split_horizontal = "prefix+minus"
-close_pane = "prefix+x" # matches tmux 'bind x kill-pane'
-zoom = "prefix+m" # matches tmux 'bind m resize-pane -Z'
-copy_mode = "prefix+v" # matches tmux 'bind v copy-mode'
+close_pane = "prefix+x"             # matches tmux 'bind x kill-pane'
+zoom = "prefix+m"                   # matches tmux 'bind m resize-pane -Z'
+copy_mode = "prefix+v"              # matches tmux 'bind v copy-mode'
 
 # Resize 
 resize_mode = "prefix+shift+r"
@@ -83,7 +83,7 @@ pane_borders = true
 pane_gaps = true
 show_agent_labels_on_pane_borders = false
 agent_panel_sort = "spaces"
-sidebar_collapsed_mode = "compact" # hidden -> to completely hide the sidebar
+sidebar_collapsed_mode = "compact"        # hidden -> to completely hide the sidebar
 prompt_new_workspace_name = true
 
 [ui.toast]

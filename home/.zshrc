@@ -19,6 +19,7 @@ alias l="ls -la"
 alias c="clear"
 alias lg="lazygit"
 alias oc="opencode"
+alias lvim="NVIM_APPNAME=nvim-lazyvim nvim"
 alias update="brew update && brew upgrade && brew cleanup --prune=all"
 alias wr="wrangler"
 
