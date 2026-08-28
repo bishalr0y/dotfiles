@@ -6,7 +6,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 
 export GOPATH=$HOME/go
-export EDITOR=nvim
+# export EDITOR=nvim
+# -- Experimental
+export EDITOR=lvim
 export BUN_INSTALL="$HOME/.bun"
 export NVM_DIR="$HOME/.nvm"
 
@@ -14,7 +16,7 @@ export NVM_DIR="$HOME/.nvm"
 export FZF_DEFAULT_OPTS='--layout=reverse'
 
 # shortcuts
-alias vim="nvim"
+alias vim="lvim"
 alias l="ls -la"
 alias c="clear"
 alias lg="lazygit"
