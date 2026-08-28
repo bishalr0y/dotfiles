@@ -7,11 +7,7 @@ new_cwd = "follow"
 name = "catppuccin"
 
 [theme.custom]
-# panel_bg = "#1e1e2e"
-# accent = "#cba6f7"
-
-panel_bg = "#24273a"
-accent = "#c6a0f6"
+panel_bg = "#1e1e2e"
 
 [update]
 channel = "stable"
