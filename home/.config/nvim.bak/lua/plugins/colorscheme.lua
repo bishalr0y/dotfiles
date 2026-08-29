@@ -1,10 +1,30 @@
 return {
   {
     "catppuccin/nvim",
-    name = "catppuccin",
+    lazy = false,
     priority = 1000,
+    name = "catppuccin",
     config = function()
+      require("catppuccin").setup({
+        flavour = "mocha",
+        -- transparent_background = true,
+        -- no_bold = false,
+        -- no_italic = false,
+        -- no_underline = false,
+        styles = {
+          comments = { "italic" },
+        },
+        lsp_styles = {
+          underlines = {
+            errors = { "undercurl" },
+            hints = { "undercurl" },
+            warnings = { "undercurl" },
+            information = { "undercurl" },
+          },
+        },
+      })
       local palette = require("catppuccin.palettes").get_palette("mocha")
+      vim.cmd.colorscheme("catppuccin-mocha")
 
       -- Telescope highlights to match editor background
       vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = palette.base })
@@ -19,12 +39,11 @@ return {
       vim.api.nvim_set_hl(0, "TelescopePromptTitle", { fg = palette.mauve, bg = palette.base })
       vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { fg = palette.mauve, bg = palette.base })
       vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = palette.mauve, bg = palette.base })
+
+      -- underline only, no background
+      -- vim.api.nvim_set_hl(0, "LspReferenceText", { underline = true, bg = "NONE" })
+      -- vim.api.nvim_set_hl(0, "LspReferenceRead", { underline = true, bg = "NONE" })
+      -- vim.api.nvim_set_hl(0, "LspReferenceWrite", { underline = true, bg = "NONE" })
     end,
-  },
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin-mocha",
-    },
   },
 }
