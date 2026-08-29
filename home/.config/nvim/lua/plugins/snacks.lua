@@ -5,6 +5,19 @@ return {
       explorer = {
         hidden = true,
       },
+      picker = {
+        sources = {
+          files = {
+            hidden = true,
+          },
+          git = {
+            hidden = true,
+          },
+          grep = {
+            hidden = true,
+          },
+        },
+      },
     },
   },
 }
