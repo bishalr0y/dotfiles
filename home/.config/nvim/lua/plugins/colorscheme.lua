@@ -5,9 +5,14 @@ return {
     priority = 1000,
   },
   {
+    "folke/tokyonight.nvim",
+    name = "tokyonight",
+    priority = 1000,
+  },
+  {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin-mocha",
+      colorscheme = "tokyonight-night",
     },
   },
 }

@@ -44,6 +44,8 @@ brew "jq"
 brew "just"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Deep clean and optimize your Mac
+brew "mole"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Retrieves currently playing media, and simulates media actions
@@ -84,6 +86,8 @@ cask "appcleaner"
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Voice-to-text transcription and paste tool
+cask "kitlangton-hex"
 # Open-source cross-platform alternative to AirDrop
 cask "localsend"
 # App to write, plan, collaborate, and get organised
@@ -115,6 +119,8 @@ go "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
 go "honnef.co/go/tools/cmd/staticcheck"
 go "github.com/swaggo/swag/cmd/swag"
 cargo "rustlings"
+npm "@earendil-works/pi-coding-agent"
 npm "@plannotator/pi-extension"
+npm "pnpm"
 npm "tree-sitter-cli"
 npm "typescript"
