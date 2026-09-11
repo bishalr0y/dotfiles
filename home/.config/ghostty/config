@@ -10,7 +10,12 @@ quit-after-last-window-closed = true
 background-opacity = 1.0
 
 # Font settings
-font-family = MonoLisa
+# font-family = MonoLisa
+font-family = Berkeley Mono Nerd Font
+# disable font glyphs
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
 font-size = 14.8
 
 # Cursor settings
