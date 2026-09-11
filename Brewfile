@@ -3,7 +3,9 @@ tap "bishalr0y/bishalr0y", trusted: true
 tap "caarlos0/tap", trusted: true
 tap "charmbracelet/tap", trusted: true
 tap "derailed/k9s", trusted: true
+tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "jesseduffield/lazygit", trusted: true
+tap "nikitabobko/tap"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Arbitrary precision numeric processing language
@@ -80,6 +82,10 @@ brew "zsh-syntax-highlighting"
 brew "bishalr0y/bishalr0y/pman"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "derailed/k9s/k9s"
+# A window border system for macOS
+brew "felixkratz/formulae/borders"
+# AeroSpace is an i3-like tiling window manager for macOS
+cask "nikitabobko/tap/aerospace", trusted: true
 # Application uninstaller
 cask "appcleaner"
 # Voice and text chat software
