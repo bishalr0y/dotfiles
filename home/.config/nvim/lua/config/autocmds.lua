@@ -15,3 +15,12 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 -- Apply immediately in case colorscheme is already loaded
 vim.api.nvim_set_hl(0, "ColorColumn", { link = "CursorLine" })
+
+-- Make the CursorLine transparent
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    vim.api.nvim_set_hl(0, "CursorLine", {
+      bg = "NONE",
+    })
+  end,
+})

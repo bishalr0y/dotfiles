@@ -13,11 +13,11 @@ after-startup-command = [
 ]
 
 # Start AeroSpace at login
-start-at-login = false
+start-at-login = true
 
 # Automatically reload the config when the config file is saved
 # After setting this to true, reload once manually to start the auto-reloading
-auto-reload-config = false
+auto-reload-config = true
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -188,9 +188,9 @@ if.app-id = 'com.apple.finder'
 run = ['layout floating']
 
 # Always float Spotify
-[[on-window-detected]]
-if.app-id = 'com.spotify.client'
-run = ['layout floating']
+# [[on-window-detected]]
+# if.app-id = 'com.spotify.client'
+# run = ['layout floating']
 
 # Always float Shottr
 [[on-window-detected]]
