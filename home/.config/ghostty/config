@@ -25,7 +25,7 @@ cursor-invert-fg-bg = false
 macos-titlebar-proxy-icon = hidden
 shell-integration-features = no-cursor,title
 macos-option-as-alt = true
-# macos-icon = holographic
+mouse-hide-while-typing = true
 
 # Setting the title as empty string
 title = " "
