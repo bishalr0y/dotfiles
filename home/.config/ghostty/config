@@ -10,11 +10,9 @@ quit-after-last-window-closed = true
 background-opacity = 1.0
 
 # Font settings
-font-family = MonoLisa
-font-size = 14.8
-# font-family = Berkeley Mono
-# font-size = 15.8
-# adjust-cell-height = 10%
+font-family = Berkeley Mono
+font-size = 15.8
+adjust-cell-height = 5%
 
 # Cursor settings
 cursor-style = block
