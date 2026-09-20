@@ -16,11 +16,11 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 -- Apply immediately in case colorscheme is already loaded
 vim.api.nvim_set_hl(0, "ColorColumn", { link = "CursorLine" })
 
--- Make the CursorLine transparent
+-- Disable the LSP highlight
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
-    vim.api.nvim_set_hl(0, "CursorLine", {
-      bg = "NONE",
-    })
+    vim.api.nvim_set_hl(0, "LspReferenceText", {})
+    vim.api.nvim_set_hl(0, "LspReferenceRead", {})
+    vim.api.nvim_set_hl(0, "LspReferenceWrite", {})
   end,
 })

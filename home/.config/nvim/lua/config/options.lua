@@ -4,3 +4,4 @@
 
 -- Highlight column 80
 vim.opt.colorcolumn = "80"
+vim.opt.cursorline = false

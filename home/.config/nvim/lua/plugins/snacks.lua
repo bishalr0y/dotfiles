@@ -2,6 +2,9 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
+      words = {
+        enabled = false,
+      },
       explorer = {
         hidden = true,
       },
@@ -9,6 +12,7 @@ return {
         sources = {
           files = {
             hidden = true,
+            exclude = { "node_modules" },
           },
           git = {
             hidden = true,
