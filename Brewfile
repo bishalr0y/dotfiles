@@ -1,3 +1,4 @@
+tap "abue-ammar/tinycast", trusted: true
 tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: true
 tap "bishalr0y/bishalr0y", trusted: true
 tap "caarlos0/tap", trusted: true
@@ -28,8 +29,6 @@ brew "gh"
 brew "gnu-sed"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
-# CLI to streamline Go project setup with standardized structure
-brew "go-blueprint"
 # Database migrations CLI tool
 brew "golang-migrate"
 # Go Language's command-line interface for database migrations
@@ -48,8 +47,6 @@ brew "lazygit"
 brew "mole"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Retrieves currently playing media, and simulates media actions
-brew "nowplaying-cli"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # AI coding agent, built for the terminal
@@ -80,8 +77,6 @@ brew "zsh-syntax-highlighting"
 brew "bishalr0y/bishalr0y/pman"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "derailed/k9s/k9s"
-# Application uninstaller
-cask "appcleaner"
 # Voice and text chat software
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
@@ -92,6 +87,8 @@ cask "kitlangton-hex"
 cask "localsend"
 # App to write, plan, collaborate, and get organised
 cask "notion"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
 # Replacement for Docker Desktop
 cask "orbstack"
 # Screenshot measurement and annotation tool
@@ -100,6 +97,8 @@ cask "shottr"
 cask "spotify"
 # Native GUI tool for relational databases
 cask "tableplus"
+# Tiny, fully native launcher, hotkeys, and clipboard history
+cask "abue-ammar/tinycast/tinycast", trusted: true
 # REST, GraphQL and gRPC client
 cask "yaak"
 go "github.com/air-verse/air"

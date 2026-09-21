@@ -11,7 +11,7 @@ background-opacity = 1.0
 
 # Font settings
 font-family = Berkeley Mono
-font-size = 15.8
+font-size = 15.6
 adjust-cell-height = 10%
 adjust-underline-position = 3
 adjust-underline-thickness = -5
