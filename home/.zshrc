@@ -16,6 +16,7 @@ export FZF_DEFAULT_OPTS='--layout=reverse'
 # shortcuts
 alias vim="nvim"
 alias v="nvim"
+alias vi="nvim"
 alias l="ls -la"
 alias c="clear"
 alias lg="lazygit"
