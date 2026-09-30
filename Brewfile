@@ -61,8 +61,6 @@ brew "sqlc"
 brew "stow"
 # Send macOS User Notifications from the command-line
 brew "terminal-notifier"
-# Define your dev environment as code. For microservice apps on Kubernetes
-brew "tilt"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
@@ -75,8 +73,6 @@ brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 # Terminal process manager
 brew "bishalr0y/bishalr0y/pman"
-# Kubernetes CLI To Manage Your Clusters In Style!
-brew "derailed/k9s/k9s"
 # Voice and text chat software
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
