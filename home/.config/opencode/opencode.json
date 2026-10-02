@@ -1,11 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true,
-  "plugin": [
-      "@plannotator/opencode@latest"
-   ],
-  "permission": {
-    "edit": "ask",
-    "bash": "ask"
+  "update": "disable",
+  "plugins": [
+    "@plannotator/opencode@latest"
+  ],
+  "references": {
+    "effect": {
+      "repository": "Effect-TS/effect",
+      "description": "Use for Effect (TypeScript) APIs, patterns, and guidance. Guides live in packages/effect/*.md; runnable examples in packages/effect/src and packages/*/test."
+    }
   }
 }

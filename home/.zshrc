@@ -20,7 +20,7 @@ alias vi="nvim"
 alias l="ls -la"
 alias c="clear"
 alias lg="lazygit"
-alias oc="opencode"
+alias oc="opencode --auto"
 alias update="brew update && brew upgrade && brew cleanup --prune=all"
 alias wr="wrangler"
 
