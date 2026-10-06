@@ -1,13 +1,14 @@
 return {
   {
-    "folke/tokyonight.nvim",
-    name = "tokyonight",
+    "catppuccin/nvim",
+    name = "catppuccin",
     priority = 1000,
+    config = function() end,
   },
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "tokyonight-night",
+      colorscheme = "catppuccin-macchiato",
     },
   },
 }

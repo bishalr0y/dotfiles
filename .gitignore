@@ -34,14 +34,10 @@ home/.config/herdr/release-notes.json
 home/.config/herdr/plugins.json
 home/.config/herdr/plugins/
 home/.config/herdr/.plugins.lock
+home/.config/herdr/session-snapshots/
+home/.config/herdr/*.sock
+home/.config/herdr/*.sock.*
 
-# Pi runtime/data (not config)
-home/.pi/agent/auth.json
-home/.pi/agent/models-store.json
-home/.pi/agent/npm/
-home/.pi/agent/sessions/
-home/.pi/agent/settings.json
-home/.pi/agent/trust.json
-home/.pi/agent/mcp-oauth/
-home/.pi/agent/mcp-cache.json
-home/.pi/agent/mcp-npx-cache.json
+# Toki
+home/.config/toki/*
+

@@ -4,7 +4,10 @@ onboarding = false
 new_cwd = "follow"
 
 [theme]
-name = "tokyonight"
+name = "catppuccin"
+
+[theme.custom]
+panel_bg = "#24273a"
 
 [update]
 channel = "stable"

@@ -3,4 +3,4 @@
 -- Add any additional options here
 
 vim.opt.colorcolumn = "80"
-vim.opt.cursorline = false
+-- vim.opt.cursorline = false
