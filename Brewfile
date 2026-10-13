@@ -3,6 +3,7 @@ tap "anomalyco/tap", "https://github.com/anomalyco/homebrew-tap.git", trusted: t
 tap "bishalr0y/bishalr0y", trusted: true
 tap "caarlos0/tap", trusted: true
 tap "charmbracelet/tap", trusted: true
+tap "crmne/tap", trusted: { casks: ["spotifast"] }
 tap "derailed/k9s", trusted: true
 tap "jesseduffield/lazygit", trusted: true
 # Bourne-Again SHell, a UNIX command interpreter
@@ -47,14 +48,12 @@ brew "lazygit"
 brew "mole"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
-# AI coding agent, built for the terminal
-brew "opencode"
 # ISO-C API and CLI for generating UUIDs
 brew "ossp-uuid"
 # Protocol buffers (Google's data interchange format)
 brew "protobuf"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
 # Generate type safe Go from SQL
 brew "sqlc"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
@@ -71,6 +70,8 @@ brew "zoxide"
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+# OpenCode V2 - the AI coding agent for the terminal
+brew "anomalyco/tap/opencode-v2", trusted: true
 # Terminal process manager
 brew "bishalr0y/bishalr0y/pman"
 # Voice and text chat software
@@ -101,7 +102,7 @@ go "github.com/air-verse/air"
 go "github.com/spf13/cobra-cli"
 go "github.com/kisielk/errcheck"
 go "github.com/bishalr0y/ghdl"
-go "github.com/golangci/golangci-lint/cmd/golangci-lint"
+go "github.com/golangci/golangci-lint/v2/cmd/golangci-lint"
 go "github.com/segmentio/golines"
 go "github.com/fatih/gomodifytags"
 go "golang.org/x/tools/gopls"
@@ -113,6 +114,7 @@ go "google.golang.org/protobuf/cmd/protoc-gen-go"
 go "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
 go "honnef.co/go/tools/cmd/staticcheck"
 go "github.com/swaggo/swag/cmd/swag"
+go "github.com/bishalr0y/toki/cmd/toki"
 cargo "rustlings"
 npm "pnpm"
 npm "tree-sitter-cli"
