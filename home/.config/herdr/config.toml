@@ -5,9 +5,18 @@ new_cwd = "follow"
 
 [theme]
 name = "catppuccin"
+auto_switch = false
 
 [theme.custom]
+accent = "#b7bdf8"
 panel_bg = "#24273a"
+mauve = "#b7bdf8"
+green = "#a6da95"
+yellow = "#eed49f"
+red = "#ed8796"
+blue = "#8aadf4"
+teal = "#8bd5ca"
+peach = "#f5a97f"
 
 [update]
 channel = "stable"
@@ -71,6 +80,7 @@ navigate_pane_up = "k"
 navigate_pane_right = "l"
 
 [ui]
+accent = "#b7bdf8"
 sidebar_width = 32
 sidebar_min_width = 18
 sidebar_max_width = 36
