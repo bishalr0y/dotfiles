@@ -78,8 +78,6 @@ brew "bishalr0y/bishalr0y/pman"
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Voice-to-text transcription and paste tool
-cask "kitlangton-hex"
 # Open-source cross-platform alternative to AirDrop
 cask "localsend"
 # App to write, plan, collaborate, and get organised
@@ -96,6 +94,8 @@ cask "spotify"
 cask "tableplus"
 # Tiny, fully native launcher, hotkeys, and clipboard history
 cask "abue-ammar/tinycast/tinycast", trusted: true
+# Multimedia player
+cask "vlc"
 # REST, GraphQL and gRPC client
 cask "yaak"
 go "github.com/air-verse/air"
