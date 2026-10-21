@@ -4,19 +4,19 @@ onboarding = false
 new_cwd = "follow"
 
 [theme]
-name = "catppuccin"
+name = "tokyonight"
 auto_switch = false
 
-[theme.custom]
-accent = "#8aadf4"
-panel_bg = "#24273a"
-mauve = "#b7bdf8"
-green = "#a6da95"
-yellow = "#eed49f"
-red = "#ed8796"
-blue = "#8aadf4"
-teal = "#8bd5ca"
-peach = "#f5a97f"
+# [theme.custom]
+# accent = "#8aadf4"
+# panel_bg = "#24273a"
+# mauve = "#b7bdf8"
+# green = "#a6da95"
+# yellow = "#eed49f"
+# red = "#ed8796"
+# blue = "#8aadf4"
+# teal = "#8bd5ca"
+# peach = "#f5a97f"
 
 [update]
 channel = "stable"

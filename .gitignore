@@ -38,6 +38,11 @@ home/.config/herdr/session-snapshots/
 home/.config/herdr/*.sock
 home/.config/herdr/*.sock.*
 
+# gh CLI: machine-local auth state. hosts.yml can hold an OAuth token in
+# plaintext, and gh rewrites config.yml on upgrades -- keep both out of a
+# public repo. Review or re-enter on a new machine with `gh auth login`.
+home/.config/gh/
+
 # Toki
 home/.config/toki/*
 
