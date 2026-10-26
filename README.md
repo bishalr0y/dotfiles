@@ -18,12 +18,6 @@ brew install git
 brew install stow
 ```
 
-### TPM
-
-```
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
 ## Installation
 
 First, check out the dotfiles repo in your $HOME directory using git

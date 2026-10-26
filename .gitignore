@@ -9,7 +9,6 @@ home/.config/opencode/amp_stuff/
 .opencode/plans/
 
 # Plugin managers
-*/**/tmux/plugins/*
 */**/node_modules
 .config/raycast/*
 home/.config/raycast/

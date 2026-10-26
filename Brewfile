@@ -60,8 +60,6 @@ brew "sqlc"
 brew "stow"
 # Send macOS User Notifications from the command-line
 brew "terminal-notifier"
-# Terminal multiplexer
-brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
 # Shell extension to navigate your filesystem faster
