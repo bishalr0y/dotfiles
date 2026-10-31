@@ -76,8 +76,6 @@ brew "bishalr0y/bishalr0y/pman"
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Open-source cross-platform alternative to AirDrop
-cask "localsend"
 # App to write, plan, collaborate, and get organised
 cask "notion"
 # Knowledge base that works on top of a local folder of plain text Markdown files
