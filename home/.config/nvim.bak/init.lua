@@ -1,1 +1,0 @@
-require("bishalr0y")

@@ -56,6 +56,8 @@ brew "protobuf"
 brew "ripgrep"
 # Generate type safe Go from SQL
 brew "sqlc"
+# Cross-shell prompt for astronauts
+brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Send macOS User Notifications from the command-line
