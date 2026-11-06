@@ -30,7 +30,9 @@ alias stowdot="stow -d ~/dotfiles -t ~ home"
 # Installs/updates packages from the Brewfile
 alias brewdot="brew bundle --file ~/dotfiles/Brewfile"
 # Captures your current Homebrew state back into the Brewfile
-alias brewdump="brew bundle dump --force --file ~/dotfiles/Brewfile"
+# --no-vscode: otherwise brew probes `cursor --list-extensions`, and the cursor
+# CLI shim errors out when only the agent (not the Cursor IDE) is installed.
+alias brewdump="brew bundle dump --force --no-vscode --file ~/dotfiles/Brewfile"
 
 # fzf shell integration (Ctrl+R, Ctrl+T, Alt+C)
 eval "$(fzf --zsh)"

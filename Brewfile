@@ -80,8 +80,6 @@ cask "discord"
 cask "ghostty"
 # App to write, plan, collaborate, and get organised
 cask "notion"
-# Knowledge base that works on top of a local folder of plain text Markdown files
-cask "obsidian"
 # Replacement for Docker Desktop
 cask "orbstack"
 # Screenshot measurement and annotation tool
@@ -90,8 +88,8 @@ cask "shottr"
 cask "spotify"
 # Native GUI tool for relational databases
 cask "tableplus"
-# Tiny, fully native launcher, hotkeys, and clipboard history
-cask "abue-ammar/tinycast/tinycast", trusted: true
+# Application launcher and productivity tool
+cask "tinycast"
 # Multimedia player
 cask "vlc"
 # REST, GraphQL and gRPC client
