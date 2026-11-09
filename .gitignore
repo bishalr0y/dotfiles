@@ -42,6 +42,10 @@ home/.config/herdr/*.sock.*
 # public repo. Review or re-enter on a new machine with `gh auth login`.
 home/.config/gh/
 
+# Zed runtime state (prompt library LMDB, etc.). Track settings only.
+home/.config/zed/prompts/
+home/.config/zed/db/
+
 # Toki
 home/.config/toki/*
 
