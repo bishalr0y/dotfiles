@@ -1,6 +1,6 @@
 {
   "$schema": "https://pi.dev/schemas/settings.schema.json",
-  "theme": "tokyonight-night",
+  "theme": "catppuccin-mocha",
   "packages": [
     "npm:pi-web-search",
     "npm:@plannotator/pi-extension",

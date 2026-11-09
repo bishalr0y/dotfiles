@@ -1,5 +1,6 @@
 # Theme
-theme = Tokyonight Night
+# theme = Tokyonight Night
+theme = Catppuccin Mocha
 
 # Opacity of split windows
 unfocused-split-opacity = 0.97
