@@ -1,0 +1,13 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "theme": "tokyonight-night",
+  "packages": [
+    "npm:pi-web-search",
+    "npm:@plannotator/pi-extension",
+    "npm:pi-cursor-sdk"
+  ],
+  "lastChangelogVersion": "1.5.0",
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.24"
+  }
+}

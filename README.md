@@ -32,3 +32,11 @@ Then, use GNU stow to create symlinks
 ```
 stow .
 ```
+
+Pi packages are declared in `home/.pi/agent/settings.json` and installed under `~/.pi/agent/npm`, which is gitignored. After stow, install them:
+
+```
+pi install npm:pi-web-search
+pi install npm:@plannotator/pi-extension
+pi install npm:pi-cursor-sdk
+```
