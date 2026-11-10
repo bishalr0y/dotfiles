@@ -6,8 +6,8 @@
     "npm:@plannotator/pi-extension",
     "npm:pi-cursor-sdk"
   ],
-  "lastChangelogVersion": "1.5.0",
+  "lastChangelogVersion": "1.5.1",
   "extensionChangelogVersions": {
-    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.24"
+    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.26"
   }
 }
