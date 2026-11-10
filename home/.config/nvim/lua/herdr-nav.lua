@@ -11,8 +11,9 @@
 --     (upstream issue #17).
 --
 -- Behaviour: move between Neovim splits first; at a split edge hand off to
--- herdr. Outside herdr it falls back to tmux (if present), so an existing
--- vim-tmux-navigator setup keeps working.
+-- herdr-tui (HERDR_PANE_ID) or herdr-app (HC_TERMINAL_ID). Outside either,
+-- fall back to tmux (if present), so an existing vim-tmux-navigator setup
+-- keeps working. herdr-tui config is unchanged: that path still runs first.
 
 local M = {}
 
@@ -30,10 +31,10 @@ local function herdr_bin()
   return nil
 end
 
-local function focus_herdr(dir)
+local function focus_herdr_tui(dir)
   local pane = vim.env.HERDR_PANE_ID
   if pane == nil or pane == "" then
-    return
+    return false
   end
 
   local bin = herdr_bin()
@@ -42,7 +43,7 @@ local function focus_herdr(dir)
       "herdr-nav: no usable herdr binary (stale HERDR_BIN_PATH and herdr not on PATH)",
       vim.log.levels.ERROR
     )
-    return
+    return true
   end
 
   -- Target this pane explicitly: `--current` resolves to the server's globally
@@ -54,6 +55,27 @@ local function focus_herdr(dir)
       vim.log.levels.ERROR
     )
   end
+  return true
+end
+
+local function focus_herdr_app(dir)
+  -- herdr-app terminals get HC_TERMINAL_ID from herdr-core; TUI panes use
+  -- HERDR_PANE_ID instead and must keep the original `herdr pane focus` path.
+  if not vim.env.HC_TERMINAL_ID or vim.env.HC_TERMINAL_ID == "" then
+    return false
+  end
+  if vim.fn.executable("herdr-app") ~= 1 then
+    return false
+  end
+
+  local out = vim.fn.system({ "herdr-app", "do", "pane.go", "--direction", dir })
+  if vim.v.shell_error ~= 0 then
+    vim.notify(
+      "herdr-nav: `herdr-app do pane.go --direction " .. dir .. "` failed: " .. vim.trim(out),
+      vim.log.levels.ERROR
+    )
+  end
+  return true
 end
 
 function M.navigate(wincmd, dir)
@@ -64,13 +86,18 @@ function M.navigate(wincmd, dir)
   end
 
   -- At a split edge: cross into the surrounding multiplexer.
-  if vim.env.HERDR_PANE_ID and vim.env.HERDR_PANE_ID ~= "" then
-    focus_herdr(dir)
-  else
-    local cmd = "TmuxNavigate" .. tmux_command[dir]
-    if vim.env.TMUX and vim.env.TMUX ~= "" and vim.fn.exists(":" .. cmd) == 2 then
-      pcall(vim.cmd, cmd)
-    end
+  -- Prefer herdr-tui when HERDR_PANE_ID is set so existing TUI + plugin setup
+  -- is unchanged; only then try herdr-app / tmux.
+  if focus_herdr_tui(dir) then
+    return
+  end
+  if focus_herdr_app(dir) then
+    return
+  end
+
+  local cmd = "TmuxNavigate" .. tmux_command[dir]
+  if vim.env.TMUX and vim.env.TMUX ~= "" and vim.fn.exists(":" .. cmd) == 2 then
+    pcall(vim.cmd, cmd)
   end
 end
 

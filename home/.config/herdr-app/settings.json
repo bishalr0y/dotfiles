@@ -1,0 +1,16 @@
+{
+  "zoom": 1.0,
+  "sounds": {
+    "enabled": true
+  },
+  "font": "MonoLisa",
+  "font_size": 14.8,
+  "font_ligatures": true,
+  "minimum_contrast": 1.0,
+  "theme": "catppuccin-mocha",
+  "colors": {
+    "canvas": "#11111b",
+    "chrome": "#1e1e2e",
+    "surface": "#313244"
+  }
+}
