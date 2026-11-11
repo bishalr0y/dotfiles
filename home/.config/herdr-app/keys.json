@@ -61,7 +61,7 @@
     "ctrl-; shift-tab": "tab.prev",
     "ctrl-; ;": "tab.next",
 
-    "ctrl-; b": "layout.toggle:sidebar"
+    "ctrl-; b": "mod.open:sidebar-toggle"
   },
   "terminal": {
     "cmd-f": "terminal.search",
@@ -117,6 +117,6 @@
     "ctrl-; tab": "tab.next",
     "ctrl-; shift-tab": "tab.prev",
     "ctrl-; ;": "tab.next",
-    "ctrl-; b": "layout.toggle:sidebar"
+    "ctrl-; b": "mod.open:sidebar-toggle"
   }
 }
