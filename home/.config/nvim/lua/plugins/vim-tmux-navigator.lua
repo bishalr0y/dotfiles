@@ -2,9 +2,8 @@ return {
   "christoomey/vim-tmux-navigator",
   lazy = false,
   init = function()
-    -- We own <C-h/j/k/l> (see lua/herdr-nav.lua). Keep vim-tmux-navigator only
-    -- for its TmuxNavigate* commands, which herdr-nav uses as the tmux fallback
-    -- when running outside herdr.
+    -- <C-h/j/k/l> live in lua/herdr-nav.lua (Neovim splits + herdr edge). This
+    -- plugin supplies TmuxNavigate* for tmux fallback only; mappings stay off.
     vim.g.tmux_navigator_no_mappings = 1
   end,
   config = function()

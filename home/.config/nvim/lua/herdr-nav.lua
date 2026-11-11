@@ -1,19 +1,11 @@
--- Seamless <C-h/j/k/l> navigation between Neovim splits and herdr panes.
+-- <C-h/j/k/l> in Neovim: move between windows; at an edge, cross into herdr-app
+-- panes (HC_TERMINAL_ID) or herdr-tui (HERDR_PANE_ID). Herdr-app does not bind
+-- these keys — they reach Neovim directly. Use <C-;> h/j/k/l in herdr-app for
+-- explicit pane focus everywhere (see keys.json).
 --
--- Vendored from paulbkim-dev/vim-herdr-navigation (editor/nvim.lua) so the
--- Neovim side is not tied to herdr's hash-suffixed plugin directory. Carries
--- two fixes over upstream:
---   * resolve the herdr binary defensively. After `herdr update` replaces the
---     binary while the server keeps running, the injected HERDR_BIN_PATH points
---     at a deleted inode (".../herdr (deleted)"), which broke every edge
---     crossing (upstream issue #15).
---   * surface failures via vim.notify instead of silently doing nothing
---     (upstream issue #17).
---
--- Behaviour: move between Neovim splits first; at a split edge hand off to
--- herdr-tui (HERDR_PANE_ID) or herdr-app (HC_TERMINAL_ID). Outside either,
--- fall back to tmux (if present), so an existing vim-tmux-navigator setup
--- keeps working. herdr-tui config is unchanged: that path still runs first.
+-- Vendored from paulbkim-dev/vim-herdr-navigation (editor/nvim.lua), with fixes
+-- for stale HERDR_BIN_PATH (#15) and failed edge-cross notify (#17).
+-- tmux fallback uses vim-tmux-navigator commands when TMUX is set.
 
 local M = {}
 
@@ -24,7 +16,6 @@ local function herdr_bin()
   if bin and bin ~= "" and vim.fn.executable(bin) == 1 then
     return bin
   end
-  -- Stale HERDR_BIN_PATH, or unset: fall back to whatever is on PATH.
   if vim.fn.executable("herdr") == 1 then
     return "herdr"
   end
@@ -46,8 +37,6 @@ local function focus_herdr_tui(dir)
     return true
   end
 
-  -- Target this pane explicitly: `--current` resolves to the server's globally
-  -- focused pane, which is not necessarily the pane we are running in.
   local out = vim.fn.system({ bin, "pane", "focus", "--direction", dir, "--pane", pane })
   if vim.v.shell_error ~= 0 then
     vim.notify(
@@ -59,8 +48,6 @@ local function focus_herdr_tui(dir)
 end
 
 local function focus_herdr_app(dir)
-  -- herdr-app terminals get HC_TERMINAL_ID from herdr-core; TUI panes use
-  -- HERDR_PANE_ID instead and must keep the original `herdr pane focus` path.
   if not vim.env.HC_TERMINAL_ID or vim.env.HC_TERMINAL_ID == "" then
     return false
   end
@@ -82,12 +69,9 @@ function M.navigate(wincmd, dir)
   local prev = vim.api.nvim_get_current_win()
   vim.cmd("wincmd " .. wincmd)
   if vim.api.nvim_get_current_win() ~= prev then
-    return -- moved within Neovim
+    return
   end
 
-  -- At a split edge: cross into the surrounding multiplexer.
-  -- Prefer herdr-tui when HERDR_PANE_ID is set so existing TUI + plugin setup
-  -- is unchanged; only then try herdr-app / tmux.
   if focus_herdr_tui(dir) then
     return
   end
@@ -102,10 +86,10 @@ function M.navigate(wincmd, dir)
 end
 
 local mappings = {
-  { "<C-h>", "h", "left", "Navigate left (herdr/nvim)" },
-  { "<C-j>", "j", "down", "Navigate down (herdr/nvim)" },
-  { "<C-k>", "k", "up", "Navigate up (herdr/nvim)" },
-  { "<C-l>", "l", "right", "Navigate right (herdr/nvim)" },
+  { "<C-h>", "h", "left", "Neovim/herdr left" },
+  { "<C-j>", "j", "down", "Neovim/herdr down" },
+  { "<C-k>", "k", "up", "Neovim/herdr up" },
+  { "<C-l>", "l", "right", "Neovim/herdr right" },
 }
 
 function M.setup()
