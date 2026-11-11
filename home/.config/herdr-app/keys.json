@@ -14,11 +14,6 @@
     "cmd--": "app.zoom_out",
     "cmd-0": "app.zoom_reset",
 
-    "ctrl-h": "mod.open:vim-nav-left",
-    "ctrl-j": "mod.open:vim-nav-down",
-    "ctrl-k": "mod.open:vim-nav-up",
-    "ctrl-l": "mod.open:vim-nav-right",
-
     "ctrl-; ?": "app.help",
     "ctrl-; shift-/": "app.help",
     "ctrl-; shift-s": "app.settings",
@@ -122,11 +117,6 @@
     "ctrl-; tab": "tab.next",
     "ctrl-; shift-tab": "tab.prev",
     "ctrl-; ;": "tab.next",
-    "ctrl-; b": "layout.toggle:sidebar",
-
-    "ctrl-h": "mod.open:vim-nav-left",
-    "ctrl-j": "mod.open:vim-nav-down",
-    "ctrl-k": "mod.open:vim-nav-up",
-    "ctrl-l": "mod.open:vim-nav-right"
+    "ctrl-; b": "layout.toggle:sidebar"
   }
 }

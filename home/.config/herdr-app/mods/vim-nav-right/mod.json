@@ -1,5 +1,0 @@
-{
-  "place": "none",
-  "title": "Vim/herdr navigate right",
-  "overlay": { "kind": "popup", "at": "top", "width": 1, "height": 1 }
-}
