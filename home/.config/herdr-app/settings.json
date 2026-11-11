@@ -4,7 +4,8 @@
     "enabled": true
   },
   "font": "MonoLisa",
-  "font_size": 14.8,
+  "font_size": 14.2,
+  "ui_font": "Berkeley Mono",
   "font_ligatures": true,
   "minimum_contrast": 1.0,
   "theme": "catppuccin-mocha",

@@ -21,7 +21,7 @@ alias l="ls -la"
 alias c="clear"
 alias lg="lazygit"
 alias oc="opencode --auto"
-alias update="brew update && brew upgrade && brew cleanup --prune=all"
+alias update="brew update && brew upgrade && brew cleanup --prune=all && pi update --all"
 alias wr="wrangler"
 
 # dotfiles management
