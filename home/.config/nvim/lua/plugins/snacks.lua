@@ -3,7 +3,7 @@ return {
     "folke/snacks.nvim",
     opts = {
       words = {
-        enabled = false,
+        enabled = true,
       },
       explorer = {
         hidden = true,
