@@ -6,50 +6,26 @@ Pinned upstream for everything from Matt Pocock:
 - Commit: `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`
 - Tree: `a73b182b5f22565e829e0969eb0bfd284508a7b8`
 - Synced: 2026-11-07
-- Verified: all 27 vendored skills byte-identical
+- Verified: the vendored skills below are byte-identical to that commit
 
 Skills are vendored verbatim. Do not hand-edit them; update from upstream instead.
-The rest of this file records what came from where, and what did not come from this
-repo at all.
 
-## Synced at the pinned commit
+## Vendored from mattpocock/skills
 
 | Local skill | Upstream path |
 | --- | --- |
-| `ask-matt` | `skills/engineering/ask-matt` |
-| `code-review` | `skills/engineering/code-review` |
-| `codebase-design` | `skills/engineering/codebase-design` |
 | `diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
-| `implement-spec` | `skills/engineering/implement-spec` |
-| `improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` |
-| `pr` | `skills/engineering/pr` |
-| `prototype` | `skills/engineering/prototype` |
-| `research` | `skills/engineering/research` |
-| `retro` | `skills/engineering/retro` |
-| `setup-matt-pocock-skills` | `skills/engineering/setup-matt-pocock-skills` |
-| `wayfinder` | `skills/engineering/wayfinder` |
-| `wizard` | `skills/engineering/wizard` |
-| `grill-me` | `skills/productivity/grill-me` |
-| `to-questionnaire` | `skills/productivity/to-questionnaire` |
-| `wait-what` | `skills/productivity/wait-what` |
 | `writing-for-agents` | `skills/productivity/writing-for-agents` |
-| `domain-modeling` | `skills/engineering/domain-modeling` |
-| `grill-with-docs` | `skills/engineering/grill-with-docs` |
-| `implement` | `skills/engineering/implement` |
-| `tdd` | `skills/engineering/tdd` |
-| `to-spec` | `skills/engineering/to-spec` |
-| `to-tickets` | `skills/engineering/to-tickets` |
-| `triage` | `skills/engineering/triage` |
 | `grilling` | `skills/productivity/grilling` |
 | `handoff` | `skills/productivity/handoff` |
-| `teach` | `skills/productivity/teach` |
 
 ## Not from mattpocock/skills
 
 | Local skill | Source |
 | --- | --- |
+| `bro` | Authored locally (see `Restore bro skill for plain-language restatements.`) |
+| `show-me` | Unverified. `pr/CREDITS.md` (now removed) credited Humanlayer's `show-me`; confirm provenance before updating |
 | `plannotator`, `plannotator-annotate`, `plannotator-inbox`, `plannotator-last`, `plannotator-review` | Installed by Plannotator itself, not vendored here |
-| `show-me` | Not in the pinned repo. `pr/CREDITS.md` credits Humanlayer's `show-me`; treat the source as unverified until recorded |
 
 Record a source for these before updating them.
 
