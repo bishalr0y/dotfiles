@@ -1,0 +1,75 @@
+// Minimal LazyVim muscle memory for Zed.
+// Scope: splits + core vim motions only.
+// Docs: https://zed.dev/docs/key-bindings
+[
+  {
+    // LazyVim uses <space> as <leader>. Make it a pure leader in
+    // normal/visual so it does not fall through to "move right".
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "space": null,
+
+      // <leader>-  -> horizontal split (stacked), like :split
+      "space -": "pane::SplitDown",
+
+      // <leader>|  -> vertical split (side by side), like :vsplit
+      "space |": "pane::SplitRight",
+
+      // <leader>wd -> close the current split/tab
+      "space w d": "pane::CloseActiveItem",
+
+      // <leader>wm -> maximize / restore the current split
+      "space w m": "vim::MaximizePane"
+    }
+  },
+  {
+    // Same split navigation as LazyVim: <C-h/j/k/l>
+    "context": "vim_mode == normal",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+
+      // Resize splits with <C-arrow>, like LazyVim
+      "ctrl-left": "vim::ResizePaneLeft",
+      "ctrl-right": "vim::ResizePaneRight",
+      "ctrl-up": "vim::ResizePaneUp",
+      "ctrl-down": "vim::ResizePaneDown",
+
+      // Your nvim maps: H = ^, L = $
+      "shift-h": "vim::FirstNonWhitespace",
+      "shift-l": "vim::EndOfLine",
+
+      // Your nvim map: U = redo
+      "shift-u": "vim::Redo",
+
+      // LazyVim j/k move by display line when there is no count
+      "j": ["vim::Down", { "display_lines": true }],
+      "k": ["vim::Up", { "display_lines": true }],
+
+      // Flash "s": closest Zed equivalent is in-buffer search.
+      // No labels, but same "type, jump" muscle memory.
+      "s": "buffer_search::Deploy",
+
+      // Flash Treesitter "S": closest Zed equivalent is the symbol list.
+      "shift-s": "outline::Toggle"
+    }
+  },
+  {
+    // Your nvim visual maps: J/K move the selection down/up
+    "context": "vim_mode == visual",
+    "bindings": {
+      "shift-j": "editor::MoveLineDown",
+      "shift-k": "editor::MoveLineUp",
+
+      // Keep visual-mode search/jump working like normal mode
+      "s": ["buffer_search::Deploy", { "selection_search_enabled": true }],
+      "shift-s": "outline::Toggle",
+
+      // LazyVim also moves by display line in visual mode
+      "j": ["vim::Down", { "display_lines": true }],
+      "k": ["vim::Up", { "display_lines": true }]
+    }
+  }
+]

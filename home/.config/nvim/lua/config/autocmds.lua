@@ -8,10 +8,10 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
 -- Disable the LSP highlight
-vim.api.nvim_create_autocmd("ColorScheme", {
-  callback = function()
-    vim.api.nvim_set_hl(0, "LspReferenceText", {})
-    vim.api.nvim_set_hl(0, "LspReferenceRead", {})
-    vim.api.nvim_set_hl(0, "LspReferenceWrite", {})
-  end,
-})
+-- vim.api.nvim_create_autocmd("ColorScheme", {
+--   callback = function()
+--     vim.api.nvim_set_hl(0, "LspReferenceText", {})
+--     vim.api.nvim_set_hl(0, "LspReferenceRead", {})
+--     vim.api.nvim_set_hl(0, "LspReferenceWrite", {})
+--   end,
+-- })
