@@ -4,11 +4,11 @@ onboarding = false
 new_cwd = "follow"
 
 [theme]
-name = "catppuccin"
+name = "one-dark"
 auto_switch = false
 
 [theme.custom]
-panel_bg = "#1e1e2e"
+panel_bg = "#161616"
 
 [update]
 channel = "stable"
