@@ -23,7 +23,7 @@
   "icon_theme": "Zed (Default)",
   "ui_font_size": 16,
   "buffer_font_size": 14.0,
-  "theme": "Catppuccin Mocha",
+  "theme": "Carbonfox",
   "theme_overrides": {
     "Gruvbox Dark": {
       "syntax": {
