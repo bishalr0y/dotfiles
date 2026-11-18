@@ -1,4 +1,3 @@
-// One-shot: compact sidebar rail (same as workspace-chrome sidebar button), not layout.hide.
 import { View, div } from "gpui-kit";
 import { run, shared, setShared, layout, window, props, closeOverlay } from "herdr";
 

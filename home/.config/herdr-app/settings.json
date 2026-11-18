@@ -3,8 +3,8 @@
   "sounds": {
     "enabled": true
   },
-  "font": "MonoLisa",
-  "font_size": 14.2,
+  "font": "Berkeley Mono",
+  "font_size": 15.6,
   "ui_font": "Berkeley Mono",
   "font_ligatures": true,
   "minimum_contrast": 1.0,
