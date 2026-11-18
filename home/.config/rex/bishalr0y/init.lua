@@ -1,0 +1,5 @@
+require("bishalr0y.close_pane_or_tab")
+require("bishalr0y.import_theme")
+require("bishalr0y.resize_mode")
+require("bishalr0y.keymaps")
+require("bishalr0y.smart_splits")
