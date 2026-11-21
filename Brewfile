@@ -78,8 +78,6 @@ brew "bishalr0y/bishalr0y/pman", trusted: true
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Desktop app for terminals and coding agents
-cask "herdr-app"
 # Local voice dictation
 cask "anomalyco/tap/hex", trusted: true
 # App to write, plan, collaborate, and get organised
