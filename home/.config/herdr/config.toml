@@ -4,11 +4,16 @@ onboarding = false
 new_cwd = "follow"
 
 [theme]
-name = "one-dark"
+name = "catppuccin"
 auto_switch = false
 
 [theme.custom]
-panel_bg = "#161616"
+# catppuccin macchiato palette (overrides built-in catppuccin / mocha defaults)
+panel_bg = "#24273a"
+blue = "#8aadf4"
+green = "#a6da95"
+red = "#ed8796"
+yellow = "#eed49f"
 
 [update]
 channel = "stable"
