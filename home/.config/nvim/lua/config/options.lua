@@ -12,5 +12,5 @@ vim.opt.backup = false
 -- Minimum no of screen lines above and under the cursor
 vim.opt.scrolloff = 10
 
--- Enable text wrap
-vim.opt.wrap = true
+-- Disable text wrap
+vim.opt.wrap = false

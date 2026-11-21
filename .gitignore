@@ -42,7 +42,7 @@ home/.config/herdr-app/*
 !home/.config/herdr-app/keys.json
 !home/.config/herdr-app/settings.json
 !home/.config/herdr-app/themes/
-!home/.config/herdr-app/themes/catppuccin-mocha.json
+!home/.config/herdr-app/themes/catppuccin-macchiato.json
 !home/.config/herdr-app/mods/
 home/.config/herdr-app/mods/*
 !home/.config/herdr-app/mods/sidebar-toggle/
@@ -76,7 +76,7 @@ home/.pi/agent/mcp-auth.json
 
 !home/.pi/agent/settings.json
 !home/.pi/agent/themes/
-!home/.pi/agent/themes/**
+!home/.pi/agent/themes/catppuccin-macchiato.json
 !home/.pi/agent/extensions/
 !home/.pi/agent/extensions/**
 

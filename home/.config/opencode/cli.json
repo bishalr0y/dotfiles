@@ -1,7 +1,7 @@
 {
   "$schema": "https://opencode.ai/v2/cli.json",
   "theme": {
-    "name": "carbonfox"
+    "name": "catppuccin-macchiato"
   },
   "diffs": {
     "wrap": "word"
@@ -16,8 +16,8 @@
     "mode": "off"
   },
   "attention": {
-    "sound": true,
-    "notifications": true
+    "sound": false,
+    "notifications": false
   },
   "plugins": ["./herdr-opencode"]
 }

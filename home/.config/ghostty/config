@@ -1,5 +1,5 @@
 # Theme
-theme = Carbonfox
+theme = Catppuccin Macchiato
 
 # Opacity of split windows
 unfocused-split-opacity = 0.97
