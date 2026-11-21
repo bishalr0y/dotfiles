@@ -76,8 +76,7 @@ navigate_pane_down = "j"
 navigate_pane_up = "k"
 navigate_pane_right = "l"
 
-# herdr-tui only: vim-herdr-navigation plugin (not herdr-app — use keys.json
-# Ctrl+; h/j/k/l for pane focus there; Neovim uses lua/herdr-nav.lua for C-h/j/k/l).
+# herdr-tui: vim-herdr-navigation plugin; Neovim uses lua/herdr-nav.lua for C-h/j/k/l.
 [[keys.command]]
 key = "ctrl+h"
 type = "plugin_action"
