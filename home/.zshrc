@@ -1,6 +1,8 @@
 # Add Homebrew's executable directory to the front of the PATH
 export PATH=/usr/local/bin:$PATH
 export PATH="$HOME/.local/bin:$PATH"
+[[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/conf.d/vite-plus.zsh" ]] && \
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/conf.d/vite-plus.zsh"
 export PATH="/Users/bishal/.cargo/bin:$PATH"
 export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
@@ -8,7 +10,6 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export GOPATH=$HOME/go
 export EDITOR=nvim
 export BUN_INSTALL="$HOME/.bun"
-export NVM_DIR="$HOME/.nvm"
 
 # fzf: search box on top, results below
 export FZF_DEFAULT_OPTS='--layout=reverse'
@@ -49,8 +50,6 @@ eval "$(direnv hook zsh)"
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # colorize valid command lines
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# node version manager
-[ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
 # bun completions
 [ -s "/Users/bishal/.bun/_bun" ] && source "/Users/bishal/.bun/_bun"
 

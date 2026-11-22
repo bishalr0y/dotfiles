@@ -64,9 +64,13 @@ Add one `git@github.com:…` URL per line in `fonts/sources.txt`. You need:
 
 Skip with `dot init --skip-font` or `--headless`.
 
-### Pi
+### Pi (Vite+ only)
 
-`dot init` installs [Vite+](https://vite.plus) then `vp install -g @earendil-works/pi-coding-agent` when `pi` is missing. `dot update` runs `pi update --all` when `pi` is on PATH.
+`dot init` installs [Vite+](https://vite.plus), Node runtimes (`vp env install lts/latest`), and `vp install -g @earendil-works/pi-coding-agent`. Shell PATH comes from `home/.config/zsh/conf.d/vite-plus.zsh` (stowed).
+
+Do **not** install pi via Homebrew npm. `dot update` runs `pi update --all` when pi resolves under `~/.vite-plus/`.
+
+**Migrating from brew pi:** `npm uninstall -g @earendil-works/pi-coding-agent`, then `dot stow && dot update`.
 
 ## Stow layout
 
