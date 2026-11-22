@@ -3,7 +3,7 @@
 set -euo pipefail
 
 readonly SCRIPT_NAME="dot"
-readonly VERSION="1.1.0"
+readonly VERSION="1.1.1"
 
 __dot_repo_dir() {
   local source="${BASH_SOURCE[0]}"
@@ -513,6 +513,7 @@ __vite_plus_bin_dir() {
 }
 
 __vite_plus_ensure_path() {
+  # Always prepend: vp/pi must win over a Homebrew or npm pi earlier on PATH.
   export PATH="$(__vite_plus_bin_dir):${PATH}"
 }
 
@@ -568,10 +569,14 @@ __install_pi() {
     return 1
   fi
   if __pi_on_vite_plus; then
-    __print_success "pi via Vite+ ($(command -v pi))"
-    return 0
-  fi
-  if __command_exists pi; then
+    if pi --version >/dev/null 2>&1; then
+      __print_success "pi via Vite+ ($(command -v pi))"
+      return 0
+    fi
+    # The shim can survive a broken/missing vp runtime. Reinstall instead of
+    # reporting a healthy pi just because the path looks right.
+    __print_warning "pi at $(command -v pi) is not runnable; reinstalling via vp..."
+  elif __command_exists pi; then
     __print_warning "pi at $(command -v pi) is not from Vite+; installing via vp..."
   else
     __print_info "Installing pi via Vite+..."
@@ -579,8 +584,8 @@ __install_pi() {
   if vp install -g @earendil-works/pi-coding-agent; then
     hash -r 2>/dev/null || true
     __vite_plus_ensure_path
-    if __pi_on_vite_plus; then
-      __print_success "pi installed"
+    if __pi_on_vite_plus && pi --version >/dev/null 2>&1; then
+      __print_success "pi installed ($(pi --version 2>/dev/null))"
       return 0
     fi
   fi
@@ -1323,20 +1328,70 @@ cmd_gen_ssh_key() {
   __generate_ssh_key "$email"
 }
 
+# Lexically normalize an absolute path (resolve . / .. without touching the
+# filesystem, so it also works for broken symlink targets).
+__normalize_path() {
+  local path="$1" part
+  local -a parts=() out=()
+  if [[ -z "$path" ]]; then
+    printf '/\n'
+    return 0
+  fi
+  IFS='/' read -r -a parts <<<"$path"
+  if ((${#parts[@]} == 0)); then
+    printf '/\n'
+    return 0
+  fi
+  for part in "${parts[@]}"; do
+    case "$part" in
+      ''|.) ;;
+      ..)
+        if ((${#out[@]} > 0)); then
+          unset "out[$(( ${#out[@]} - 1 ))]"
+        fi
+        ;;
+      *) out+=("$part") ;;
+    esac
+  done
+  if ((${#out[@]} == 0)); then
+    printf '/\n'
+    return 0
+  fi
+  local IFS='/'
+  printf '/%s\n' "${out[*]}"
+}
+
+# Only broken links that dotfiles owns are actionable: stow links into this
+# repo and entries in ~/.local/bin. App-managed dirs (Docker Desktop plugins,
+# caches, app bundles) are their installer's problem, not ours. Use
+# `dot doctor --all` to list those too.
 __doctor_broken_symlinks() {
-  local broken=0 link
+  local scan_all="${1:-false}" link target
+  local -a owned=() ignored=()
   while IFS= read -r -d '' link; do
-    if [[ ! -e "$link" ]]; then
-      ((broken++)) || true
-    fi
+    [[ -e "$link" ]] && continue
+    target="$(readlink "$link" 2>/dev/null)" || continue
+    [[ "$target" != /* ]] && target="$(dirname "$link")/${target}"
+    target="$(__normalize_path "$target")"
+    case "${link}:${target}" in
+      "${HOME}/.local/bin/"*|*:"${DOTFILES_DIR}"/*) owned+=("$link") ;;
+      *) ignored+=("$link") ;;
+    esac
   done < <(find "${HOME}" -maxdepth 3 -type l -print0 2>/dev/null)
 
-  if ((broken == 0)); then
-    __print_success "No broken symlinks (depth ≤3 under ~)"
+  local status=0
+  if ((${#owned[@]} > 0)); then
+    __print_warning "${#owned[@]} broken symlink(s) owned by dotfiles:"
+    printf '    %s\n' "${owned[@]}"
+    status=1
   else
-    __print_warning "${broken} broken symlink(s) under ~ (depth ≤3)"
-    return 1
+    __print_success "No broken dotfiles symlinks"
   fi
+  if [[ "$scan_all" == "true" ]] && ((${#ignored[@]} > 0)); then
+    __print_info "${#ignored[@]} broken symlink(s) outside dotfiles (ignored):"
+    printf '    %s\n' "${ignored[@]}"
+  fi
+  return "$status"
 }
 
 __doctor_brew_bundle() {
@@ -1388,7 +1443,12 @@ __doctor_rex_defaults_drift() {
 
 __doctor_optional_tools() {
   local tool missing=()
-  for tool in git brew stow nvim jq bun vp herdr rex pi; do
+  # bun and Vite+ are installed outside the default non-interactive PATH, so
+  # add their bin dirs before checking. Otherwise doctor warns that bun/vp/pi
+  # are missing even though the shell setup and dot update work.
+  __bun_ensure_path
+  __vite_plus_ensure_path
+  for tool in brew nvim jq bun herdr rex; do
     if __command_exists "$tool"; then
       __print_success "${tool}"
     else
@@ -1398,13 +1458,25 @@ __doctor_optional_tools() {
   if ((${#missing[@]} > 0)); then
     __print_warning "Not on PATH: ${missing[*]}"
   fi
-  __vite_plus_ensure_path
-  if __pi_on_vite_plus; then
-    __print_success "pi via Vite+ ($(command -v pi))"
-  elif __command_exists pi; then
-    __print_warning "pi at $(command -v pi) — expected Vite+; brew uninstall @earendil-works/pi-coding-agent"
-  elif __command_exists vp; then
-    __print_warning "pi not installed; run: vp install -g @earendil-works/pi-coding-agent"
+  if ! __command_exists vp; then
+    __print_warning "vp not installed; run: ${SCRIPT_NAME} init"
+  else
+    __print_success "vp ($(vp --version 2>/dev/null | head -n 1))"
+    local pi_path pi_version
+    if ! __command_exists pi; then
+      __print_warning "pi not installed; run: vp install -g @earendil-works/pi-coding-agent"
+    else
+      pi_path="$(command -v pi)"
+      if [[ "$pi_path" == "${HOME}/.vite-plus/"* || "$pi_path" == *"/vite-plus/"* ]]; then
+        if pi_version="$(pi --version 2>/dev/null)"; then
+          __print_success "pi via Vite+ (${pi_version})"
+        else
+          __print_warning "pi binary at ${pi_path} is not runnable; run: vp install -g @earendil-works/pi-coding-agent"
+        fi
+      else
+        __print_warning "pi at ${pi_path} — expected Vite+; brew uninstall @earendil-works/pi-coding-agent"
+      fi
+    fi
   fi
   if __command_exists npm && npm list -g @earendil-works/pi-coding-agent >/dev/null 2>&1; then
     __print_warning "Remove duplicate pi (Homebrew npm): npm uninstall -g @earendil-works/pi-coding-agent"
@@ -1431,6 +1503,11 @@ __doctor_optional_tools() {
 }
 
 cmd_doctor() {
+  local scan_all=false
+  if [[ "${1:-}" == "--all" ]]; then
+    scan_all=true
+    shift
+  fi
   __require_no_args doctor "$@" || return 1
   __print_header "Doctor"
   local issues=0
@@ -1455,7 +1532,7 @@ cmd_doctor() {
     ((issues++)) || true
   fi
 
-  __doctor_broken_symlinks || ((issues++)) || true
+  __doctor_broken_symlinks "$scan_all" || ((issues++)) || true
 
   local dirty_home
   dirty_home="$(git -C "$DOTFILES_DIR" status --porcelain -- home 2>/dev/null || true)"
@@ -1566,7 +1643,7 @@ Commands:
   check-packages      Brewfile install status
   retry-failed        retry packages in packages/failed_packages_*.txt
   gen-ssh-key         create ~/.ssh/id_ed25519
-  doctor              health check
+  doctor [--all]      health check (--all includes app-managed symlinks)
   link | unlink       PATH symlink (/usr/local/bin or ~/.local/bin)
   edit                open repo in \$EDITOR
 

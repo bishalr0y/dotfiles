@@ -9,6 +9,6 @@
   ],
   "lastChangelogVersion": "1.6.0",
   "extensionChangelogVersions": {
-    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.45"
+    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.46"
   }
 }
