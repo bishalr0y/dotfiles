@@ -66,9 +66,9 @@ Skip with `dot init --skip-font` or `--headless`.
 
 ### Pi (Vite+ only)
 
-`dot init` installs [Vite+](https://vite.plus), Node runtimes (`vp env install lts/latest`), and `vp install -g @earendil-works/pi-coding-agent`. Shell PATH comes from `home/.config/zsh/conf.d/vite-plus.zsh` (stowed).
+`dot init` installs [Vite+](https://vite.plus), Node runtimes (`vp env install lts/latest`), and `vp install -g @earendil-works/pi-coding-agent`. Shell PATH comes from `home/.config/zsh/conf.d/vite-plus.zsh` (stowed, like Dillon’s `vite-plus.fish`).
 
-Do **not** install pi via Homebrew npm. `dot update` runs `pi update --all` when pi resolves under `~/.vite-plus/`.
+Vite+ runtime files under `~/.config/vite-plus/` are gitignored (installer-owned). Do **not** install pi via Homebrew npm. `dot update` runs `pi update --all` when `pi` resolves under a `vite-plus` install dir.
 
 **Migrating from brew pi:** `npm uninstall -g @earendil-works/pi-coding-agent`, then `dot stow && dot update`.
 

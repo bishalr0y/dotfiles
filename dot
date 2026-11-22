@@ -504,8 +504,16 @@ __install_bun() {
   return 1
 }
 
+__vite_plus_bin_dir() {
+  if [[ -d "${HOME}/.vite-plus/bin" ]]; then
+    printf '%s\n' "${HOME}/.vite-plus/bin"
+  else
+    printf '%s\n' "${XDG_DATA_HOME:-${HOME}/.local/share}/vite-plus/bin"
+  fi
+}
+
 __vite_plus_ensure_path() {
-  export PATH="${HOME}/.vite-plus/bin:${XDG_DATA_HOME:-${HOME}/.local/share}/vite-plus/bin:${PATH}"
+  export PATH="$(__vite_plus_bin_dir):${PATH}"
 }
 
 __install_vite_plus() {
@@ -515,6 +523,8 @@ __install_vite_plus() {
     return 0
   fi
   __print_info "Installing Vite+..."
+  # Without VP_SELF_SETUP_NO_MODIFY_PATH the installer overwrites stowed
+  # conf.d/vite-plus.zsh (writing into this repo) and edits ~/.zshrc.
   if curl -fsSL https://vite.plus | VP_SELF_SETUP_NO_MODIFY_PATH=1 bash; then
     __vite_plus_ensure_path
     if __command_exists vp; then
@@ -1446,6 +1456,17 @@ cmd_doctor() {
   fi
 
   __doctor_broken_symlinks || ((issues++)) || true
+
+  local dirty_home
+  dirty_home="$(git -C "$DOTFILES_DIR" status --porcelain -- home 2>/dev/null || true)"
+  if [[ -n "$dirty_home" ]]; then
+    __print_warning "Uncommitted changes under home/ (an installer may have rewritten a stowed file):"
+    sed 's/^/    /' <<<"$dirty_home"
+    ((issues++)) || true
+  else
+    __print_success "No uncommitted changes under home/"
+  fi
+
   if __command_exists stow; then
     if __stow_has_conflicts >/dev/null; then
       __print_warning "Stow conflicts (run: dot stow check)"
