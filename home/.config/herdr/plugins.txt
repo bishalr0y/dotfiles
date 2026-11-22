@@ -1,0 +1,6 @@
+# Herdr plugin sources for `dot init` / `dot update` (`herdr plugin install`).
+# One owner/repo[/subdir] per line. Lines starting with # are ignored.
+
+# Plannotator in Herdr panes (requires Herdr 0.8+); pi uses @plannotator/pi-extension separately
+plannotator/herdr-annotate
+paulbkim-dev/vim-herdr-navigation

@@ -21,7 +21,6 @@ alias l="ls -la"
 alias c="clear"
 alias lg="lazygit"
 alias oc="opencode --auto"
-alias update="brew update && brew upgrade && brew cleanup --prune=all && pi update --all"
 alias wr="wrangler"
 
 # dotfiles management
@@ -54,3 +53,10 @@ source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
 # bun completions
 [ -s "/Users/bishal/.bun/_bun" ] && source "/Users/bishal/.bun/_bun"
+
+# pnpm
+export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac

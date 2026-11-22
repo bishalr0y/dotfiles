@@ -84,6 +84,8 @@ cask "anomalyco/tap/hex", trusted: true
 cask "notion"
 # Replacement for Docker Desktop
 cask "orbstack"
+# Invert mouse scroll only (trackpad stays natural)
+cask "scroll-reverser"
 # Screenshot measurement and annotation tool
 cask "shottr"
 # Music streaming service

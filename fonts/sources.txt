@@ -1,0 +1,3 @@
+# Private font repos (one git URL per line). Requires SSH access to GitHub.
+git@github.com:bishalr0y/monolisa-font.git
+git@github.com:bishalr0y/berkeley-mono-font.git

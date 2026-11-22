@@ -1,0 +1,1567 @@
+#!/usr/bin/env bash
+# Dotfiles maintenance CLI for bishalr0y/dotfiles.
+set -euo pipefail
+
+readonly SCRIPT_NAME="dot"
+readonly VERSION="1.0.1"
+
+__dot_repo_dir() {
+  local source="${BASH_SOURCE[0]}"
+  while [[ -L "$source" ]]; do
+    local dir
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
+    source="$(readlink "$source")"
+    [[ "$source" != /* ]] && source="${dir}/${source}"
+  done
+  cd -P "$(dirname "$source")" && pwd
+}
+
+DOTFILES_DIR="$(__dot_repo_dir)"
+readonly DOTFILES_DIR
+readonly HOME_DIR="${DOTFILES_DIR}/home"
+readonly BREWFILE="${DOTFILES_DIR}/Brewfile"
+readonly PACKAGES_DIR="${DOTFILES_DIR}/packages"
+readonly HERDR_PLUGIN_SOURCES_FILE="${HOME}/.config/herdr/plugins.txt"
+readonly GITHUB_SSH_KEY="${HOME}/.ssh/id_ed25519"
+readonly BUN_INSTALL_DIR="${BUN_INSTALL:-${HOME}/.bun}"
+
+readonly REX_APP_PATH="/Applications/Rex Beta.app"
+readonly REX_APPCAST_URL="https://blob.superlogical.com/public/rex-app/preview/appcast.xml"
+readonly REX_TEAM_ID="AG92C3PT77"
+readonly REX_DEFAULTS_DOMAIN="com.superlogical.rex"
+readonly REX_APP_SETTINGS_FILE="${HOME}/.config/rex/macos-defaults.conf"
+readonly REX_THEME_NAME="catppuccin-macchiato"
+readonly REX_THEME_IMPORT_ACTION="import_catppuccin_macchiato"
+readonly REX_BUNDLED_CLI="${HOME}/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
+readonly SCROLL_REVERSER_DOMAIN="com.pilotmoon.scroll-reverser"
+readonly SCROLL_REVERSER_APP="/Applications/Scroll Reverser.app"
+readonly FONT_SOURCES_FILE="${DOTFILES_DIR}/fonts/sources.txt"
+
+DOT_OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+
+__print_header() { printf '\n\033[1m==>\033[0m \033[1m%s\033[0m\n' "$1"; }
+__print_success() { printf '\033[32m✓\033[0m %s\n' "$1"; }
+__print_error() { printf '\033[31m✗\033[0m %s\n' "$1" >&2; }
+__print_warning() { printf '\033[33m⚠\033[0m %s\n' "$1"; }
+__print_info() { printf '\033[36mℹ\033[0m %s\n' "$1"; }
+
+__command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+DOT_HEADLESS="${DOT_HEADLESS:-false}"
+
+__confirm() {
+  local prompt="${1:-Continue?}" default="${2:-n}" response=""
+  if [[ "$DOT_HEADLESS" == true || ! -t 0 ]]; then
+    __print_info "${prompt} [${default}] (non-interactive)"
+    [[ "$default" == y ]]
+    return
+  fi
+  if [[ "$default" == y ]]; then
+    read -r -p "${prompt} [Y/n]: " response
+    response="${response:-y}"
+  else
+    read -r -p "${prompt} [y/N]: " response
+    response="${response:-n}"
+  fi
+  [[ "${response,,}" == y || "${response,,}" == yes ]]
+}
+
+__github_ssh_key() {
+  if [[ -f "${GITHUB_SSH_KEY}" ]]; then
+    echo "${GITHUB_SSH_KEY}"
+    return 0
+  fi
+  if [[ -f "${HOME}/.ssh/id_rsa" ]]; then
+    echo "${HOME}/.ssh/id_rsa"
+    return 0
+  fi
+  return 1
+}
+
+__generate_ssh_key() {
+  local email="${1:-}"
+  if [[ -z "$email" ]]; then
+    email="$(git -C "$DOTFILES_DIR" config user.email 2>/dev/null || true)"
+  fi
+  if key="$(__github_ssh_key)"; then
+    __print_success "SSH key already exists: ${key}"
+    return 0
+  fi
+  if [[ -z "$email" ]]; then
+    __print_warning "No email for ssh-keygen (set git user.email in this repo)"
+    return 0
+  fi
+  mkdir -p "${HOME}/.ssh"
+  chmod 700 "${HOME}/.ssh"
+  if ssh-keygen -t ed25519 -C "$email" -f "$GITHUB_SSH_KEY" -N ""; then
+    __print_success "Created ${GITHUB_SSH_KEY}"
+    __print_info "Add the public key: cat ${GITHUB_SSH_KEY}.pub"
+  else
+    __print_error "ssh-keygen failed"
+    return 1
+  fi
+}
+
+__parse_brewfile_entry() {
+  local line="$1"
+  [[ "$line" =~ ^[[:space:]]*# ]] && return 1
+  [[ -z "${line//[[:space:]]/}" ]] && return 1
+  if [[ "$line" =~ ^[[:space:]]*brew[[:space:]]+\"([^\"]+)\" ]]; then
+    printf 'brew\t%s\n' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  if [[ "$line" =~ ^[[:space:]]*cask[[:space:]]+\"([^\"]+)\" ]]; then
+    printf 'cask\t%s\n' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  if [[ "$line" =~ ^[[:space:]]*go[[:space:]]+\"([^\"]+)\" ]]; then
+    printf 'go\t%s\n' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  if [[ "$line" =~ ^[[:space:]]*cargo[[:space:]]+\"([^\"]+)\" ]]; then
+    printf 'cargo\t%s\n' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  if [[ "$line" =~ ^[[:space:]]*npm[[:space:]]+\"([^\"]+)\" ]]; then
+    printf 'npm\t%s\n' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  return 1
+}
+
+__brewfile_package_type() {
+  local name="$1"
+  if brew info --json=v2 --formula "$name" >/dev/null 2>&1; then
+    echo brew
+  elif brew info --json=v2 --cask "$name" >/dev/null 2>&1; then
+    echo cask
+  else
+    echo brew
+  fi
+}
+
+__brewfile_insert_line() {
+  local entry_type="$1" package_line="$2"
+  local new_name="${package_line#*\"}"
+  new_name="${new_name%%\"*}"
+  local temp inserted=false line parsed existing_type existing_name
+  temp="$(mktemp)"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$inserted" == false ]]; then
+      parsed="$(__parse_brewfile_entry "$line" 2>/dev/null)" || parsed=""
+      if [[ -n "$parsed" ]]; then
+        IFS=$'\t' read -r existing_type existing_name <<<"$parsed"
+        if [[ "$entry_type" == brew && "$existing_type" != brew ]]; then
+          printf '%s\n' "$package_line" >>"$temp"
+          inserted=true
+        elif [[ "$entry_type" == cask && "$existing_type" == go ]]; then
+          printf '%s\n' "$package_line" >>"$temp"
+          inserted=true
+        elif [[ "$entry_type" == "$existing_type" && "$new_name" < "$existing_name" ]]; then
+          printf '%s\n' "$package_line" >>"$temp"
+          inserted=true
+        fi
+      elif [[ "$entry_type" == brew && "$line" =~ ^[[:space:]]*cask[[:space:]] ]]; then
+        printf '%s\n' "$package_line" >>"$temp"
+        inserted=true
+      elif [[ "$entry_type" == cask && "$line" =~ ^[[:space:]]*go[[:space:]] ]]; then
+        printf '%s\n' "$package_line" >>"$temp"
+        inserted=true
+      fi
+    fi
+    printf '%s\n' "$line" >>"$temp"
+  done <"$BREWFILE"
+  [[ "$inserted" == false ]] && printf '%s\n' "$package_line" >>"$temp"
+  mv "$temp" "$BREWFILE"
+}
+
+__require_brewfile() {
+  if [[ "$DOT_OS" != "darwin" ]]; then
+    __print_error "package commands need macOS Homebrew"
+    return 1
+  fi
+  if ! __command_exists brew; then
+    __print_error "Homebrew not installed"
+    return 1
+  fi
+  if [[ ! -f "$BREWFILE" ]]; then
+    __print_error "Missing Brewfile: ${BREWFILE}"
+    return 1
+  fi
+}
+
+cmd_package_add() {
+  local package_name="${1:-}" package_type="auto" no_install=false
+  shift || true
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      brew | cask) package_type="$1"; shift ;;
+      --no-install) no_install=true; shift ;;
+      *)
+        __print_error "Unknown option: $1"
+        return 1
+        ;;
+    esac
+  done
+  __require_brewfile || return 1
+  [[ -z "$package_name" ]] && {
+    __print_error "Usage: dot package add <name> [brew|cask] [--no-install]"
+    return 1
+  }
+  if [[ "$package_type" == auto ]]; then
+    package_type="$(__brewfile_package_type "$package_name")"
+    __print_info "Detected: ${package_type}"
+  fi
+  if [[ "$package_type" != brew && "$package_type" != cask ]]; then
+    __print_error "Type must be brew or cask (go/npm: edit Brewfile by hand)"
+    return 1
+  fi
+  local package_line="${package_type} \"${package_name}\""
+  if grep -Fqx -- "$package_line" "$BREWFILE" 2>/dev/null; then
+    __print_warning "Already in Brewfile: ${package_name}"
+    return 0
+  fi
+  if [[ "$no_install" == false ]]; then
+    if [[ "$package_type" == brew ]]; then
+      brew install "$package_name" || return 1
+    else
+      brew install --cask "$package_name" || return 1
+    fi
+  fi
+  __brewfile_insert_line "$package_type" "$package_line"
+  __print_success "Added ${package_type} \"${package_name}\" to Brewfile"
+}
+
+cmd_package_remove() {
+  local package_name="${1:-}" no_uninstall=false
+  shift || true
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --no-uninstall) no_uninstall=true; shift ;;
+      *)
+        __print_error "Unknown option: $1"
+        return 1
+        ;;
+    esac
+  done
+  __require_brewfile || return 1
+  [[ -z "$package_name" ]] && {
+    __print_error "Usage: dot package remove <name> [--no-uninstall]"
+    return 1
+  }
+  local escaped line removed=false package_type="" temp
+  escaped="$(printf '%s' "$package_name" | sed 's/[.[\*^$()+?{|\\]/\\&/g')"
+  temp="$(mktemp)"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" =~ ^[[:space:]]*(brew|cask)[[:space:]]+\"${escaped}\" ]]; then
+      removed=true
+      package_type="${BASH_REMATCH[1]}"
+      continue
+    fi
+    printf '%s\n' "$line" >>"$temp"
+  done <"$BREWFILE"
+  if [[ "$removed" == false ]]; then
+    rm -f "$temp"
+    __print_error "Not found in Brewfile: ${package_name}"
+    return 1
+  fi
+  mv "$temp" "$BREWFILE"
+  if [[ "$no_uninstall" == false ]]; then
+    if [[ "$package_type" == brew ]]; then
+      brew uninstall "$package_name" 2>/dev/null || __print_warning "brew uninstall failed (may not be installed)"
+    else
+      brew uninstall --cask "$package_name" 2>/dev/null || __print_warning "cask uninstall failed"
+    fi
+  fi
+  __print_success "Removed ${package_name} from Brewfile"
+}
+
+cmd_package_list() {
+  local filter="${1:-all}"
+  __require_brewfile || return 1
+  case "$filter" in
+    all | brew | cask | go | cargo | npm) ;;
+    *)
+      __print_error "Filter must be all, brew, cask, go, cargo, or npm"
+      return 1
+      ;;
+  esac
+  local installed_formulas installed_casks
+  installed_formulas="$(brew list --formula 2>/dev/null || true)"
+  installed_casks="$(brew list --cask 2>/dev/null || true)"
+  local line parsed ptype pname
+  while IFS= read -r line; do
+    parsed="$(__parse_brewfile_entry "$line")" || continue
+    IFS=$'\t' read -r ptype pname <<<"$parsed"
+    [[ "$filter" != all && "$filter" != "$ptype" ]] && continue
+    local mark=" "
+    if [[ "$ptype" == brew ]] && grep -Fxq "$pname" <<<"$installed_formulas"; then
+      mark="✓"
+    elif [[ "$ptype" == cask ]] && grep -Fxq "$pname" <<<"$installed_casks"; then
+      mark="✓"
+    elif [[ "$ptype" != brew && "$ptype" != cask ]]; then
+      mark="·"
+    fi
+    printf '  %s %-6s %s\n' "$mark" "$ptype" "$pname"
+  done <"$BREWFILE"
+}
+
+cmd_package_update() {
+  local pkg="${1:-}"
+  __require_brewfile || return 1
+  if [[ -z "$pkg" ]]; then
+    __print_info "Upgrading all Homebrew formulae..."
+    brew upgrade
+    return $?
+  fi
+  local parsed line found_type="" ptype pname
+  while IFS= read -r line; do
+    parsed="$(__parse_brewfile_entry "$line")" || continue
+    IFS=$'\t' read -r ptype pname <<<"$parsed"
+    if [[ "$pname" == "$pkg" ]]; then
+      found_type="$ptype"
+      break
+    fi
+  done <"$BREWFILE"
+  if [[ -z "$found_type" ]]; then
+    __print_warning "Not in Brewfile; trying brew upgrade"
+    brew upgrade "$pkg" 2>/dev/null || brew upgrade --cask "$pkg"
+    return $?
+  fi
+  if [[ "$found_type" == brew ]]; then
+    brew upgrade "$pkg"
+  elif [[ "$found_type" == cask ]]; then
+    brew upgrade --cask "$pkg"
+  else
+    __print_error "dot package update only supports brew/cask entries"
+    return 1
+  fi
+}
+
+cmd_package() {
+  local sub="${1:-list}"
+  shift || true
+  case "$sub" in
+    add) cmd_package_add "$@" ;;
+    remove) cmd_package_remove "$@" ;;
+    list) cmd_package_list "$@" ;;
+    update) cmd_package_update "$@" ;;
+    -h | --help | help)
+      cat <<EOF
+${SCRIPT_NAME} package — edit ${BREWFILE}
+
+  list [all|brew|cask|go|cargo|npm]   Brewfile entries (✓ = installed)
+  add <name> [brew|cask] [--no-install]
+  remove <name> [--no-uninstall]
+  update [name]                       brew upgrade (one pkg or all)
+EOF
+      ;;
+    *)
+      __print_error "Unknown package subcommand: ${sub}"
+      return 1
+      ;;
+  esac
+}
+
+__require_no_args() {
+  local cmd="$1"
+  shift
+  if (($# > 0)); then
+    __print_error "${cmd}: unexpected argument(s): $*"
+    return 1
+  fi
+}
+
+__stow_has_conflicts() {
+  local output
+  output="$(stow -n -v -d "${DOTFILES_DIR}" -t "${HOME}" home 2>&1)" || true
+  if echo "$output" | grep -qE 'would cause conflicts|cannot stow'; then
+    printf '%s\n' "$output"
+    return 0
+  fi
+  return 1
+}
+
+__stow_dry_run() {
+  if ! __command_exists stow; then
+    __print_error "GNU Stow is not installed (brew install stow)"
+    return 1
+  fi
+  __print_info "Dry run: stow home/ → ${HOME}"
+  local output
+  if output="$(__stow_has_conflicts)"; then
+    __print_warning "Stow conflicts (fix before stowing):"
+    echo "$output" | grep -E 'WARNING|cannot stow|^\s+\*' || echo "$output"
+    __print_info "Back up and remove the path under ~, then dot stow"
+    __print_info "Or adopt into the repo: dot stow --adopt (moves files into home/)"
+    return 1
+  fi
+  __print_success "No stow conflicts"
+  return 0
+}
+
+__stow_dotfiles() {
+  local adopt="${1:-false}"
+  if ! __command_exists stow; then
+    __print_error "GNU Stow is not installed (brew install stow)"
+    return 1
+  fi
+
+  if [[ "$adopt" != true ]]; then
+    local conflict_out
+    if conflict_out="$(__stow_has_conflicts)"; then
+      __print_error "Stow aborted due to conflicts"
+      echo "$conflict_out" | grep -E 'WARNING|cannot stow|^\s+\*' || echo "$conflict_out"
+      __print_info "Run: dot stow check   dot stow --adopt"
+      return 1
+    fi
+  else
+    __print_warning "Adopt mode: conflicting files move into ${HOME_DIR}/"
+  fi
+
+  __print_info "Stowing home/ → ${HOME}"
+  if stow -R -v -d "${DOTFILES_DIR}" -t "${HOME}" ${adopt:+--adopt} home; then
+    __print_success "Dotfiles stowed"
+  else
+    __print_error "stow failed"
+    if conflict_out="$(__stow_has_conflicts)"; then
+      echo "$conflict_out" | grep -E 'WARNING|cannot stow|^\s+\*' || true
+    fi
+    return 1
+  fi
+}
+
+__brew_ensure_path() {
+  if [[ "$DOT_OS" != "darwin" ]]; then
+    return 0
+  fi
+  if __command_exists brew; then
+    return 0
+  fi
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    # shellcheck disable=SC1091
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    # shellcheck disable=SC1091
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+}
+
+__install_homebrew() {
+  if [[ "$DOT_OS" != "darwin" ]]; then
+    return 0
+  fi
+  __brew_ensure_path
+  if __command_exists brew; then
+    __print_success "Homebrew already installed"
+    return 0
+  fi
+  __print_header "Install Homebrew"
+  if [[ "$DOT_HEADLESS" == true ]]; then
+    export NONINTERACTIVE=1
+  fi
+  if ! __confirm "Install Homebrew via brew.sh install script?" y; then
+    __print_error "Homebrew is required for dot init"
+    return 1
+  fi
+  local install_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+  if /bin/bash -c "$(curl -fsSL "$install_url")"; then
+    __brew_ensure_path
+    if __command_exists brew; then
+      __print_success "Homebrew installed"
+      return 0
+    fi
+    __print_error "Homebrew install finished but brew is not on PATH"
+    __print_info "Run: eval \"\$(/opt/homebrew/bin/brew shellenv)\"  (Apple Silicon) or open a new terminal"
+    return 1
+  fi
+  __print_error "Homebrew install failed"
+  return 1
+}
+
+__bun_ensure_path() {
+  export BUN_INSTALL="${BUN_INSTALL_DIR}"
+  export PATH="${BUN_INSTALL_DIR}/bin:${PATH}"
+}
+
+__install_bun() {
+  __bun_ensure_path
+  if __command_exists bun; then
+    __print_success "Bun already installed"
+    return 0
+  fi
+  __print_info "Installing Bun..."
+  if curl -fsSL https://bun.sh/install | bash; then
+    __bun_ensure_path
+    if __command_exists bun; then
+      __print_success "Bun installed"
+      return 0
+    fi
+    __print_error "Bun install finished but bun is not on PATH"
+    return 1
+  fi
+  __print_error "Bun install failed"
+  return 1
+}
+
+__vite_plus_ensure_path() {
+  export PATH="${HOME}/.vite-plus/bin:${XDG_DATA_HOME:-${HOME}/.local/share}/vite-plus/bin:${PATH}"
+}
+
+__install_vite_plus() {
+  __vite_plus_ensure_path
+  if __command_exists vp; then
+    __print_success "Vite+ already installed"
+    return 0
+  fi
+  __print_info "Installing Vite+..."
+  if curl -fsSL https://vite.plus | VP_SELF_SETUP_NO_MODIFY_PATH=1 bash; then
+    __vite_plus_ensure_path
+    if __command_exists vp; then
+      __print_success "Vite+ installed"
+      return 0
+    fi
+    __print_error "Vite+ install finished but vp is not on PATH"
+    return 1
+  fi
+  __print_error "Vite+ install failed"
+  return 1
+}
+
+__update_vite_plus_node() {
+  __vite_plus_ensure_path
+  if ! __command_exists vp; then
+    __print_warning "vp not found; skipping Node runtime sync"
+    return 0
+  fi
+  __print_info "Installing Node.js LTS and current (Vite+)..."
+  if vp env install lts && vp env install latest && vp env default lts >/dev/null; then
+    __print_success "Node runtimes up to date"
+  else
+    __print_warning "Vite+ Node runtime update had issues"
+    return 1
+  fi
+}
+
+__install_pi() {
+  if __command_exists pi; then
+    __print_success "pi already on PATH"
+    return 0
+  fi
+  __vite_plus_ensure_path
+  if ! __command_exists vp; then
+    __print_warning "vp not found; install pi manually or run dot init again after Vite+"
+    return 1
+  fi
+  __print_info "Installing pi via Vite+..."
+  if vp install -g @earendil-works/pi-coding-agent; then
+    __vite_plus_ensure_path
+    hash -r 2>/dev/null || true
+    if __command_exists pi; then
+      __print_success "pi installed"
+      return 0
+    fi
+  fi
+  __print_error "pi install failed"
+  return 1
+}
+
+__install_fonts() {
+  if [[ ! -f "$FONT_SOURCES_FILE" ]]; then
+    __print_warning "No ${FONT_SOURCES_FILE}; skipping fonts"
+    return 0
+  fi
+  local github_key repo_urls=() repo font_temp_dir font_install_dir font_count=0
+  if ! github_key="$(__github_ssh_key)"; then
+    __print_warning "SSH key not found; skipping private fonts"
+    return 0
+  fi
+  if ! __confirm "Have you added the SSH key to GitHub (for private font repos)?" n; then
+    __print_warning "Skipping font installation"
+    return 0
+  fi
+  while IFS= read -r repo || [[ -n "$repo" ]]; do
+    repo="${repo%%#*}"
+    repo="${repo//[[:space:]]/}"
+    [[ -z "$repo" ]] && continue
+    repo_urls+=("$repo")
+  done <"$FONT_SOURCES_FILE"
+  if ((${#repo_urls[@]} == 0)); then
+    __print_info "No font repos listed in fonts/sources.txt"
+    return 0
+  fi
+  font_install_dir="${HOME}/Library/Fonts"
+  [[ "$DOT_OS" == "linux" ]] && font_install_dir="${HOME}/.local/share/fonts"
+  mkdir -p "$font_install_dir"
+  for repo in "${repo_urls[@]}"; do
+    font_temp_dir="$(mktemp -d)" || return 1
+    __print_info "Cloning ${repo}..."
+    if GIT_SSH_COMMAND="ssh -i '${github_key}' -o IdentitiesOnly=yes" git clone --depth 1 "$repo" "$font_temp_dir"; then
+      while IFS= read -r -d '' font_file; do
+        cp "$font_file" "$font_install_dir/"
+        ((font_count++)) || true
+      done < <(find "$font_temp_dir" -type f \( -name '*.otf' -o -name '*.ttf' \) -print0)
+      __print_success "Fonts from ${repo##*/}"
+    else
+      __print_error "Failed to clone ${repo}"
+    fi
+    rm -rf "$font_temp_dir"
+  done
+  if ((font_count > 0)); then
+    [[ "$DOT_OS" == "linux" ]] && __command_exists fc-cache && fc-cache -f "$font_install_dir" >/dev/null
+    __print_success "Installed ${font_count} font file(s) → ${font_install_dir}"
+  else
+    __print_warning "No .otf/.ttf files found in configured repos"
+  fi
+}
+
+__list_contains() {
+  grep -Fqx -- "$1" <<<"$2"
+}
+
+__save_failed_packages() {
+  (($# == 0)) && return 0
+  mkdir -p "$PACKAGES_DIR"
+  local failed_file="${PACKAGES_DIR}/failed_packages_$(date +%Y%m%d_%H%M%S)_$$.txt"
+  printf '%s\n' "$@" | sort -u >"$failed_file"
+  __print_info "Failed packages saved to: ${failed_file}"
+}
+
+__brew_install_one() {
+  local package_type="$1" package_name="$2"
+  case "$package_type" in
+    brew) brew install "$package_name" ;;
+    cask) brew install --cask "$package_name" ;;
+    *)
+      __print_error "Unsupported package type: ${package_type}"
+      return 1
+      ;;
+  esac
+}
+
+__record_brewfile_missing() {
+  local missing=() line parsed package_type package_name
+  __brew_ensure_path
+  local installed_formulas installed_casks
+  installed_formulas="$(brew list --formula 2>/dev/null)" || return 1
+  installed_casks="$(brew list --cask 2>/dev/null)" || return 1
+  while IFS= read -r line; do
+    parsed="$(__parse_brewfile_entry "$line")" || continue
+    IFS=$'\t' read -r package_type package_name <<<"$parsed"
+    if [[ "$package_type" == "brew" ]]; then
+      __list_contains "$package_name" "$installed_formulas" || missing+=("brew:${package_name}")
+    elif [[ "$package_type" == "cask" ]]; then
+      __list_contains "$package_name" "$installed_casks" || missing+=("cask:${package_name}")
+    fi
+  done <"$BREWFILE"
+  ((${#missing[@]} > 0)) && __save_failed_packages "${missing[@]}"
+}
+
+__brew_bundle_install() {
+  if [[ "$DOT_OS" != "darwin" ]] || [[ ! -f "$BREWFILE" ]]; then
+    return 0
+  fi
+  __brew_ensure_path
+  if ! __command_exists brew; then
+    __print_warning "Homebrew not found; skipping Brewfile"
+    return 0
+  fi
+  __print_info "Installing from Brewfile..."
+  if brew bundle install --file="$BREWFILE"; then
+    __print_success "Brewfile installed"
+  else
+    __record_brewfile_missing || true
+    __print_error "brew bundle install failed (dot check-packages | dot retry-failed)"
+    return 1
+  fi
+}
+
+__sync_herdr_plugins() {
+  if ! __command_exists herdr; then
+    __print_warning "herdr not on PATH; skipping plugin sync (brew install herdr)"
+    return 0
+  fi
+  if [[ ! -f "$HERDR_PLUGIN_SOURCES_FILE" ]]; then
+    __print_warning "Missing ${HERDR_PLUGIN_SOURCES_FILE}; stow dotfiles or add plugins.txt"
+    return 0
+  fi
+
+  local plugin_source failed=()
+  __print_info "Syncing Herdr plugins from plugins.txt..."
+  while IFS= read -r plugin_source || [[ -n "$plugin_source" ]]; do
+    plugin_source="${plugin_source%%#*}"
+    plugin_source="${plugin_source//[[:space:]]/}"
+    [[ -z "$plugin_source" ]] && continue
+    if herdr plugin install "$plugin_source" --yes; then
+      __print_success "Herdr plugin: ${plugin_source}"
+    else
+      failed+=("$plugin_source")
+    fi
+  done <"$HERDR_PLUGIN_SOURCES_FILE"
+
+  if ((${#failed[@]} > 0)); then
+    __print_error "Herdr plugin sync failed: ${failed[*]}"
+    return 1
+  fi
+
+  if herdr status server >/dev/null 2>&1; then
+    herdr server reload-config >/dev/null 2>&1 || true
+    __print_success "Herdr server config reloaded"
+  fi
+  __print_success "Herdr plugins up to date"
+}
+
+__update_homebrew_packages() {
+  if [[ "$DOT_OS" != "darwin" ]]; then
+    return 0
+  fi
+  __brew_ensure_path
+  if ! __command_exists brew; then
+    return 0
+  fi
+  __print_info "Updating Homebrew..."
+  if ! brew update; then
+    __print_error "brew update failed"
+    return 1
+  fi
+  local outdated
+  if ! outdated="$(brew outdated)"; then
+    __print_error "brew outdated failed"
+    return 1
+  fi
+  if [[ -z "$outdated" ]]; then
+    __print_success "Homebrew packages up to date"
+  else
+    __print_info "Upgrading:"
+    echo "$outdated"
+    if brew upgrade --yes; then
+      __print_success "Homebrew upgraded"
+    else
+      __print_error "brew upgrade failed"
+      return 1
+    fi
+  fi
+  if ! brew bundle check --file="$BREWFILE" >/dev/null 2>&1; then
+    __print_info "Installing missing Brewfile entries..."
+    if brew bundle install --file="$BREWFILE"; then
+      __print_success "Brewfile gap fill OK"
+    else
+      __record_brewfile_missing || true
+      __print_warning "Some Brewfile packages missing (dot retry-failed)"
+    fi
+  fi
+  __print_info "Pruning Homebrew..."
+  if brew cleanup --prune=all; then
+    __print_success "Homebrew cleanup done"
+  else
+    __print_warning "brew cleanup had errors (continuing)"
+  fi
+}
+
+__rex_cli() {
+  if [[ -n "${REX_BIN_DIR:-}" && -x "${REX_BIN_DIR}/rex" ]]; then
+    echo "${REX_BIN_DIR}/rex"
+  elif [[ -x "$REX_BUNDLED_CLI" ]]; then
+    echo "$REX_BUNDLED_CLI"
+  elif __command_exists rex; then
+    command -v rex
+  else
+    return 1
+  fi
+}
+
+__rex_installed_build() {
+  defaults read "${REX_APP_PATH}/Contents/Info" CFBundleVersion 2>/dev/null || true
+}
+
+__rex_latest_release() {
+  local appcast
+  appcast="$(curl -fsSL "$REX_APPCAST_URL")" || return 1
+  awk '
+    /<sparkle:version>/ { gsub(/.*<sparkle:version>|<\/sparkle:version>.*/, ""); build = $0 }
+    /<enclosure / && build != "" {
+      match($0, /url="[^"]+"/)
+      url = substr($0, RSTART + 5, RLENGTH - 6)
+      if (best == "" || build + 0 > best + 0) { best = build; best_url = url }
+      build = ""
+    }
+    END { if (best != "") print best, best_url }
+  ' <<<"$appcast"
+}
+
+__install_rex_dmg() {
+  local url="$1" work mount app
+  work="$(mktemp -d)" || return 1
+  mount="${work}/mount"
+
+  __print_info "Downloading ${url##*/}..."
+  if ! curl -fL --progress-bar -o "${work}/rex.dmg" "$url"; then
+    rm -rf "$work"
+    return 1
+  fi
+  if ! hdiutil attach -nobrowse -readonly -quiet -mountpoint "$mount" "${work}/rex.dmg"; then
+    rm -rf "$work"
+    return 1
+  fi
+
+  app="$(find "$mount" -maxdepth 1 -name '*.app' -print -quit)"
+  local status=1
+  if [[ -z "$app" ]]; then
+    __print_error "No .app in Rex disk image"
+  elif ! codesign --verify --deep --strict "$app" 2>/dev/null \
+    || ! codesign -dv "$app" 2>&1 | grep -q "^TeamIdentifier=${REX_TEAM_ID}$"; then
+    __print_error "Rex disk image failed codesign check"
+  elif ditto "$app" "${REX_APP_PATH}.new" \
+    && rm -rf "$REX_APP_PATH" \
+    && mv "${REX_APP_PATH}.new" "$REX_APP_PATH"; then
+    status=0
+  fi
+
+  hdiutil detach -quiet "$mount" 2>/dev/null || true
+  rm -rf "$work" "${REX_APP_PATH}.new"
+  return "$status"
+}
+
+__update_rex_app() {
+  local release latest url installed rex_bin
+  if ! release="$(__rex_latest_release)" || [[ -z "$release" ]]; then
+    __print_warning "Could not read Rex appcast; skipping app update"
+    return 1
+  fi
+  read -r latest url <<<"$release"
+  installed="$(__rex_installed_build)"
+
+  if [[ -n "$installed" && "$installed" -ge "$latest" ]]; then
+    __print_success "Rex app up to date (build ${installed})"
+    return 0
+  fi
+
+  if [[ -n "$installed" ]] && pgrep -qf "${REX_APP_PATH}/Contents/MacOS/" 2>/dev/null; then
+    __print_info "Rex build ${latest} available (installed: ${installed:-none}); triggering in-app update..."
+    if rex_bin="$(__rex_cli)" && "$rex_bin" do client.update.accept >/dev/null 2>&1; then
+      __print_success "Rex is installing build ${latest} and will relaunch"
+    else
+      __print_warning "In-app update failed; use Rex → Install Update, or quit Rex and run: ${SCRIPT_NAME} update"
+    fi
+    return 0
+  fi
+
+  if [[ -z "$installed" && ! -d "$REX_APP_PATH" ]]; then
+    __print_info "Rex not installed; installing build ${latest}..."
+  else
+    __print_info "Installing Rex build ${latest}..."
+  fi
+  if __install_rex_dmg "$url"; then
+    __print_success "Rex build ${latest} installed"
+  else
+    __print_error "Rex app install failed"
+    return 1
+  fi
+}
+
+__apply_rex_app_settings() {
+  if [[ ! -f "$REX_APP_SETTINGS_FILE" ]]; then
+    __print_warning "Missing ${REX_APP_SETTINGS_FILE} (stow first)"
+    return 0
+  fi
+  local key type value current expected changed=0
+  while read -r key type value; do
+    [[ -z "$key" || "$key" == \#* ]] && continue
+    current="$(defaults read "$REX_DEFAULTS_DOMAIN" "$key" 2>/dev/null || true)"
+    expected="$value"
+    if [[ "$type" == bool ]]; then
+      [[ "$value" == true ]] && expected=1 || expected=0
+    fi
+    [[ "$current" == "$expected" ]] && continue
+    if defaults write "$REX_DEFAULTS_DOMAIN" "$key" "-${type}" "$value"; then
+      changed=$((changed + 1))
+    else
+      __print_error "Failed to write Rex setting ${key}"
+      return 1
+    fi
+  done < "$REX_APP_SETTINGS_FILE"
+
+  if ((changed == 0)); then
+    __print_success "Rex app settings match macos-defaults.conf"
+  elif pgrep -qf "${REX_APP_PATH}/Contents/MacOS/" 2>/dev/null; then
+    __print_success "Wrote ${changed} setting(s); quit Rex (Cmd+Q) and reopen to apply UI changes"
+  else
+    __print_success "Wrote ${changed} setting(s)"
+  fi
+}
+
+__reload_rex_config() {
+  local rex_bin
+  if ! rex_bin="$(__rex_cli)"; then
+    __print_warning "rex CLI not found; launch Rex once or skip reload"
+    return 0
+  fi
+  if ! "$rex_bin" config check >/dev/null; then
+    __print_error "Rex config invalid; run: rex config check"
+    return 1
+  fi
+  if "$rex_bin" --autostart=false server status >/dev/null 2>&1; then
+    "$rex_bin" --autostart=false config reload >/dev/null
+    __print_success "Rex Lua config reloaded (init.lua)"
+  else
+    __print_success "Rex Lua config is valid"
+  fi
+}
+
+__rex_theme_imported() {
+  defaults export "$REX_DEFAULTS_DOMAIN" - 2>/dev/null \
+    | plutil -convert xml1 -o - - 2>/dev/null \
+    | awk '/<key>Workspace.customThemes<\/key>/{f=1; next} f&&/<\/data>/{exit} f&&!/<data>/{print}' \
+    | base64 -D 2>/dev/null \
+    | grep -q "\"name\":\"${REX_THEME_NAME}\""
+}
+
+__import_rex_theme() {
+  if __rex_theme_imported; then
+    __print_success "Rex theme ${REX_THEME_NAME} is already imported"
+    return 0
+  fi
+  local rex_bin
+  if ! pgrep -qf "${REX_APP_PATH}/Contents/MacOS/" 2>/dev/null || ! rex_bin="$(__rex_cli)"; then
+    __print_warning "Launch Rex and run: ${SCRIPT_NAME} update  (or palette: Import Catppuccin Macchiato Theme)"
+    return 0
+  fi
+  if "$rex_bin" do "$REX_THEME_IMPORT_ACTION" >/dev/null 2>&1; then
+    __print_success "Imported Rex theme ${REX_THEME_NAME}"
+  else
+    __print_warning "Theme import failed; enable Remote Control in macos-defaults.conf and try again"
+  fi
+}
+
+__setup_rex_terminfo() {
+  local rex_bin
+  rex_bin="$(__rex_cli)" || {
+    __print_warning "rex CLI not found; skipping terminfo"
+    return 0
+  }
+  if "$rex_bin" terminfo status 2>/dev/null | grep -q '^Ready:'; then
+    __print_success "Rex terminfo already set up"
+  elif "$rex_bin" terminfo setup >/dev/null; then
+    __print_success "Installed Rex terminfo and ssh guard"
+  else
+    __print_error "rex terminfo setup failed"
+    return 1
+  fi
+}
+
+__setup_rex_agents() {
+  local rex_bin
+  rex_bin="$(__rex_cli)" || return 0
+  if "$rex_bin" skill setup >/dev/null 2>&1; then
+    __print_success "Rex agent skill installed"
+  else
+    __print_warning "rex skill setup failed (optional)"
+  fi
+}
+
+# Pilot Moon Scroll Reverser (https://pilotmoon.com/scrollreverser/): trackpad
+# natural scroll stays on; the app inverts mouse wheel only.
+__setup_scroll_reverser() {
+  if [[ "$DOT_OS" != "darwin" ]]; then
+    return 0
+  fi
+  if [[ ! -d "$SCROLL_REVERSER_APP" ]]; then
+    __print_warning "Scroll Reverser not installed (brew install --cask scroll-reverser)"
+    return 0
+  fi
+
+  defaults write -g com.apple.swipescrolldirection -bool true
+
+  local key value
+  while read -r key value; do
+    defaults write "$SCROLL_REVERSER_DOMAIN" "$key" -bool "$value"
+  done <<'SETTINGS'
+InvertScrollingOn true
+ReverseMouse true
+ReverseTrackpad false
+ReverseTablet false
+ReverseY true
+ReverseX false
+StartAtLogin true
+SETTINGS
+
+  if pgrep -xq "Scroll Reverser"; then
+    osascript -e 'quit app "Scroll Reverser"' >/dev/null 2>&1 || true
+    sleep 1
+  fi
+  open -g "$SCROLL_REVERSER_APP" || true
+  __print_success "Scroll Reverser configured (trackpad natural, mouse traditional)"
+  __print_info "Grant Scroll Reverser Accessibility in System Settings → Privacy & Security if prompted"
+}
+
+__pi_sync() {
+  if ! __command_exists pi; then
+    __install_pi || return 0
+  fi
+  __print_info "Updating pi and npm packages from settings.json..."
+  if (cd "$DOTFILES_DIR" && pi update --all); then
+    __print_success "pi updated"
+  else
+    __print_error "pi update failed"
+    return 1
+  fi
+}
+
+cmd_stow() {
+  local adopt=false
+  if [[ "${1:-}" == check ]]; then
+    shift
+    __require_no_args stow "$@" || return 1
+    __print_header "Stow check"
+    __stow_dry_run
+    return
+  fi
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --adopt) adopt=true; shift ;;
+      -h | --help | help)
+        cat <<EOF
+${SCRIPT_NAME} stow — link home/ into ~
+
+  dot stow           stow -R home → ~
+  dot stow check     dry run; list conflicts
+  dot stow --adopt   move conflicting files into home/, then stow
+
+When stow says "cannot stow over existing target", the path in ~ is a real
+file, not a symlink. Back it up and remove it, or use --adopt once.
+EOF
+        return 0
+        ;;
+      *)
+        __print_error "Unknown stow option: $1"
+        __print_info "Run: ${SCRIPT_NAME} stow help"
+        return 1
+        ;;
+    esac
+  done
+  __print_header "Stow"
+  if [[ "$adopt" == true ]]; then
+    __stow_dotfiles true
+  else
+    __stow_dotfiles false
+  fi
+}
+
+cmd_rex() {
+  if (($# == 0)); then
+    __print_error "Usage: ${SCRIPT_NAME} rex apply | reload"
+    __print_info "Full Rex maintenance runs in ${SCRIPT_NAME} init and ${SCRIPT_NAME} update"
+    return 1
+  fi
+  local sub="$1"
+  shift || true
+  case "$sub" in
+    apply)
+      __require_no_args rex "$@" || return 1
+      __print_header "Rex app settings"
+      __apply_rex_app_settings
+      ;;
+    reload)
+      __require_no_args rex "$@" || return 1
+      __print_header "Rex Lua config"
+      __reload_rex_config
+      ;;
+    -h|--help|help)
+      cat <<EOF
+${SCRIPT_NAME} rex — local Rex edits (no git pull)
+
+  apply   macos-defaults.conf → com.superlogical.rex (then Cmd+Q Rex for UI/font)
+  reload  init.lua via rex config reload
+
+  App update, theme, terminfo, Scroll Reverser: ${SCRIPT_NAME} update
+EOF
+      ;;
+    *)
+      __print_error "Unknown rex subcommand: ${sub}"
+      __print_info "Run: ${SCRIPT_NAME} rex help"
+      return 1
+      ;;
+  esac
+}
+
+cmd_init() {
+  local skip_ssh=false skip_font=false
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --skip-ssh) skip_ssh=true ;;
+      --skip-font) skip_font=true ;;
+      --headless)
+        DOT_HEADLESS=true
+        skip_ssh=true
+        skip_font=true
+        ;;
+      -h | --help | help)
+        cat <<EOF
+${SCRIPT_NAME} init — first-time setup
+
+  Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Herdr, Rex,
+  Scroll Reverser, and pi (via Vite+).
+
+Options:
+  --skip-ssh    Skip SSH key generation
+  --skip-font   Skip private font clones (fonts/sources.txt)
+  --headless    Non-interactive; skips SSH and fonts
+EOF
+        return 0
+        ;;
+      *)
+        __print_error "Unknown option: $1"
+        __print_info "Run: ${SCRIPT_NAME} init --help"
+        return 1
+        ;;
+    esac
+    shift
+  done
+  __print_header "Initialize dotfiles"
+  if [[ "$DOT_OS" == "darwin" ]]; then
+    __install_homebrew || return 1
+    __brew_bundle_install || return 1
+    __stow_dotfiles || return 1
+  else
+    __stow_dotfiles || return 1
+    __brew_bundle_install || return 1
+  fi
+  __install_bun || __print_warning "Bun install failed; continuing"
+  __install_vite_plus || __print_warning "Vite+ install failed; continuing"
+  if [[ "$skip_ssh" == false ]]; then
+    __generate_ssh_key "" || __print_warning "SSH key step skipped or failed"
+  fi
+  if [[ "$skip_font" == false ]]; then
+    __install_fonts || __print_warning "Font install had issues"
+  fi
+  __sync_herdr_plugins || __print_warning "Herdr plugin sync had issues"
+  if [[ "$DOT_OS" == "darwin" ]]; then
+    __update_rex_app || __print_warning "Rex app update failed; continuing"
+    __apply_rex_app_settings || __print_warning "Rex defaults failed; continuing"
+    __reload_rex_config || __print_warning "Rex Lua reload failed; continuing"
+    __import_rex_theme || true
+    __setup_rex_terminfo || true
+    __setup_rex_agents || true
+    __setup_scroll_reverser || __print_warning "Scroll Reverser setup failed; continuing"
+  fi
+  __install_pi || __print_warning "pi install skipped"
+  __pi_sync || __print_warning "pi update had issues"
+  __print_header "Done"
+  __print_info "Optional: ${SCRIPT_NAME} link  (add dot to PATH)"
+}
+
+cmd_update() {
+  __require_no_args update "$@" || return 1
+  __print_header "Update dotfiles"
+  if git -C "$DOTFILES_DIR" pull; then
+    __print_success "Git pull OK"
+  else
+    __print_error "git pull failed"
+    return 1
+  fi
+  __update_homebrew_packages || __print_warning "Homebrew step had issues"
+  __stow_dotfiles || return 1
+  __update_vite_plus_node || __print_warning "Vite+ Node step had issues"
+  __sync_herdr_plugins || __print_warning "Herdr plugin sync had issues"
+  if [[ "$DOT_OS" == "darwin" ]]; then
+    __update_rex_app || __print_warning "Rex app update failed; continuing"
+    __reload_rex_config || __print_warning "Rex config reload failed; continuing"
+    __apply_rex_app_settings || __print_warning "Rex app settings failed; continuing"
+    __import_rex_theme || true
+    __setup_scroll_reverser || __print_warning "Scroll Reverser setup failed; continuing"
+  fi
+  __pi_sync || __print_warning "pi update had issues"
+}
+
+cmd_check_packages() {
+  __require_no_args check-packages "$@" || return 1
+  __print_header "Check Brewfile packages"
+  if [[ "$DOT_OS" != "darwin" ]]; then
+    __print_warning "check-packages is for macOS Homebrew"
+    return 0
+  fi
+  __brew_ensure_path
+  if ! __command_exists brew; then
+    __print_error "Homebrew not installed"
+    return 1
+  fi
+  local missing_brew=() missing_cask=() line parsed package_type package_name
+  local installed_formulas installed_casks
+  installed_formulas="$(brew list --formula 2>/dev/null)" || return 1
+  installed_casks="$(brew list --cask 2>/dev/null)" || return 1
+  while IFS= read -r line; do
+    parsed="$(__parse_brewfile_entry "$line")" || continue
+    IFS=$'\t' read -r package_type package_name <<<"$parsed"
+    if [[ "$package_type" == "brew" ]]; then
+      if __list_contains "$package_name" "$installed_formulas"; then
+        __print_success "brew ${package_name}"
+      else
+        missing_brew+=("$package_name")
+        __print_warning "missing brew: ${package_name}"
+      fi
+    elif [[ "$package_type" == "cask" ]]; then
+      if __list_contains "$package_name" "$installed_casks"; then
+        __print_success "cask ${package_name}"
+      else
+        missing_cask+=("$package_name")
+        __print_warning "missing cask: ${package_name}"
+      fi
+    fi
+  done <"$BREWFILE"
+  if ((${#missing_brew[@]} + ${#missing_cask[@]} == 0)); then
+    __print_success "All Brewfile brew/cask entries installed"
+    return 0
+  fi
+  __print_info "Run: dot retry-failed  or  brew bundle install --file=${BREWFILE}"
+  return 1
+}
+
+cmd_retry_failed() {
+  __require_no_args retry-failed "$@" || return 1
+  __print_header "Retry failed packages"
+  __brew_ensure_path
+  local failed_files=() failed_file pending_file
+  while IFS= read -r failed_file; do
+    failed_files+=("$failed_file")
+  done < <(find "${PACKAGES_DIR}" -name "failed_packages_*.txt" -type f 2>/dev/null | sort)
+  if ((${#failed_files[@]} == 0)); then
+    if ! brew bundle check --file="$BREWFILE" >/dev/null 2>&1; then
+      __record_brewfile_missing
+      while IFS= read -r failed_file; do
+        failed_files+=("$failed_file")
+      done < <(find "${PACKAGES_DIR}" -name "failed_packages_*.txt" -type f 2>/dev/null | sort)
+    fi
+  fi
+  if ((${#failed_files[@]} == 0)); then
+    __print_info "No failed package list; running brew bundle install..."
+    brew bundle install --file="$BREWFILE"
+    return $?
+  fi
+  pending_file="$(mktemp)"
+  for failed_file in "${failed_files[@]}"; do
+    grep -v '^#' "$failed_file" >>"$pending_file" 2>/dev/null || true
+  done
+  sort -u -o "$pending_file" "$pending_file"
+  local retry_count=0 success_count=0 remaining=() package_info package_type package_name
+  while IFS= read -r package_info; do
+    [[ -z "$package_info" ]] && continue
+    ((retry_count++)) || true
+    if [[ "$package_info" =~ ^(brew|cask):(.+)$ ]]; then
+      package_type="${BASH_REMATCH[1]}"
+      package_name="${BASH_REMATCH[2]}"
+    else
+      __print_warning "Skipping unrecognized line: ${package_info}"
+      remaining+=("$package_info")
+      continue
+    fi
+    __print_info "Retrying ${package_type} ${package_name}..."
+    if __brew_install_one "$package_type" "$package_name" 2>/dev/null; then
+      __print_success "Installed ${package_name}"
+      ((success_count++)) || true
+    else
+      remaining+=("${package_type}:${package_name}")
+    fi
+  done <"$pending_file"
+  rm -f "$pending_file"
+  __print_info "Retry complete: ${success_count}/${retry_count}"
+  if ((${#remaining[@]} == 0)); then
+    rm -f "${failed_files[@]}"
+    __print_success "All recorded packages installed"
+    return 0
+  fi
+  __save_failed_packages "${remaining[@]}"
+  rm -f "${failed_files[@]}"
+  return 1
+}
+
+cmd_gen_ssh_key() {
+  local email=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h | --help | help)
+        echo "dot gen-ssh-key [email] — create ~/.ssh/id_ed25519 when missing"
+        return 0
+        ;;
+      *)
+        email="$1"
+        shift
+        ;;
+    esac
+  done
+  __print_header "SSH key"
+  __generate_ssh_key "$email"
+}
+
+__doctor_broken_symlinks() {
+  local broken=0 link
+  while IFS= read -r -d '' link; do
+    if [[ ! -e "$link" ]]; then
+      ((broken++)) || true
+    fi
+  done < <(find "${HOME}" -maxdepth 3 -type l -print0 2>/dev/null)
+
+  if ((broken == 0)); then
+    __print_success "No broken symlinks (depth ≤3 under ~)"
+  else
+    __print_warning "${broken} broken symlink(s) under ~ (depth ≤3)"
+    return 1
+  fi
+}
+
+__doctor_brew_bundle() {
+  if [[ ! -f "$BREWFILE" ]]; then
+    return 0
+  fi
+  if ! __command_exists brew; then
+    __print_warning "Brewfile present but brew missing"
+    return 1
+  fi
+  if brew bundle check --file="$BREWFILE" >/dev/null 2>&1; then
+    __print_success "Brewfile packages satisfied"
+  else
+    __print_warning "Brewfile has missing packages (run: brew bundle install --file=${BREWFILE})"
+    return 1
+  fi
+}
+
+__doctor_rex_defaults_drift() {
+  if [[ ! -f "$REX_APP_SETTINGS_FILE" ]]; then
+    __print_warning "No ${REX_APP_SETTINGS_FILE}; run: ${SCRIPT_NAME} stow"
+    return 1
+  fi
+
+  local key type value current expected drifted=() drift_count=0
+  while read -r key type value; do
+    [[ -z "$key" || "$key" == \#* ]] && continue
+    current="$(defaults read "$REX_DEFAULTS_DOMAIN" "$key" 2>/dev/null || true)"
+    expected="$value"
+    if [[ "$type" == bool ]]; then
+      [[ "$value" == true ]] && expected=1 || expected=0
+    fi
+    if [[ "$current" == "$expected" ]]; then
+      continue
+    fi
+    drifted+=("$key")
+    ((drift_count++)) || true
+  done <"$REX_APP_SETTINGS_FILE"
+
+  if ((drift_count == 0)); then
+    __print_success "Rex defaults match macos-defaults.conf"
+    return 0
+  fi
+
+  __print_warning "Rex defaults drift (${drift_count}): ${drifted[*]}"
+  __print_info "Fix: ${SCRIPT_NAME} rex apply  (then quit Rex if UI prefs changed)"
+  return 1
+}
+
+__doctor_optional_tools() {
+  local tool missing=()
+  for tool in git brew stow nvim jq bun vp herdr rex pi; do
+    if __command_exists "$tool"; then
+      __print_success "${tool}"
+    else
+      missing+=("$tool")
+    fi
+  done
+  if ((${#missing[@]} > 0)); then
+    __print_warning "Not on PATH: ${missing[*]}"
+  fi
+  if [[ -d "$SCROLL_REVERSER_APP" ]]; then
+    __print_success "Scroll Reverser app"
+  elif [[ "$DOT_OS" == "darwin" ]]; then
+    __print_warning "Scroll Reverser not installed (Brewfile cask scroll-reverser)"
+  fi
+  if key="$(__github_ssh_key)"; then
+    __print_success "SSH key: ${key}"
+  else
+    __print_warning "No SSH key (~/.ssh/id_ed25519)"
+  fi
+  if [[ -f "$FONT_SOURCES_FILE" ]] && grep -qv '^[[:space:]]*#' "$FONT_SOURCES_FILE" 2>/dev/null; then
+    local font_count
+    font_count="$(find "${HOME}/Library/Fonts" -maxdepth 1 \( -name '*.otf' -o -name '*.ttf' \) 2>/dev/null | wc -l | tr -d ' ')"
+    if [[ "$font_count" -gt 0 ]]; then
+      __print_success "Fonts in ~/Library/Fonts (${font_count} files)"
+    else
+      __print_warning "fonts/sources.txt configured but no fonts in ~/Library/Fonts"
+    fi
+  fi
+}
+
+cmd_doctor() {
+  __require_no_args doctor "$@" || return 1
+  __print_header "Doctor"
+  local issues=0
+
+  __print_info "Platform: ${DOT_OS:-unknown}"
+  if [[ -d "$DOTFILES_DIR/.git" ]]; then
+    __print_success "Dotfiles repo: ${DOTFILES_DIR}"
+  else
+    __print_warning "Not a git checkout: ${DOTFILES_DIR}"
+    ((issues++)) || true
+  fi
+
+  __command_exists stow && __print_success "stow" || { __print_error "stow missing"; ((issues++)) || true; }
+  __command_exists git && __print_success "git" || { __print_error "git missing"; ((issues++)) || true; }
+
+  __doctor_optional_tools
+
+  if [[ -f "${HOME_DIR}/.config/herdr/plugins.txt" ]]; then
+    __print_success "herdr/plugins.txt tracked in repo"
+  else
+    __print_warning "missing home/.config/herdr/plugins.txt"
+    ((issues++)) || true
+  fi
+
+  __doctor_broken_symlinks || ((issues++)) || true
+  if __command_exists stow; then
+    if __stow_has_conflicts >/dev/null; then
+      __print_warning "Stow conflicts (run: dot stow check)"
+      ((issues++)) || true
+    else
+      __print_success "Stow dry run OK"
+    fi
+  fi
+  __doctor_brew_bundle || ((issues++)) || true
+
+  if [[ "$DOT_OS" == "darwin" ]]; then
+    if [[ -d "$REX_APP_PATH" ]]; then
+      local build
+      build="$(__rex_installed_build)"
+      __print_success "Rex Beta installed${build:+ (build ${build})}"
+    else
+      __print_warning "Rex Beta not at ${REX_APP_PATH}"
+      ((issues++)) || true
+    fi
+    if __rex_cli >/dev/null; then
+      __print_success "rex CLI"
+    else
+      __print_warning "rex CLI not found (open Rex Beta once)"
+      ((issues++)) || true
+    fi
+    __doctor_rex_defaults_drift || ((issues++)) || true
+  elif [[ -f "$REX_APP_SETTINGS_FILE" ]]; then
+    __print_info "Rex defaults check skipped (not macOS)"
+  fi
+
+  if ((issues == 0)); then
+    __print_success "Doctor: no issues"
+    return 0
+  fi
+
+  __print_warning "Doctor: ${issues} issue(s)"
+  return 1
+}
+
+cmd_link() {
+  __require_no_args link "$@" || return 1
+  __print_header "Link dot on PATH"
+  local target_dir="/usr/local/bin" link_path="${target_dir}/${SCRIPT_NAME}"
+  if [[ ! -w "$target_dir" ]]; then
+    __print_info "Using ~/.local/bin (no write access to /usr/local/bin)"
+    target_dir="${HOME}/.local/bin"
+    link_path="${target_dir}/${SCRIPT_NAME}"
+    mkdir -p "$target_dir"
+  fi
+  [[ -L "$link_path" ]] && rm -f "$link_path"
+  if ln -s "${DOTFILES_DIR}/dot" "$link_path"; then
+    __print_success "Linked ${link_path}"
+  else
+    __print_error "Failed to create symlink"
+    return 1
+  fi
+}
+
+cmd_unlink() {
+  __require_no_args unlink "$@" || return 1
+  __print_header "Unlink dot"
+  local paths=(
+    "/usr/local/bin/${SCRIPT_NAME}"
+    "${HOME}/.local/bin/${SCRIPT_NAME}"
+    "/usr/local/bin/dotfiles"
+    "${HOME}/.local/bin/dotfiles"
+  )
+  local found=false link_path
+  for link_path in "${paths[@]}"; do
+    if [[ -L "$link_path" ]]; then
+      rm -f "$link_path" && __print_success "Removed ${link_path}" && found=true
+    fi
+  done
+  [[ "$found" == false ]] && __print_warning "No dot symlink found"
+}
+
+cmd_edit() {
+  __require_no_args edit "$@" || return 1
+  local editor="${EDITOR:-nvim}"
+  if __command_exists "$editor"; then
+    exec "$editor" "$DOTFILES_DIR"
+  fi
+  __print_error "Editor not found: ${editor}"
+  return 1
+}
+
+cmd_help() {
+  cat <<EOF
+${SCRIPT_NAME} — dotfiles (${VERSION})
+
+Commands:
+  init                bootstrap (init --skip-ssh | --skip-font | --headless)
+  update              git pull, brew, stow, Vite+, Herdr, Rex, pi
+  stow [check]        link home/ → ~  (--adopt)
+  rex apply|reload    local Rex UI/Lua only (else use update)
+  package             list | add | remove | update Brewfile
+  check-packages      Brewfile install status
+  retry-failed        retry packages in packages/failed_packages_*.txt
+  gen-ssh-key         create ~/.ssh/id_ed25519
+  doctor              health check
+  link | unlink       PATH symlink (/usr/local/bin or ~/.local/bin)
+  edit                open repo in \$EDITOR
+
+Rex UI: stow && ${SCRIPT_NAME} rex apply  (then Cmd+Q Rex)
+EOF
+}
+
+main() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h | --help)
+        cmd_help
+        return 0
+        ;;
+      --version)
+        echo "${SCRIPT_NAME} ${VERSION}"
+        return 0
+        ;;
+      *)
+        break
+        ;;
+    esac
+    shift
+  done
+
+  local cmd="${1:-help}"
+  shift || true
+
+  case "$cmd" in
+    init) cmd_init "$@" ;;
+    update) cmd_update "$@" ;;
+    stow) cmd_stow "$@" ;;
+    package) cmd_package "$@" ;;
+    check-packages) cmd_check_packages "$@" ;;
+    retry-failed) cmd_retry_failed "$@" ;;
+    gen-ssh-key) cmd_gen_ssh_key "$@" ;;
+    rex) cmd_rex "$@" ;;
+    doctor) cmd_doctor "$@" ;;
+    link) cmd_link "$@" ;;
+    unlink) cmd_unlink "$@" ;;
+    edit) cmd_edit "$@" ;;
+    help) cmd_help ;;
+    *)
+      __print_error "Unknown command: ${cmd}"
+      cmd_help
+      return 1
+      ;;
+  esac
+}
+
+main "$@"

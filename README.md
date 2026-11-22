@@ -1,42 +1,85 @@
 # My dotfiles
 
-This directory contains the dotfiles for my system
+Personal dotfiles managed with GNU Stow and the `dot` CLI in this repo.
 
 ## Requirements
 
-Ensure you have the following installed on your system
+- Git
+- macOS: `dot init` installs [Homebrew](https://brew.sh/) if needed, then `brew bundle` (includes GNU Stow)
 
-### Git
+## Quick start
 
-```
-brew install git
-```
-
-### Stow
-
-```
-brew install stow
-```
-
-## Installation
-
-First, check out the dotfiles repo in your $HOME directory using git
-
-```
-git clone git@github.com/bishalr0y/dotfiles.git
-cd dotfiles
+```bash
+git clone git@github.com:bishalr0y/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+chmod +x dot
+./dot init
+./dot link
 ```
 
-Then, use GNU stow to create symlinks
+## Commands
 
-```
-stow .
+| Command | What it does |
+|---------|----------------|
+| `dot init` | Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Herdr, Rex, Scroll Reverser, pi |
+| `dot init --skip-ssh` / `--skip-font` / `--headless` | Skip SSH, fonts, or both (headless) |
+| `dot update` | `git pull`, `brew outdated` → `upgrade --yes`, cleanup, stow, Vite+ Node, Herdr, Rex, pi |
+| `dot stow` / `check` / `--adopt` | Stow `home/` → `~` |
+| `dot check-packages` | Which Brewfile brew/cask entries are missing |
+| `dot retry-failed` | Retry entries in `packages/failed_packages_*.txt` |
+| `dot gen-ssh-key [email]` | Create `~/.ssh/id_ed25519` |
+| `dot rex apply` / `reload` | Local Rex UI or Lua only (see below) |
+| `dot package …` | Edit Brewfile |
+| `dot doctor` | Tools, bundle, Rex drift, symlinks |
+| `dot link` / `unlink` | Symlink to `/usr/local/bin` or `~/.local/bin` |
+
+### Daily workflow
+
+```text
+Routine:     dot update
+Rex UI/font: dot stow && dot rex apply   → Cmd+Q Rex
+Rex Lua:     dot rex reload
 ```
 
-Pi packages are declared in `home/.pi/agent/settings.json` and installed under `~/.pi/agent/npm`, which is gitignored. After stow, install them:
+### Rex font / UI settings
 
+Edit `home/.config/rex/macos-defaults.conf`, then:
+
+```bash
+dot stow && dot rex apply
 ```
-pi install npm:pi-web-search
-pi install npm:@plannotator/pi-extension
-pi install npm:pi-cursor-sdk
+
+Quit Rex fully (Cmd+Q) and reopen. `rex config reload` does **not** apply font/UI prefs.
+
+### Scroll Reverser
+
+[Scroll Reverser](https://pilotmoon.com/scrollreverser/) is a separate macOS app (cask in Brewfile). `dot init` / `dot update` configure its prefs; grant Accessibility when prompted.
+
+### Private fonts
+
+Add one `git@github.com:…` URL per line in `fonts/sources.txt`. You need:
+
+- SSH access to each private repo (same key as dotfiles / `dot gen-ssh-key`)
+- Font files (`.otf` / `.ttf`) inside those repos
+
+Skip with `dot init --skip-font` or `--headless`.
+
+### Pi
+
+`dot init` installs [Vite+](https://vite.plus) then `vp install -g @earendil-works/pi-coding-agent` when `pi` is missing. `dot update` runs `pi update --all` when `pi` is on PATH.
+
+## Stow layout
+
+```bash
+stow -R -d ~/dotfiles -t ~ home
 ```
+
+Same as `dot stow`. Edit files under `home/` in the repo, not only under `~`.
+
+### Stow conflicts
+
+```bash
+dot stow check
+```
+
+Back up and remove conflicting paths under `~`, or once: `dot stow --adopt`.
