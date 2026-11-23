@@ -46,6 +46,11 @@ eval "$(zoxide init zsh)"
 # auto-load .envrc files
 eval "$(direnv hook zsh)"
 
+# dot CLI (home/.config/zsh/completions/_dot via stow)
+fpath=(${XDG_CONFIG_HOME:-$HOME/.config}/zsh/completions $fpath)
+autoload -Uz compinit
+compinit -i
+
 # autocomplete suggestions as you type
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # colorize valid command lines

@@ -1,0 +1,139 @@
+#compdef dot
+# Zsh completions for dot — stow home/.config/zsh/completions/_dot
+
+_dot() {
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+
+  local -a commands
+  commands=(
+    'init:bootstrap dotfiles'
+    'update:git pull and maintenance'
+    'stow:link home/ into ~'
+    'rex:local Rex config'
+    'package:Brewfile management'
+    'check-packages:missing Brewfile installs'
+    'retry-failed:retry or brew bundle install'
+    'gen-ssh-key:create SSH key'
+    'doctor:health check'
+    'link:install dot on PATH'
+    'unlink:remove PATH symlink'
+    'edit:open dotfiles in EDITOR'
+    'completions:zsh completion info'
+    'help:show help'
+  )
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[show help]' \
+    '--version[show version]' \
+    '1:command:->command' \
+    '*::arguments:->arguments'
+
+  case $state in
+    command)
+      _describe -t commands command commands
+      ;;
+    arguments)
+      case $words[1] in
+        init) _dot_init ;;
+        stow) _dot_stow ;;
+        rex) _dot_rex ;;
+        package) _dot_package ;;
+        doctor) _dot_doctor ;;
+      esac
+      ;;
+  esac
+}
+
+_dot_init() {
+  _arguments \
+    '--skip-ssh[skip SSH key generation]' \
+    '--skip-font[skip private fonts]' \
+    '--headless[non-interactive; skip SSH and fonts]'
+}
+
+_dot_stow() {
+  if (( CURRENT == 2 )); then
+    _values 'stow command' check help
+    return
+  fi
+  _arguments '--adopt[move conflicts into home/ then stow]'
+}
+
+_dot_rex() {
+  if (( CURRENT == 2 )); then
+    _values 'rex command' apply reload help
+  fi
+}
+
+_dot_doctor() {
+  _arguments '--all[include app-managed symlinks]'
+}
+
+_dot_brewfile_packages() {
+  local brewfile="${DOTFILES_DIR:-$HOME/dotfiles}/Brewfile"
+  [[ -f $brewfile ]] || return 1
+  local -a names
+  names=(${(f)"$(sed -nE 's/^(brew|cask) "([^"]+)".*/\2/p' "$brewfile" 2>/dev/null)"})
+  (( ${#names[@]} )) && _describe -t packages package names
+}
+
+_dot_brew_packages() {
+  (( $+commands[brew] )) || return 1
+  local -a pkgs
+  pkgs=(${(f)"$(brew list --formula 2>/dev/null | head -40)"})
+  pkgs+=(${(f)"$(brew list --cask 2>/dev/null | head -40)"})
+  (( ${#pkgs[@]} )) && _describe -t packages package pkgs
+}
+
+_dot_package() {
+  local -a subcmds
+  subcmds=(
+    'list:list Brewfile entries'
+    'add:add package to Brewfile'
+    'remove:remove from Brewfile'
+    'update:brew upgrade'
+    'sync:record installed packages in Brewfile'
+    'help:package help'
+  )
+
+  if (( CURRENT == 2 )); then
+    _describe -t 'package commands' command subcmds
+    return
+  fi
+
+  case $words[2] in
+    list)
+      if (( CURRENT == 3 )); then
+        _values 'filter' all brew cask go cargo npm
+      fi
+      ;;
+    add)
+      _arguments '--no-install[only edit Brewfile]'
+      if (( CURRENT == 3 )); then
+        _values 'type' brew cask
+        _dot_brew_packages
+      elif (( CURRENT >= 4 )); then
+        _values 'type' brew cask
+      fi
+      ;;
+    remove)
+      if (( CURRENT == 3 )); then
+        _dot_brewfile_packages
+      else
+        _arguments '--no-uninstall[only edit Brewfile]'
+      fi
+      ;;
+    update)
+      if (( CURRENT == 3 )); then
+        _dot_brewfile_packages
+      fi
+      ;;
+    sync)
+      _arguments \
+        '(-y)--yes[write Brewfile]' \
+        '--brew[top-level formulae]' \
+        '--all[casks and formulae]'
+      ;;
+  esac
+}

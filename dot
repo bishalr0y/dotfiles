@@ -3,7 +3,7 @@
 set -euo pipefail
 
 readonly SCRIPT_NAME="dot"
-readonly VERSION="1.1.3"
+readonly VERSION="1.1.4"
 
 __dot_repo_dir() {
   local source="${BASH_SOURCE[0]}"
@@ -295,9 +295,9 @@ cmd_package_list() {
     IFS=$'\t' read -r ptype pname <<<"$parsed"
     [[ "$filter" != all && "$filter" != "$ptype" ]] && continue
     local mark=" "
-    if [[ "$ptype" == brew ]] && grep -Fxq "$pname" <<<"$installed_formulas"; then
+    if [[ "$ptype" == brew ]] && __brew_declared_installed "$pname" "$installed_formulas"; then
       mark="✓"
-    elif [[ "$ptype" == cask ]] && grep -Fxq "$pname" <<<"$installed_casks"; then
+    elif [[ "$ptype" == cask ]] && __brew_declared_installed "$pname" "$installed_casks"; then
       mark="✓"
     elif [[ "$ptype" != brew && "$ptype" != cask ]]; then
       mark="·"
@@ -723,6 +723,35 @@ __list_contains() {
   grep -Fqx -- "$1" <<<"$2"
 }
 
+# Tap-scoped Brewfile names (tap/cask) vs short brew list tokens (cask).
+__brewfile_token_name() {
+  local name="$1"
+  if [[ "$name" == */* ]]; then
+    printf '%s' "${name##*/}"
+  else
+    printf '%s' "$name"
+  fi
+}
+
+__brew_declared_installed() {
+  local declared="$1" installed_nl="$2"
+  __list_contains "$declared" "$installed_nl" && return 0
+  __list_contains "$(__brewfile_token_name "$declared")" "$installed_nl" && return 0
+  return 1
+}
+
+__brew_installed_declared() {
+  local installed="$1" declared_nl="$2"
+  __list_contains "$installed" "$declared_nl" && return 0
+  local declared token
+  while IFS= read -r declared; do
+    [[ -z "$declared" ]] && continue
+    token="$(__brewfile_token_name "$declared")"
+    [[ "$token" == "$installed" ]] && return 0
+  done <<<"$declared_nl"
+  return 1
+}
+
 __save_failed_packages() {
   (($# == 0)) && return 0
   mkdir -p "$PACKAGES_DIR"
@@ -753,9 +782,9 @@ __record_brewfile_missing() {
     parsed="$(__parse_brewfile_entry "$line")" || continue
     IFS=$'\t' read -r package_type package_name <<<"$parsed"
     if [[ "$package_type" == "brew" ]]; then
-      __list_contains "$package_name" "$installed_formulas" || missing+=("brew:${package_name}")
+      __brew_declared_installed "$package_name" "$installed_formulas" || missing+=("brew:${package_name}")
     elif [[ "$package_type" == "cask" ]]; then
-      __list_contains "$package_name" "$installed_casks" || missing+=("cask:${package_name}")
+      __brew_declared_installed "$package_name" "$installed_casks" || missing+=("cask:${package_name}")
     fi
   done <"$BREWFILE"
   ((${#missing[@]} > 0)) && __save_failed_packages "${missing[@]}"
@@ -808,7 +837,7 @@ __brewfile_extras_lines() {
   if [[ "$include_brew" == true ]]; then
     while IFS= read -r leaf; do
       [[ -z "$leaf" ]] && continue
-      __list_contains "$leaf" "$declared_brew_nl" || extra_brew+=("$leaf")
+      __brew_installed_declared "$leaf" "$declared_brew_nl" || extra_brew+=("$leaf")
     done < <(brew leaves -r 2>/dev/null || true)
   fi
 
@@ -816,7 +845,7 @@ __brewfile_extras_lines() {
     installed_casks="$(brew list --cask 2>/dev/null)" || installed_casks=""
     while IFS= read -r package_name; do
       [[ -z "$package_name" ]] && continue
-      __list_contains "$package_name" "$declared_cask_nl" || extra_cask+=("$package_name")
+      __brew_installed_declared "$package_name" "$declared_cask_nl" || extra_cask+=("$package_name")
     done <<<"$installed_casks"
   fi
 
@@ -1386,14 +1415,14 @@ cmd_check_packages() {
     parsed="$(__parse_brewfile_entry "$line")" || continue
     IFS=$'\t' read -r package_type package_name <<<"$parsed"
     if [[ "$package_type" == "brew" ]]; then
-      if __list_contains "$package_name" "$installed_formulas"; then
+      if __brew_declared_installed "$package_name" "$installed_formulas"; then
         __print_success "brew ${package_name}"
       else
         missing_brew+=("$package_name")
         __print_warning "missing brew: ${package_name}"
       fi
     elif [[ "$package_type" == "cask" ]]; then
-      if __list_contains "$package_name" "$installed_casks"; then
+      if __brew_declared_installed "$package_name" "$installed_casks"; then
         __print_success "cask ${package_name}"
       else
         missing_cask+=("$package_name")
@@ -1787,6 +1816,27 @@ cmd_edit() {
   return 1
 }
 
+cmd_completions() {
+  __require_no_args completions "$@" || return 1
+  __print_header "Zsh completions"
+  local completions_dir="${HOME_DIR}/.config/zsh/completions"
+  local completions_file="${completions_dir}/_dot"
+  if [[ ! -f "$completions_file" ]]; then
+    __print_error "Missing ${completions_file}"
+    __print_info "Run: ${SCRIPT_NAME} stow  (installs home/.config/zsh/completions/_dot)"
+    return 1
+  fi
+  __print_success "Completions: ${completions_file}"
+  __print_info "Reload: exec zsh   or   rm -f ~/.zcompdump* && compinit -i"
+  if __command_exists zsh; then
+    if zsh -fc 'autoload -Uz compinit; compinit -C; exit 0' 2>/dev/null; then
+      __print_success "zsh compinit OK"
+    else
+      __print_warning "Could not probe zsh; open a new terminal after stow"
+    fi
+  fi
+}
+
 cmd_help() {
   cat <<EOF
 ${SCRIPT_NAME} — dotfiles (${VERSION})
@@ -1803,6 +1853,7 @@ Commands:
   doctor [--all]      health check (--all includes app-managed symlinks)
   link | unlink       PATH symlink (/usr/local/bin or ~/.local/bin)
   edit                open repo in \$EDITOR
+  completions         Zsh tab completion (stow home/.config/zsh/completions/_dot)
 
 Homebrew & Brewfile (${BREWFILE}):
   Brewfile declares packages. The machine follows it; nothing auto-dumps brew.
@@ -1869,6 +1920,7 @@ main() {
     link) cmd_link "$@" ;;
     unlink) cmd_unlink "$@" ;;
     edit) cmd_edit "$@" ;;
+    completions) cmd_completions "$@" ;;
     help) cmd_help ;;
     *)
       __print_error "Unknown command: ${cmd}"

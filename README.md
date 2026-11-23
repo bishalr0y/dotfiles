@@ -34,6 +34,11 @@ Run `dot help` or `dot package help` in the repo for the full CLI reference.
 | `dot package …` | Brewfile: `list`, `add`, `remove`, `update`, **`sync`** — see below |
 | `dot doctor` | Tools, bundle, Rex drift, symlinks |
 | `dot link` / `unlink` | Symlink to `/usr/local/bin` or `~/.local/bin` |
+| `dot completions` | Zsh tab completion (`home/.config/zsh/completions/_dot` via stow) |
+
+### Zsh completions
+
+After `dot stow`, `~/.config/zsh/completions/_dot` provides tab completion for `dot` and `dot package …`. `.zshrc` adds that directory to `fpath` and runs `compinit`. Reload with `exec zsh` or `dot completions` for hints.
 
 ### Homebrew & Brewfile
 

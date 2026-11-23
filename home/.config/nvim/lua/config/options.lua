@@ -3,7 +3,7 @@
 -- Add any additional options here
 
 vim.opt.colorcolumn = "80"
-vim.opt.cursorline = false
+vim.opt.cursorline = true
 
 -- Disable swap files and backup
 vim.opt.swapfile = false
