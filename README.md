@@ -19,24 +19,57 @@ chmod +x dot
 
 ## Commands
 
+Run `dot help` or `dot package help` in the repo for the full CLI reference.
+
 | Command | What it does |
 |---------|----------------|
 | `dot init` | Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Herdr, Rex, Scroll Reverser, pi |
 | `dot init --skip-ssh` / `--skip-font` / `--headless` | Skip SSH, fonts, or both (headless) |
-| `dot update` | `git pull`, `brew outdated` → `upgrade --yes`, cleanup, stow, Vite+ Node, Herdr, Rex, pi |
+| `dot update` | `git pull`, Homebrew upgrade, Brewfile gap-fill, cleanup, stow, Vite+ Node, Herdr, Rex, pi; **warns** if brew/cask is installed but not in Brewfile |
 | `dot stow` / `check` / `--adopt` | Stow `home/` → `~` |
-| `dot check-packages` | Which Brewfile brew/cask entries are missing |
-| `dot retry-failed` | Retry entries in `packages/failed_packages_*.txt` |
+| `dot check-packages` | Which Brewfile brew/cask entries are not installed on this machine |
+| `dot retry-failed` | Retry `packages/failed_packages_*.txt`, or run `brew bundle install` if no failure list |
 | `dot gen-ssh-key [email]` | Create `~/.ssh/id_ed25519` |
 | `dot rex apply` / `reload` | Local Rex UI or Lua only (see below) |
-| `dot package …` | Edit Brewfile |
+| `dot package …` | Brewfile: `list`, `add`, `remove`, `update`, **`sync`** — see below |
 | `dot doctor` | Tools, bundle, Rex drift, symlinks |
 | `dot link` / `unlink` | Symlink to `/usr/local/bin` or `~/.local/bin` |
+
+### Homebrew & Brewfile
+
+`Brewfile` in the repo is the **source of truth**. `dot update` moves the machine toward it (install/upgrade/cleanup). It does **not** auto-run `brew bundle dump`; you record new installs deliberately.
+
+| Direction | Command |
+|-----------|---------|
+| Routine | `dot update` |
+| Brewfile → machine (missing) | `dot check-packages` → `dot retry-failed` |
+| Machine → Brewfile (ad-hoc `brew install`) | `dot package sync` (preview) → `dot package sync --yes` |
+| One package | `dot package add <name> [brew\|cask]` · `dot package remove <name>` |
+
+**`dot package sync`** (default: casks only):
+
+```bash
+dot package sync              # preview extra casks
+dot package sync --yes        # append to Brewfile
+dot package sync --brew       # preview formulae (brew leaves -r)
+dot package sync --brew --yes
+dot package sync --all        # casks + formulae
+dot package sync --all --yes
+```
+
+Typical loop after installing an app with Homebrew:
+
+```text
+dot update                    # may warn: installed but not in Brewfile
+dot package sync              # review list
+dot package sync --yes        # commit Brewfile when happy
+```
 
 ### Daily workflow
 
 ```text
 Routine:     dot update
+Brew drift:  dot package sync && dot package sync --yes  (after update warns)
 Rex UI/font: dot stow && dot rex apply   → Cmd+Q Rex
 Rex Lua:     dot rex reload
 ```

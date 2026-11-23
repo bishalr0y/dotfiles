@@ -3,7 +3,7 @@
 set -euo pipefail
 
 readonly SCRIPT_NAME="dot"
-readonly VERSION="1.1.1"
+readonly VERSION="1.1.3"
 
 __dot_repo_dir() {
   local source="${BASH_SOURCE[0]}"
@@ -338,6 +338,73 @@ cmd_package_update() {
   fi
 }
 
+cmd_package_sync() {
+  local scope="cask" apply=false
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y | --yes) apply=true; shift ;;
+      --brew) scope="brew"; shift ;;
+      --all) scope="all"; shift ;;
+      -h | --help)
+        cat <<EOF
+${SCRIPT_NAME} package sync — add installed packages missing from Brewfile
+
+  sync                    preview casks to add (default)
+  sync --yes              write Brewfile (casks)
+  sync --brew [--yes]     top-level formulae (brew leaves -r)
+  sync --all [--yes]      casks and formulae
+EOF
+        return 0
+        ;;
+      *)
+        __print_error "Unknown option: $1"
+        __print_info "Usage: ${SCRIPT_NAME} package sync [--yes] [--brew | --all]"
+        return 1
+        ;;
+    esac
+  done
+  __require_brewfile || return 1
+  __print_header "Sync Brewfile from installed packages"
+
+  local lines package_type package_name package_line added=0
+  lines="$(__brewfile_extras_lines "$scope")"
+  if [[ -z "$lines" ]]; then
+    __print_success "Nothing to sync (${scope})"
+    return 0
+  fi
+
+  __print_info "Packages to add:"
+  while IFS=$'\t' read -r package_type package_name; do
+    [[ -z "$package_type" ]] && continue
+    printf '  %s  %s\n' "$package_type" "$package_name"
+  done <<<"$lines"
+
+  if [[ "$apply" == false ]]; then
+    local flag=""
+    [[ "$scope" == brew ]] && flag=" --brew"
+    [[ "$scope" == all ]] && flag=" --all"
+    __print_info "Run: ${SCRIPT_NAME} package sync${flag} --yes"
+    return 0
+  fi
+
+  while IFS=$'\t' read -r package_type package_name; do
+    [[ -z "$package_type" ]] && continue
+    package_line="${package_type} \"${package_name}\""
+    if grep -Fqx -- "$package_line" "$BREWFILE" 2>/dev/null; then
+      continue
+    fi
+    __brewfile_insert_line "$package_type" "$package_line"
+    __print_success "Added ${package_type} \"${package_name}\" to Brewfile"
+    ((added++)) || true
+  done < <(printf '%s\n' "$lines" | LC_ALL=C sort -t '	' -k1,1 -k2,2)
+
+  if ((added > 0)); then
+    __print_success "Synced ${added} package(s) into Brewfile"
+  else
+    __print_success "Brewfile already up to date"
+  fi
+}
+
 cmd_package() {
   local sub="${1:-list}"
   shift || true
@@ -346,14 +413,24 @@ cmd_package() {
     remove) cmd_package_remove "$@" ;;
     list) cmd_package_list "$@" ;;
     update) cmd_package_update "$@" ;;
+    sync) cmd_package_sync "$@" ;;
     -h | --help | help)
       cat <<EOF
 ${SCRIPT_NAME} package — edit ${BREWFILE}
+
+Brewfile is the source of truth. ${SCRIPT_NAME} update installs from it; sync
+records packages you installed with brew but never added.
 
   list [all|brew|cask|go|cargo|npm]   Brewfile entries (✓ = installed)
   add <name> [brew|cask] [--no-install]
   remove <name> [--no-uninstall]
   update [name]                       brew upgrade (one pkg or all)
+  sync [--yes] [--brew | --all]       machine → Brewfile (preview by default)
+
+  sync                preview extra casks
+  sync --yes          append missing casks to Brewfile
+  sync --brew [--yes] top-level formulae (brew leaves -r)
+  sync --all [--yes]  casks and formulae
 EOF
       ;;
     *)
@@ -684,6 +761,85 @@ __record_brewfile_missing() {
   ((${#missing[@]} > 0)) && __save_failed_packages "${missing[@]}"
 }
 
+__brewfile_extras_lines() {
+  local scope="${1:-cask}"
+  local include_brew=false include_cask=false
+  case "$scope" in
+    cask) include_cask=true ;;
+    brew) include_brew=true ;;
+    all)
+      include_brew=true
+      include_cask=true
+      ;;
+    *)
+      __print_error "Invalid sync scope: ${scope}"
+      return 1
+      ;;
+  esac
+
+  if [[ "$DOT_OS" != "darwin" ]] || [[ ! -f "$BREWFILE" ]]; then
+    return 0
+  fi
+  __brew_ensure_path
+  if ! __command_exists brew; then
+    return 0
+  fi
+
+  local line parsed package_type package_name leaf
+  local declared_brew_nl="" declared_cask_nl="" installed_casks=""
+  local declared_brew=() declared_cask=() extra_brew=() extra_cask=()
+  while IFS= read -r line; do
+    parsed="$(__parse_brewfile_entry "$line")" || continue
+    IFS=$'\t' read -r package_type package_name <<<"$parsed"
+    if [[ "$package_type" == brew ]]; then
+      declared_brew+=("$package_name")
+    elif [[ "$package_type" == cask ]]; then
+      declared_cask+=("$package_name")
+    fi
+  done <"$BREWFILE"
+
+  if ((${#declared_brew[@]} > 0)); then
+    declared_brew_nl="$(printf '%s\n' "${declared_brew[@]}")"
+  fi
+  if ((${#declared_cask[@]} > 0)); then
+    declared_cask_nl="$(printf '%s\n' "${declared_cask[@]}")"
+  fi
+
+  if [[ "$include_brew" == true ]]; then
+    while IFS= read -r leaf; do
+      [[ -z "$leaf" ]] && continue
+      __list_contains "$leaf" "$declared_brew_nl" || extra_brew+=("$leaf")
+    done < <(brew leaves -r 2>/dev/null || true)
+  fi
+
+  if [[ "$include_cask" == true ]]; then
+    installed_casks="$(brew list --cask 2>/dev/null)" || installed_casks=""
+    while IFS= read -r package_name; do
+      [[ -z "$package_name" ]] && continue
+      __list_contains "$package_name" "$declared_cask_nl" || extra_cask+=("$package_name")
+    done <<<"$installed_casks"
+  fi
+
+  if [[ "$include_brew" == true ]] && ((${#extra_brew[@]} > 0)); then
+    printf 'brew\t%s\n' "${extra_brew[@]}"
+  fi
+  if [[ "$include_cask" == true ]] && ((${#extra_cask[@]} > 0)); then
+    printf 'cask\t%s\n' "${extra_cask[@]}"
+  fi
+}
+
+__report_brewfile_extras() {
+  local lines package_type package_name
+  lines="$(__brewfile_extras_lines all)" || return 0
+  [[ -z "$lines" ]] && return 0
+  __print_warning "Installed but not in Brewfile:"
+  while IFS=$'\t' read -r package_type package_name; do
+    [[ -z "$package_type" ]] && continue
+    printf '  %s  %s\n' "$package_type" "$package_name"
+  done <<<"$lines"
+  __print_info "Run: ${SCRIPT_NAME} package sync"
+}
+
 __brew_bundle_install() {
   if [[ "$DOT_OS" != "darwin" ]] || [[ ! -f "$BREWFILE" ]]; then
     return 0
@@ -783,6 +939,7 @@ __update_homebrew_packages() {
   else
     __print_warning "brew cleanup had errors (continuing)"
   fi
+  __report_brewfile_extras
 }
 
 __rex_cli() {
@@ -1248,7 +1405,7 @@ cmd_check_packages() {
     __print_success "All Brewfile brew/cask entries installed"
     return 0
   fi
-  __print_info "Run: dot retry-failed  or  brew bundle install --file=${BREWFILE}"
+  __print_info "Run: ${SCRIPT_NAME} retry-failed"
   return 1
 }
 
@@ -1639,15 +1796,42 @@ Commands:
   update              git pull, brew, stow, Vite+, Herdr, Rex, pi
   stow [check]        link home/ → ~  (--adopt)
   rex apply|reload    local Rex UI/Lua only (else use update)
-  package             list | add | remove | update Brewfile
-  check-packages      Brewfile install status
-  retry-failed        retry packages in packages/failed_packages_*.txt
+  package             Brewfile: list | add | remove | update | sync
+  check-packages      which Brewfile brew/cask entries are not installed
+  retry-failed        retry packages/failed_packages_*.txt or brew bundle
   gen-ssh-key         create ~/.ssh/id_ed25519
   doctor [--all]      health check (--all includes app-managed symlinks)
   link | unlink       PATH symlink (/usr/local/bin or ~/.local/bin)
   edit                open repo in \$EDITOR
 
-Rex UI: stow && ${SCRIPT_NAME} rex apply  (then Cmd+Q Rex)
+Homebrew & Brewfile (${BREWFILE}):
+  Brewfile declares packages. The machine follows it; nothing auto-dumps brew.
+
+  Routine:
+    ${SCRIPT_NAME} update
+      Installs/upgrades from Brewfile; warns if something installed is missing
+      from Brewfile. Fix with package sync (below).
+
+  Brewfile → machine (missing installs):
+    ${SCRIPT_NAME} check-packages
+    ${SCRIPT_NAME} retry-failed
+
+  Machine → Brewfile (record ad-hoc brew installs):
+    ${SCRIPT_NAME} package sync              preview (casks)
+    ${SCRIPT_NAME} package sync --yes          write Brewfile
+    ${SCRIPT_NAME} package sync --brew [--yes] formulae (brew leaves -r)
+    ${SCRIPT_NAME} package sync --all [--yes]  casks + formulae
+
+  One package:
+    ${SCRIPT_NAME} package add <name> [brew|cask]
+    ${SCRIPT_NAME} package remove <name>
+
+  More: ${SCRIPT_NAME} package help
+
+Daily workflow:
+  ${SCRIPT_NAME} update
+  drift warning → ${SCRIPT_NAME} package sync && ${SCRIPT_NAME} package sync --yes
+  Rex UI/font: stow && ${SCRIPT_NAME} rex apply  (then Cmd+Q Rex)
 EOF
 }
 
