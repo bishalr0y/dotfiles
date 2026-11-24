@@ -39,6 +39,6 @@ end
 rex.bind(P .. "tab", "pane.focus_next")
 rex.bind(P .. ";", "pane.focus_next")
 rex.bind(P .. "shift+tab", "pane.focus_previous")
-rex.bind(P .. "v", "pane.copy_mode.enter") -- herdr: copy_mode = "prefix+v"
+rex.bind(P .. "v", "pane.copy_mode.enter")
 rex.bind(P .. "f", "client.find.open")
 rex.bind(P .. "shift+r", "client.mode.enter", { name = "resize" })

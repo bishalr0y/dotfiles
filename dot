@@ -21,7 +21,6 @@ readonly DOTFILES_DIR
 readonly HOME_DIR="${DOTFILES_DIR}/home"
 readonly BREWFILE="${DOTFILES_DIR}/Brewfile"
 readonly PACKAGES_DIR="${DOTFILES_DIR}/packages"
-readonly HERDR_PLUGIN_SOURCES_FILE="${HOME}/.config/herdr/plugins.txt"
 readonly GITHUB_SSH_KEY="${HOME}/.ssh/id_ed25519"
 readonly BUN_INSTALL_DIR="${BUN_INSTALL:-${HOME}/.bun}"
 
@@ -888,41 +887,6 @@ __brew_bundle_install() {
   fi
 }
 
-__sync_herdr_plugins() {
-  if ! __command_exists herdr; then
-    __print_warning "herdr not on PATH; skipping plugin sync (brew install herdr)"
-    return 0
-  fi
-  if [[ ! -f "$HERDR_PLUGIN_SOURCES_FILE" ]]; then
-    __print_warning "Missing ${HERDR_PLUGIN_SOURCES_FILE}; stow dotfiles or add plugins.txt"
-    return 0
-  fi
-
-  local plugin_source failed=()
-  __print_info "Syncing Herdr plugins from plugins.txt..."
-  while IFS= read -r plugin_source || [[ -n "$plugin_source" ]]; do
-    plugin_source="${plugin_source%%#*}"
-    plugin_source="${plugin_source//[[:space:]]/}"
-    [[ -z "$plugin_source" ]] && continue
-    if herdr plugin install "$plugin_source" --yes; then
-      __print_success "Herdr plugin: ${plugin_source}"
-    else
-      failed+=("$plugin_source")
-    fi
-  done <"$HERDR_PLUGIN_SOURCES_FILE"
-
-  if ((${#failed[@]} > 0)); then
-    __print_error "Herdr plugin sync failed: ${failed[*]}"
-    return 1
-  fi
-
-  if herdr status server >/dev/null 2>&1; then
-    herdr server reload-config >/dev/null 2>&1 || true
-    __print_success "Herdr server config reloaded"
-  fi
-  __print_success "Herdr plugins up to date"
-}
-
 __update_homebrew_packages() {
   if [[ "$DOT_OS" != "darwin" ]]; then
     return 0
@@ -1320,7 +1284,7 @@ cmd_init() {
         cat <<EOF
 ${SCRIPT_NAME} init — first-time setup
 
-  Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Herdr, Rex,
+  Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Rex,
   Scroll Reverser, and pi (via Vite+).
 
 Options:
@@ -1356,7 +1320,6 @@ EOF
   if [[ "$skip_font" == false ]]; then
     __install_fonts || __print_warning "Font install had issues"
   fi
-  __sync_herdr_plugins || __print_warning "Herdr plugin sync had issues"
   if [[ "$DOT_OS" == "darwin" ]]; then
     __update_rex_app || __print_warning "Rex app update failed; continuing"
     __apply_rex_app_settings || __print_warning "Rex defaults failed; continuing"
@@ -1384,7 +1347,6 @@ cmd_update() {
   __update_homebrew_packages || __print_warning "Homebrew step had issues"
   __stow_dotfiles || return 1
   __update_vite_plus_node || return 1
-  __sync_herdr_plugins || __print_warning "Herdr plugin sync had issues"
   if [[ "$DOT_OS" == "darwin" ]]; then
     __update_rex_app || __print_warning "Rex app update failed; continuing"
     __reload_rex_config || __print_warning "Rex config reload failed; continuing"
@@ -1634,7 +1596,7 @@ __doctor_optional_tools() {
   # are missing even though the shell setup and dot update work.
   __bun_ensure_path
   __vite_plus_ensure_path
-  for tool in brew nvim jq bun herdr rex; do
+  for tool in brew nvim jq bun rex; do
     if __command_exists "$tool"; then
       __print_success "${tool}"
     else
@@ -1710,13 +1672,6 @@ cmd_doctor() {
   __command_exists git && __print_success "git" || { __print_error "git missing"; ((issues++)) || true; }
 
   __doctor_optional_tools
-
-  if [[ -f "${HOME_DIR}/.config/herdr/plugins.txt" ]]; then
-    __print_success "herdr/plugins.txt tracked in repo"
-  else
-    __print_warning "missing home/.config/herdr/plugins.txt"
-    ((issues++)) || true
-  fi
 
   __doctor_broken_symlinks "$scan_all" || ((issues++)) || true
 
@@ -1843,7 +1798,7 @@ ${SCRIPT_NAME} — dotfiles (${VERSION})
 
 Commands:
   init                bootstrap (init --skip-ssh | --skip-font | --headless)
-  update              git pull, brew, stow, Vite+, Herdr, Rex, pi
+  update              git pull, brew, stow, Vite+, Rex, pi
   stow [check]        link home/ → ~  (--adopt)
   rex apply|reload    local Rex UI/Lua only (else use update)
   package             Brewfile: list | add | remove | update | sync

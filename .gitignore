@@ -25,21 +25,6 @@ configstore/
 __pycache__/
 *.pyc
 
-# Herdr runtime/state
-home/.config/herdr/*.log
-home/.config/herdr/session-history.json
-home/.config/herdr/session.json
-home/.config/herdr/release-notes.json
-home/.config/herdr/plugins.json
-home/.config/herdr/plugins/
-home/.config/herdr/.plugins.lock
-home/.config/herdr/session-snapshots/
-home/.config/herdr/*.sock
-home/.config/herdr/*.sock.*
-
-# Herdr desktop app (not managed in dotfiles)
-home/.config/herdr-app/
-
 # Vite+ installer-owned config (track conf.d/vite-plus.zsh only)
 home/.config/vite-plus/
 

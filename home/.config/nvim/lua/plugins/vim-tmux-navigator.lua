@@ -2,8 +2,6 @@ return {
   "christoomey/vim-tmux-navigator",
   lazy = false,
   init = function()
-    -- <C-h/j/k/l> live in lua/herdr-nav.lua (Neovim splits + herdr edge). This
-    -- plugin supplies TmuxNavigate* for tmux fallback only; mappings stay off.
     vim.g.tmux_navigator_no_mappings = 1
   end,
   config = function()
@@ -14,7 +12,12 @@ return {
       once = true,
       callback = function()
         vim.schedule(function()
-          require("herdr-nav").setup()
+          for key, dir in pairs({ h = "Left", j = "Down", k = "Up", l = "Right" }) do
+            vim.keymap.set("n", "<C-" .. key .. ">", "<cmd>TmuxNavigate" .. dir .. "<cr>", {
+              silent = true,
+              desc = "Navigate " .. dir:lower(),
+            })
+          end
         end)
       end,
     })

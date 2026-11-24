@@ -36,8 +36,6 @@ brew "golang-migrate"
 brew "goose"
 # Deliver Go binaries as fast and easily as possible
 brew "goreleaser"
-# Agent multiplexer that lives in your terminal
-brew "herdr"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Handy way to save and run project-specific commands

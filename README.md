@@ -23,9 +23,9 @@ Run `dot help` or `dot package help` in the repo for the full CLI reference.
 
 | Command | What it does |
 |---------|----------------|
-| `dot init` | Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Herdr, Rex, Scroll Reverser, pi |
+| `dot init` | Homebrew, Brewfile, stow, Bun, Vite+, fonts, SSH, Rex, Scroll Reverser, pi |
 | `dot init --skip-ssh` / `--skip-font` / `--headless` | Skip SSH, fonts, or both (headless) |
-| `dot update` | `git pull`, Homebrew upgrade, Brewfile gap-fill, cleanup, stow, Vite+ Node, Herdr, Rex, pi; **warns** if brew/cask is installed but not in Brewfile |
+| `dot update` | `git pull`, Homebrew upgrade, Brewfile gap-fill, cleanup, stow, Vite+ Node, Rex, pi; **warns** if brew/cask is installed but not in Brewfile |
 | `dot stow` / `check` / `--adopt` | Stow `home/` → `~` |
 | `dot check-packages` | Which Brewfile brew/cask entries are not installed on this machine |
 | `dot retry-failed` | Retry `packages/failed_packages_*.txt`, or run `brew bundle install` if no failure list |

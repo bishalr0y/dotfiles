@@ -18,6 +18,5 @@
   "attention": {
     "sound": false,
     "notifications": false
-  },
-  "plugins": ["./herdr-opencode"]
+  }
 }
