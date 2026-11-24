@@ -43,6 +43,14 @@ home/.config/herdr-app/
 # Vite+ installer-owned config (track conf.d/vite-plus.zsh only)
 home/.config/vite-plus/
 
+# Claude Code: machine-local auth and session state. Track policy under
+# home/.claude/ (settings.json, hooks); ignore everything else Claude writes.
+home/.claude/*
+!home/.claude/settings.json
+!home/.claude/hooks/
+!home/.claude/hooks/**
+home/.claude.json
+
 # gh CLI: machine-local auth state. hosts.yml can hold an OAuth token in
 # plaintext, and gh rewrites config.yml on upgrades -- keep both out of a
 # public repo. Review or re-enter on a new machine with `gh auth login`.

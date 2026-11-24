@@ -110,6 +110,14 @@ Vite+ runtime files under `~/.config/vite-plus/` are gitignored (installer-owned
 
 **Migrating from brew pi:** `npm uninstall -g @earendil-works/pi-coding-agent`, then `dot stow && dot update`.
 
+### Claude Code
+
+`claude-code` cask in Brewfile. Upgrades with `dot update`. Policy in `home/.claude/settings.json` (stowed); login and sessions stay local (`home/.claude.json` and most of `~/.claude/` are gitignored).
+
+Shared skills: `home/.agents/skills/`. Claude-only skills (e.g. `rex`) live under `~/.claude/skills/` and are not tracked.
+
+First run: `claude` and sign in when prompted.
+
 ## Stow layout
 
 ```bash

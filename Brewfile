@@ -74,6 +74,8 @@ brew "zsh-syntax-highlighting"
 brew "anomalyco/tap/opencode-v2", trusted: true
 # Terminal process manager
 brew "bishalr0y/bishalr0y/pman", trusted: true
+# Terminal-based AI coding assistant
+cask "claude-code"
 # Voice and text chat software
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration

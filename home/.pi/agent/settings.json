@@ -5,7 +5,8 @@
   "packages": [
     "npm:pi-web-search",
     "npm:@plannotator/pi-extension",
-    "npm:pi-cursor-sdk"
+    "npm:pi-cursor-sdk",
+    "git:github.com/dmmulroy/pi-claude-cli"
   ],
   "lastChangelogVersion": "1.6.0",
   "extensionChangelogVersions": {
