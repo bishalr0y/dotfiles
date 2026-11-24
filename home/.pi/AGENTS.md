@@ -18,6 +18,7 @@ home/.pi/
     └── extensions/
         ├── whimsical.ts           # standalone: random working message each turn
         ├── continue-after-compaction.ts
+        ├── git-interceptor.ts     # standalone: no git editor hangs, block --no-verify
         ├── pi-skill-toggle/       # package: /toggle-skills UI
         ├── save-md/               # package: /save-md command
         └── tests/                 # e.g. continue-after-compaction tests
@@ -37,6 +38,7 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
 | New skill | `home/.agents/skills/<name>/SKILL.md` |
 | Working / thinking label in TUI | `agent/extensions/whimsical.ts` |
 | Resume after compaction | `agent/extensions/continue-after-compaction.ts` |
+| Agent git guards | `agent/extensions/git-interceptor.ts` |
 | Skill agent/manual toggle | `agent/extensions/pi-skill-toggle/` |
 | Save last assistant reply | `agent/extensions/save-md/` |
 | What is safe to commit under `.pi` | This file → **Git tracking** |
@@ -55,6 +57,7 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
 |-----------|------|----------|
 | **whimsical** | `whimsical.ts` | On each turn, sets a random whimsical `setWorkingMessage` until the turn ends. |
 | **continue-after-compaction** | `continue-after-compaction.ts` | After compaction, sends a steer prompt to resume the task from session JSONL. |
+| **git-interceptor** | `git-interceptor.ts` | On bash calls containing `git`: prefixes `GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true GIT_MERGE_AUTOEDIT=no` so git never opens an editor; blocks `--no-verify`. From dmmulroy/.dotfiles. |
 | **pi-skill-toggle** | package | `/toggle-skills` — inventory skills, flip agent-invocable vs manual-only via frontmatter. |
 | **save-md** | package | `/save-md name` — write latest assistant Markdown to `name.md` in cwd (no overwrite). |
 
