@@ -116,7 +116,9 @@ Vite+ runtime files under `~/.config/vite-plus/` are gitignored (installer-owned
 
 Shared skills: `home/.agents/skills/`. Claude-only skills (e.g. `rex`) live under `~/.claude/skills/` and are not tracked.
 
-First run: `claude` and sign in when prompted.
+First run: `claude auth login` (check with `claude auth status`).
+
+**In pi:** [pi-claude-cli](https://github.com/dmmulroy/pi-claude-cli) is listed in `home/.pi/agent/settings.json`, so pi installs it on first start (or run `pi install git:github.com/dmmulroy/pi-claude-cli`). It uses the Claude login above. In pi, pick a model under `pi-claude-cli` with `/model`, and check it with `/pi-claude-cli-status`. Don't accept its `claude update` prompt — Homebrew owns updates (`dot update`); `autoUpdatesChannel: stable` keeps its version check matched to the stable cask.
 
 ## Stow layout
 
