@@ -1269,6 +1269,31 @@ EOF
   esac
 }
 
+# Copy secret-file templates into $HOME if missing (never overwrites).
+__setup_local_secrets() {
+  __print_header "Local secrets"
+  local src dest missing=false
+  for pair in "zshrc.local:.zshrc.local" "envrc:.envrc"; do
+    src="$DOTFILES_DIR/templates/${pair%%:*}"
+    dest="$HOME/${pair#*:}"
+    if [[ -e "$dest" ]]; then
+      __print_success "~/${pair#*:} exists (left unchanged)"
+    else
+      cp "$src" "$dest" && chmod 600 "$dest" || return 1
+      __print_success "Created ~/${pair#*:} from template"
+    fi
+  done
+  if __command_exists direnv; then
+    (cd "$HOME" && direnv allow "$HOME") && __print_success "direnv allowed ~/.envrc"
+  else
+    __print_warning "direnv not found; run: direnv allow ~"
+  fi
+  grep -qE '^export (EXA_API_KEY|GITHUB_PERSONAL_ACCESS_TOKEN)=""' "$HOME/.zshrc.local" && missing=true
+  if [[ "$missing" == true ]]; then
+    __print_warning "Fill empty keys in ~/.zshrc.local (EXA_API_KEY, GITHUB_PERSONAL_ACCESS_TOKEN), then open a new shell"
+  fi
+}
+
 cmd_init() {
   local skip_ssh=false skip_font=false
   while [[ $# -gt 0 ]]; do
@@ -1331,6 +1356,7 @@ EOF
   fi
   __install_pi || return 1
   __pi_sync || return 1
+  __setup_local_secrets || __print_warning "Local secrets setup failed; continuing"
   __print_header "Done"
   __print_info "Optional: ${SCRIPT_NAME} link  (add dot to PATH)"
 }

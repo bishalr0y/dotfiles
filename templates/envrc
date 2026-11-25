@@ -1,0 +1,14 @@
+# Machine-local secrets (see ~/.zshrc.local)
+if [ -r "$HOME/.zshrc.local" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "$HOME/.zshrc.local"
+  set +a
+fi
+
+# Pi web-tools + OpenCode websearch (Exa MCP)
+if [ -n "${EXA_API_KEY:-}" ]; then
+  export PI_WEB_TOOLS_EXA_ENDPOINT="https://mcp.exa.ai/mcp?exaApiKey=${EXA_API_KEY}"
+else
+  export PI_WEB_TOOLS_EXA_ENDPOINT="https://mcp.exa.ai/mcp"
+fi
