@@ -78,7 +78,7 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
 
 - **pi-cursor-sdk** — Cursor-backed runs; auth and runtime state stay local (not in git).
 - **@plannotator/pi-extension** — plan/review; related skills under `home/.agents/skills/plannotator*`.
-- **pi-web-tools** — `websearch` / `webfetch` via Exa (or Parallel) MCP; works with any Pi model including cursor-sdk. Set `EXA_API_KEY` in `~/.zshrc.local` and derive `PI_WEB_TOOLS_EXA_ENDPOINT` in `~/.envrc` (see repo `README.md`).
+- **pi-web-tools** — `websearch` / `webfetch` via Exa (or Parallel) MCP; works with any Pi model including cursor-sdk. Set `EXA_API_KEY` in `~/.zshrc.local`; `home/.zshrc` derives `PI_WEB_TOOLS_EXA_ENDPOINT` from it (see repo `README.md`).
 
 Local extensions load from `agent/extensions/` without listing them in `settings.json`. Reload after edits: `/reload`.
 

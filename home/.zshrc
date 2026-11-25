@@ -67,3 +67,7 @@ esac
 
 # local, untracked machine-specific vars and secrets (never committed)
 [ -r "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+# pi-web-tools search endpoint, built from EXA_API_KEY in ~/.zshrc.local
+if [ -n "$EXA_API_KEY" ]; then
+  export PI_WEB_TOOLS_EXA_ENDPOINT="https://mcp.exa.ai/mcp?exaApiKey=$EXA_API_KEY"
+fi

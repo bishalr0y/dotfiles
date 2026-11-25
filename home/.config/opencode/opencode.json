@@ -12,19 +12,5 @@
   },
   "websearch": {
     "provider": "exa"
-  },
-  "mcp": {
-    "servers": {
-      "github": {
-        "type": "remote",
-        "url": "https://api.githubcopilot.com/mcp/",
-        "oauth": false,
-        "headers": {
-          "Authorization": "Bearer {env:GITHUB_PERSONAL_ACCESS_TOKEN}",
-          "X-MCP-Toolsets": "context,repos,issues,pull_requests,users,actions",
-          "X-MCP-Lockdown": "true"
-        }
-      }
-    }
   }
 }

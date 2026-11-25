@@ -1331,6 +1331,9 @@ EOF
   fi
   __install_pi || return 1
   __pi_sync || return 1
+  if [[ ! -r "$HOME/.zshrc.local" ]]; then
+    __print_warning "~/.zshrc.local not found — create it with: export EXA_API_KEY=\"…\" (Pi + OpenCode web search)"
+  fi
   __print_header "Done"
   __print_info "Optional: ${SCRIPT_NAME} link  (add dot to PATH)"
 }
