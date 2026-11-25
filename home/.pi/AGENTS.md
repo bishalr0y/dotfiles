@@ -69,7 +69,7 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
   "theme": "catppuccin-macchiato",
   "editorPaddingX": 1,
   "packages": [
-    "npm:pi-web-search",
+    "git:github.com/dmmulroy/pi-web-tools",
     "npm:@plannotator/pi-extension",
     "npm:pi-cursor-sdk"
   ]
@@ -78,7 +78,7 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
 
 - **pi-cursor-sdk** — Cursor-backed runs; auth and runtime state stay local (not in git).
 - **@plannotator/pi-extension** — plan/review; related skills under `home/.agents/skills/plannotator*`.
-- **pi-web-search** — web search tool from npm package.
+- **pi-web-tools** — `websearch` / `webfetch` via Exa (or Parallel) MCP; works with any Pi model including cursor-sdk. Set `EXA_API_KEY` in `~/.zshrc.local` and derive `PI_WEB_TOOLS_EXA_ENDPOINT` in `~/.envrc` (see repo `README.md`).
 
 Local extensions load from `agent/extensions/` without listing them in `settings.json`. Reload after edits: `/reload`.
 
@@ -96,7 +96,7 @@ Local extensions load from `agent/extensions/` without listing them in `settings
 - Standalone files: `export default function (pi: ExtensionAPI)`.
 - Packaged extensions: `"pi": { "extensions": ["./index.ts"] }` or `"./src/index.ts"`.
 - Dependencies: `@earendil-works/pi-coding-agent`, `@earendil-works/pi-tui`; add `@earendil-works/pi-ai` when handling message content.
-- **Published** pi packages (`pi-web-search`, etc.): deps only in `agent/settings.json` + `pi install` — not in local extension `package.json`.
+- **Published** pi packages (`@plannotator/pi-extension`, etc.): deps only in `agent/settings.json` + `pi install` — not in local extension `package.json`. Git pi packages (`pi-web-tools`, `pi-claude-cli`) same: list in `settings.json`, then `pi install git:…`.
 - **Local** extension devDeps: that extension’s own `package.json` only — never `agent/npm/package.json` (gitignored install dir).
 - Typecheck/tests per package: `npm run check` or `npm run typecheck` / `npm run test` inside the extension directory.
 

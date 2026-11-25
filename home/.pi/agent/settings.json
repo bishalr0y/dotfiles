@@ -2,7 +2,7 @@
   "$schema": "https://pi.dev/schemas/settings.schema.json",
   "theme": "catppuccin-macchiato",
   "packages": [
-    "npm:pi-web-search",
+    "git:github.com/dmmulroy/pi-web-tools",
     "npm:@plannotator/pi-extension",
     "npm:pi-cursor-sdk",
     "git:github.com/dmmulroy/pi-claude-cli"

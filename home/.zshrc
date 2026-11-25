@@ -64,3 +64,6 @@ case ":$PATH:" in
   *":$PNPM_HOME/bin:"*) ;;
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
+
+# local, untracked machine-specific vars and secrets (never committed)
+[ -r "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

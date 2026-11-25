@@ -120,6 +120,8 @@ First run: `claude auth login` (check with `claude auth status`).
 
 **In pi:** [pi-claude-cli](https://github.com/dmmulroy/pi-claude-cli) is listed in `home/.pi/agent/settings.json`, so pi installs it on first start (or run `pi install git:github.com/dmmulroy/pi-claude-cli`). It uses the Claude login above. In pi, pick a model under `pi-claude-cli` with `/model`, and check it with `/pi-claude-cli-status`. Don't accept its `claude update` prompt — Homebrew owns updates (`dot update`); `autoUpdatesChannel: stable` keeps its version check matched to the stable cask.
 
+**Pi web search:** [pi-web-tools](https://github.com/dmmulroy/pi-web-tools) is in `settings.json`. Put `EXA_API_KEY` in gitignored `~/.zshrc.local` (same as OpenCode `websearch` provider `exa`). `~/.envrc` should source that file and set `PI_WEB_TOOLS_EXA_ENDPOINT="https://mcp.exa.ai/mcp?exaApiKey=$EXA_API_KEY"`. After stow: `pi install git:github.com/dmmulroy/pi-web-tools`, then `/reload`.
+
 ## Stow layout
 
 ```bash
