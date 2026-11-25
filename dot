@@ -24,8 +24,8 @@ readonly PACKAGES_DIR="${DOTFILES_DIR}/packages"
 readonly GITHUB_SSH_KEY="${HOME}/.ssh/id_ed25519"
 readonly BUN_INSTALL_DIR="${BUN_INSTALL:-${HOME}/.bun}"
 
-readonly REX_APP_PATH="/Applications/Rex Beta.app"
-readonly REX_APPCAST_URL="https://blob.superlogical.com/public/rex-app/preview/appcast.xml"
+readonly REX_APP_PATH="/Applications/Rex.app"
+readonly REX_APPCAST_URL="https://blob.superlogical.com/public/rex-app/preview-arm64/appcast.xml"
 readonly REX_TEAM_ID="AG92C3PT77"
 readonly REX_DEFAULTS_DOMAIN="com.superlogical.rex"
 readonly REX_APP_SETTINGS_FILE="${HOME}/.config/rex/macos-defaults.conf"
@@ -1699,15 +1699,15 @@ cmd_doctor() {
     if [[ -d "$REX_APP_PATH" ]]; then
       local build
       build="$(__rex_installed_build)"
-      __print_success "Rex Beta installed${build:+ (build ${build})}"
+      __print_success "Rex installed${build:+ (build ${build})}"
     else
-      __print_warning "Rex Beta not at ${REX_APP_PATH}"
+      __print_warning "Rex not at ${REX_APP_PATH}"
       ((issues++)) || true
     fi
     if __rex_cli >/dev/null; then
       __print_success "rex CLI"
     else
-      __print_warning "rex CLI not found (open Rex Beta once)"
+      __print_warning "rex CLI not found (open Rex once)"
       ((issues++)) || true
     fi
     __doctor_rex_defaults_drift || ((issues++)) || true
