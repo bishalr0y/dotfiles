@@ -120,16 +120,7 @@ First run: `claude auth login` (check with `claude auth status`).
 
 **In pi:** [pi-claude-cli](https://github.com/dmmulroy/pi-claude-cli) is listed in `home/.pi/agent/settings.json`, so pi installs it on first start (or run `pi install git:github.com/dmmulroy/pi-claude-cli`). It uses the Claude login above. In pi, pick a model under `pi-claude-cli` with `/model`, and check it with `/pi-claude-cli-status`. Don't accept its `claude update` prompt — Homebrew owns updates (`dot update`); `autoUpdatesChannel: stable` keeps its version check matched to the stable cask.
 
-**Pi web search:** [pi-web-tools](https://github.com/dmmulroy/pi-web-tools) is in `settings.json`. It reads `EXA_API_KEY` (shared with OpenCode `websearch` provider `exa`) via `~/.envrc`, which builds `PI_WEB_TOOLS_EXA_ENDPOINT`.
-
-### Local secrets (new machine)
-
-`dot init` copies `templates/zshrc.local` → `~/.zshrc.local` and `templates/envrc` → `~/.envrc` (only if missing — never overwrites), sets mode 600, and runs `direnv allow ~`. Then fill the empty values in `~/.zshrc.local` and open a new shell:
-
-- `EXA_API_KEY` — [Exa](https://dashboard.exa.ai/api-keys) (Pi + OpenCode web search)
-- `GITHUB_PERSONAL_ACCESS_TOKEN` — [GitHub](https://github.com/settings/personal-access-tokens/new) (OpenCode GitHub MCP)
-
-The templates contain no secrets; real values live only in `~`. Restart pi after adding keys (`/reload` doesn't pick up new env vars).
+**Pi web search:** [pi-web-tools](https://github.com/dmmulroy/pi-web-tools) is in `settings.json`. Put `EXA_API_KEY` in gitignored `~/.zshrc.local` (same as OpenCode `websearch` provider `exa`). `~/.envrc` should source that file and set `PI_WEB_TOOLS_EXA_ENDPOINT="https://mcp.exa.ai/mcp?exaApiKey=$EXA_API_KEY"`. After stow: `pi install git:github.com/dmmulroy/pi-web-tools`, then `/reload`.
 
 ## Stow layout
 
