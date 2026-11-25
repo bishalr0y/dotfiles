@@ -86,8 +86,8 @@ cask "notion"
 cask "orbstack"
 # Invert mouse scroll only (trackpad stays natural)
 cask "scroll-reverser"
-# Screenshot measurement and annotation tool
-cask "shottr"
+# Screenshot, annotation and screen recording tool
+cask "macshot"
 # Music streaming service
 cask "spotify"
 # Native GUI tool for relational databases

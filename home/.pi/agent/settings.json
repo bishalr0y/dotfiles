@@ -7,7 +7,7 @@
     "npm:pi-cursor-sdk",
     "git:github.com/dmmulroy/pi-claude-cli"
   ],
-  "lastChangelogVersion": "1.6.0",
+  "lastChangelogVersion": "1.6.1",
   "extensionChangelogVersions": {
     "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.46"
   }
