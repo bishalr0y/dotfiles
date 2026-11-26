@@ -16,7 +16,6 @@ home/.pi/
     │   └── catppuccin-macchiato.json
     ├── npm/                       # pi install target (~/.pi/agent/npm); entire dir gitignored
     └── extensions/
-        ├── whimsical.ts           # standalone: random working message each turn
         ├── continue-after-compaction.ts
         ├── git-interceptor.ts     # standalone: no git editor hangs, block --no-verify
         ├── pi-skill-toggle/       # package: /toggle-skills UI
@@ -36,7 +35,6 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
 | Standalone extension | `agent/extensions/*.ts` (auto-discovered) |
 | Packaged extension | `agent/extensions/<name>/` with `package.json` → `pi.extensions` |
 | New skill | `home/.agents/skills/<name>/SKILL.md` |
-| Working / thinking label in TUI | `agent/extensions/whimsical.ts` |
 | Resume after compaction | `agent/extensions/continue-after-compaction.ts` |
 | Agent git guards | `agent/extensions/git-interceptor.ts` |
 | Skill agent/manual toggle | `agent/extensions/pi-skill-toggle/` |
@@ -55,7 +53,6 @@ Skills live in `home/.agents/skills/` (stow to `~/.agents/skills/`). Do not copy
 
 | Extension | Type | Behavior |
 |-----------|------|----------|
-| **whimsical** | `whimsical.ts` | On each turn, sets a random whimsical `setWorkingMessage` until the turn ends. |
 | **continue-after-compaction** | `continue-after-compaction.ts` | After compaction, sends a steer prompt to resume the task from session JSONL. |
 | **git-interceptor** | `git-interceptor.ts` | On bash calls containing `git`: prefixes `GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true GIT_MERGE_AUTOEDIT=no` so git never opens an editor; blocks `--no-verify`. From dmmulroy/.dotfiles. |
 | **pi-skill-toggle** | package | `/toggle-skills` — inventory skills, flip agent-invocable vs manual-only via frontmatter. |
@@ -87,7 +84,6 @@ Local extensions load from `agent/extensions/` without listing them in `settings
 - **pi-cursor-sdk** — model/auth and Cursor bridge state stay under ignored `agent/` paths; default model is not set in tracked `settings.json`.
 - **continue-after-compaction** — after compact, sends a steer prompt; resume by reading session JSONL (parentId chain), not by nesting `pi --session`.
 - **pi-skill-toggle** — UI under `src/ui/` (overlay, render, view-model); mutates skill frontmatter for agent vs manual invocation.
-- **whimsical** — TUI working label only; does not change tools or model behavior.
 - **save-md** — uses `@earendil-works/pi-ai` message shapes when stripping assistant output.
 
 ## Conventions
