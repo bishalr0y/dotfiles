@@ -1,6 +1,8 @@
 {
   "$schema": "https://pi.dev/schemas/settings.schema.json",
   "theme": "catppuccin-macchiato",
+  "defaultProvider": "pi-claude-cli",
+  "defaultModel": "claude-opus-5-5",
   "packages": [
     "git:github.com/dmmulroy/pi-web-tools",
     "npm:@plannotator/pi-extension",
@@ -9,6 +11,6 @@
   ],
   "lastChangelogVersion": "1.6.1",
   "extensionChangelogVersions": {
-    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.46"
+    "{\"source\":\"npm:pi-cursor-sdk\",\"scope\":\"user\"}": "0.5.47"
   }
 }
