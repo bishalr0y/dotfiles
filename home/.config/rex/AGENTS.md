@@ -22,7 +22,9 @@ rex/
 | `macos-defaults.conf` (font, tabs, …) | `dot rex apply` then **quit & reopen Rex** |
 | Both | `dot rex sync` |
 
-`dot update` runs stow + full `rex sync` on macOS.
+`dot update` runs stow + full `rex sync` on macOS. `dot` finds the app by
+bundle ID `com.superlogical.rex` (not a fixed path); extra copies are not
+updated.
 
 ## Anti-patterns
 
