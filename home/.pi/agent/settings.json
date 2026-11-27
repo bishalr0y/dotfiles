@@ -3,6 +3,7 @@
   "theme": "catppuccin-macchiato",
   "defaultProvider": "pi-claude-cli",
   "defaultModel": "claude-opus-5-5",
+  "defaultTools": ["+codemode"],
   "packages": [
     "git:github.com/dmmulroy/pi-web-tools",
     "npm:@plannotator/pi-extension",
